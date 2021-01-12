@@ -1,0 +1,5 @@
+# aero.minova.test.saw.rcp
+RCP E4 Testanwendung 
+
+In diesem Projekt teste ich verschiedene Dinge aus.
+
