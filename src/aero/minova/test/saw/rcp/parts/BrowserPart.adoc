@@ -1,5 +1,5 @@
 == SVG Images mit Links
 
-In diesem Part öffnen wir eine xref:../../../../../../svg/friedhof-urnenfeld.svg[SVG-Datei].
+In diesem Part öffnen wir eine xref:../../../../../../../svg/friedhof-urnenfeld.svg[SVG-Datei].
 Die Datei enthält auch Links. 
 Diese werden beim Anklicken abgefangen und in der Statusleiste angezeigt.
