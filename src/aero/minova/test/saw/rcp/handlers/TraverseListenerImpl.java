@@ -20,6 +20,8 @@ public class TraverseListenerImpl implements TraverseListener {
 
 //		if (!e.doit) return; // wir tun nichts, wenn ein anderer etwas getan hat
 
+		e.widget.getData();
+
 		switch (e.detail) {
 		case SWT.TRAVERSE_ARROW_NEXT:
 			logger.info("SWT.TRAVERSE_ARROW_NEXT");

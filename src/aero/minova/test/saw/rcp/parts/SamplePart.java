@@ -96,6 +96,7 @@ public class SamplePart {
 		RowData page2Data = new RowData();
 		page2Data.width = SECTION_WIDTH;
 		page2.setLayoutData(page2Data);
+		page2.addTraverseListener(traverseListener);
 
 		composite = toolkit.createComposite(page2);
 		composite.setLayout(new FormLayout());
@@ -111,6 +112,7 @@ public class SamplePart {
 		RowData page1Data = new RowData();
 		page1Data.width = SECTION_WIDTH;
 		page1.setLayoutData(page1Data);
+		page1.addTraverseListener(traverseListener);
 
 		composite = toolkit.createComposite(page1);
 		composite.setLayout(new FormLayout());
@@ -159,7 +161,7 @@ public class SamplePart {
 		headText21.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
-				System.out.println(headText21.getSize());
+				logger.info("" + headText21.getSize());
 			}
 		});
 		headText21.addTraverseListener(traverseListener);
@@ -194,9 +196,10 @@ public class SamplePart {
 		headText41Data.left = new FormAttachment(composite, MARGIN_LEFT * 2 + COLUMN_WIDTH);
 		headText41.setLayoutData(headText41Data);
 		headText41.addFocusListener(new FocusAdapter() {
+			@SuppressWarnings("restriction")
 			@Override
 			public void focusGained(FocusEvent e) {
-				System.out.println(headText41.getSize());
+				logger.info("" + headText41.getSize());
 			}
 		});
 		headText41.addTraverseListener(traverseListener);

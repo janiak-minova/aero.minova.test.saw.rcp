@@ -31,11 +31,12 @@ public class StatusBar {
 
 	@PostConstruct
 	public void createGui(Composite parent) {
-		label = new Label(parent, SWT.FILL | SWT.LEFT);
+		label = new Label(parent, SWT.LEFT);
 		parent.setLayout(new GridLayout(1, true));
 		label.setBackground(parent.getBackground());
 		label.setText("Dies ist meine               dfsgsdfgdsgsdgsdfgdsgfds                                Meldung");
 		label.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true));
+
 	}
 	
 	public void updateInterface(String message) {
