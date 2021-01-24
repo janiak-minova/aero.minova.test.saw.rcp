@@ -22,4 +22,13 @@ Composite {
 .MPartStack {
     swt-maximize-visible: false;
     swt-minimize-visible: false;
+    background-color: white;
+}
+
+.MPart {
+    background-color: white;
+}
+
+.MPartSashContainer {
+    background-color: grey;
 }
