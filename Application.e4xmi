@@ -9,6 +9,7 @@
         <children xsi:type="basic:CompositePart" xmi:id="_CyZo8ELmEeufotnszDn1QQ" elementId="test.ui.compositepart.0" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.TestCompositePart" label="Kontakte" iconURI="platform:/plugin/aero.minova.test.saw.rcp/icons/contacts.png">
           <toolbar xmi:id="_ku34kF48EeueVs-Fc5A0nw" elementId="aero.minova.test.saw.rcp.toolbar.1">
             <children xsi:type="menu:HandledToolItem" xmi:id="_vOJJQF47EeueVs-Fc5A0nw" elementId="aero.minova.test.saw.rcp.handledtoolitem.bearbeiten" label="Bearbeiten" command="_34WgUF47EeueVs-Fc5A0nw"/>
+            <children xsi:type="menu:HandledToolItem" xmi:id="_sswtcF5CEeueVs-Fc5A0nw" elementId="aero.minova.test.saw.rcp.handledtoolitem.gruppen" label="Gruppen" selected="true" type="Check" command="_vYtLwF5BEeueVs-Fc5A0nw"/>
           </toolbar>
           <children xsi:type="basic:PartSashContainer" xmi:id="_D08rEELmEeufotnszDn1QQ" elementId="test.ui.partsashcontainer.0" horizontal="true">
             <children xsi:type="basic:Part" xmi:id="_I0iKgELmEeufotnszDn1QQ" elementId="test.ui.part.gruppen" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.ContactGroupsPart" label="Gruppen"/>
@@ -48,6 +49,7 @@
   <handlers xmi:id="_6wlLgcgZEeSyMNYR5xypkQ" elementId="test.ui.handler.openCommand" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.handlers.OpenHandler" command="_6wlLgMgZEeSyMNYR5xypkQ"/>
   <handlers xmi:id="_6wlLhMgZEeSyMNYR5xypkQ" elementId="test.ui.handler.saveCommand" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.handlers.SaveHandler" command="_6wlLg8gZEeSyMNYR5xypkQ"/>
   <handlers xmi:id="_6wlLh8gZEeSyMNYR5xypkQ" elementId="test.ui.handler.aboutCommand" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.handlers.AboutHandler" command="_6wlLhsgZEeSyMNYR5xypkQ"/>
+  <handlers xmi:id="_15G9sF5BEeueVs-Fc5A0nw" elementId="aero.minova.test.saw.rcp.handler.0" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.handlers.showContactGroupsHandler" command="_vYtLwF5BEeueVs-Fc5A0nw"/>
   <bindingTables xmi:id="_6wlLfsgZEeSyMNYR5xypkQ" elementId="test.ui.bindingtable" bindingContext="_6wlLecgZEeSyMNYR5xypkQ">
     <bindings xmi:id="_6wlLf8gZEeSyMNYR5xypkQ" elementId="test.ui.keybinding.m1q" keySequence="M1+Q" command="_6wlLfMgZEeSyMNYR5xypkQ"/>
     <bindings xmi:id="_6wlLgsgZEeSyMNYR5xypkQ" elementId="test.ui.keybinding.m1o" keySequence="M1+O" command="_6wlLgMgZEeSyMNYR5xypkQ"/>
@@ -64,6 +66,7 @@
   <commands xmi:id="_6wlLhsgZEeSyMNYR5xypkQ" elementId="org.eclipse.ui.help.aboutAction" commandName="aboutCommand"/>
   <commands xmi:id="_pwGQAFaXEeuGC7ONQbMbFA" elementId="aero.minova.test.saw.rcp.command.testcommand" commandName="testCommand"/>
   <commands xmi:id="_34WgUF47EeueVs-Fc5A0nw" elementId="aero.minova.test.saw.rcp.command.editcontact" commandName="editContact"/>
+  <commands xmi:id="_vYtLwF5BEeueVs-Fc5A0nw" elementId="aero.minova.test.saw.rcp.command.showcontactgroups" commandName="showContactGroups"/>
   <addons xmi:id="_6wlLcsgZEeSyMNYR5xypkQ" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_6wlLc8gZEeSyMNYR5xypkQ" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_6wlLdMgZEeSyMNYR5xypkQ" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
