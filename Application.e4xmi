@@ -3,15 +3,17 @@
   <children xsi:type="basic:TrimmedWindow" xmi:id="_6wlLccgZEeSyMNYR5xypkQ" elementId="test.ui.window.main" label="Eclipse 4 RCP Application" width="800" height="800">
     <children xsi:type="basic:PartSashContainer" xmi:id="_6wlLksgZEeSyMNYR5xypkQ" elementId="test.ui.partsashcontainer.sample">
       <children xsi:type="basic:PartStack" xmi:id="_6wlLk8gZEeSyMNYR5xypkQ" elementId="test.ui.partstack.sample">
-        <children xsi:type="basic:Part" xmi:id="_a5XQMF41EeueVs-Fc5A0nw" elementId="aero.minova.test.saw.rcp.part.adressen" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.AdressenPart" label="Adressen" iconURI="platform:/plugin/aero.minova.test.saw.rcp/icons/contacts.png"/>
         <children xsi:type="basic:Part" xmi:id="_6wlLlMgZEeSyMNYR5xypkQ" elementId="test.ui.part.sample" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.DetailPart" label="Sample Part" iconURI="platform:/plugin/aero.minova.test.saw.rcp/icons/home.png"/>
         <children xsi:type="basic:Part" xmi:id="_md6qwDmREeuJypk-9NJIRQ" elementId="test.ui.part.browsertest" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.BrowserPart" label="BrowserTest" iconURI="platform:/plugin/aero.minova.test.saw.rcp/icons/browser.png"/>
         <children xsi:type="basic:Part" xmi:id="_T-yqYECfEeuRleIaugyDgg" elementId="test.ui.part.nattable" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.NatTablePart" label="NatTable"/>
-        <children xsi:type="basic:CompositePart" xmi:id="_CyZo8ELmEeufotnszDn1QQ" elementId="test.ui.compositepart.0" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.TestCompositePart" label="Kontakte">
+        <children xsi:type="basic:CompositePart" xmi:id="_CyZo8ELmEeufotnszDn1QQ" elementId="test.ui.compositepart.0" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.TestCompositePart" label="Kontakte" iconURI="platform:/plugin/aero.minova.test.saw.rcp/icons/contacts.png">
+          <toolbar xmi:id="_ku34kF48EeueVs-Fc5A0nw" elementId="aero.minova.test.saw.rcp.toolbar.1">
+            <children xsi:type="menu:HandledToolItem" xmi:id="_vOJJQF47EeueVs-Fc5A0nw" elementId="aero.minova.test.saw.rcp.handledtoolitem.bearbeiten" label="Bearbeiten" command="_34WgUF47EeueVs-Fc5A0nw"/>
+          </toolbar>
           <children xsi:type="basic:PartSashContainer" xmi:id="_D08rEELmEeufotnszDn1QQ" elementId="test.ui.partsashcontainer.0" horizontal="true">
             <children xsi:type="basic:Part" xmi:id="_I0iKgELmEeufotnszDn1QQ" elementId="test.ui.part.gruppen" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.ContactGroupsPart" label="Gruppen"/>
             <children xsi:type="basic:Part" xmi:id="_bfktUELmEeujptxGZwwK5g" elementId="test.ui.part.liste" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.ContactListPart" label="Liste"/>
-            <children xsi:type="basic:Part" xmi:id="_e-YL8ELlEeufotnszDn1QQ" elementId="test.ui.part.kontakt" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.ContactPart" label="Kontakt"/>
+            <children xsi:type="basic:Part" xmi:id="_e-YL8ELlEeufotnszDn1QQ" elementId="test.ui.part.kontakt" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.ContactPart" label="Kontakt" iconURI="platform:/plugin/aero.minova.test.saw.rcp/icons/contacts.png"/>
           </children>
         </children>
       </children>
@@ -61,6 +63,7 @@
   <commands xmi:id="_6wlLg8gZEeSyMNYR5xypkQ" elementId="org.eclipse.ui.file.save" commandName="saveCommand"/>
   <commands xmi:id="_6wlLhsgZEeSyMNYR5xypkQ" elementId="org.eclipse.ui.help.aboutAction" commandName="aboutCommand"/>
   <commands xmi:id="_pwGQAFaXEeuGC7ONQbMbFA" elementId="aero.minova.test.saw.rcp.command.testcommand" commandName="testCommand"/>
+  <commands xmi:id="_34WgUF47EeueVs-Fc5A0nw" elementId="aero.minova.test.saw.rcp.command.editcontact" commandName="editContact"/>
   <addons xmi:id="_6wlLcsgZEeSyMNYR5xypkQ" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_6wlLc8gZEeSyMNYR5xypkQ" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_6wlLdMgZEeSyMNYR5xypkQ" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>
