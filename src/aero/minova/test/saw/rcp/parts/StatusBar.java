@@ -31,11 +31,12 @@ public class StatusBar {
 
 	@PostConstruct
 	public void createGui(Composite parent) {
-		label = new Label(parent, SWT.LEFT);
-		parent.setLayout(new GridLayout(1, true));
-		label.setBackground(parent.getBackground());
-		label.setText("Dies ist meine               dfsgsdfgdsgsdgsdfgdsgfds                                Meldung");
-		label.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true));
+		Composite body = new Composite(parent, SWT.NONE);
+		body.setLayout(new GridLayout());
+		label = new Label(body, SWT.LEFT);
+		label.setData("org.eclipse.e4.ui.css.CssClassName", "statusBar");
+//		label.setText("Dies ist meine               dfsgsdfgdsgsdgsdfgdsgfds                                Meldung");
+		label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 	}
 	
