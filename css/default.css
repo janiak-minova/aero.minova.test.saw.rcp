@@ -18,3 +18,8 @@ Label {
 Composite {
 	background-color: white;
 }
+
+.MPartStack {
+    swt-maximize-visible: false;
+    swt-minimize-visible: false;
+}
