@@ -3,6 +3,7 @@
   <children xsi:type="basic:TrimmedWindow" xmi:id="_6wlLccgZEeSyMNYR5xypkQ" elementId="test.ui.window.main" label="Eclipse 4 RCP Application" width="800" height="800">
     <children xsi:type="basic:PartSashContainer" xmi:id="_6wlLksgZEeSyMNYR5xypkQ" elementId="test.ui.partsashcontainer.sample">
       <children xsi:type="basic:PartStack" xmi:id="_6wlLk8gZEeSyMNYR5xypkQ" elementId="test.ui.partstack.sample">
+        <children xsi:type="basic:Part" xmi:id="_a5XQMF41EeueVs-Fc5A0nw" elementId="aero.minova.test.saw.rcp.part.adressen" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.AdressenPart" label="Adressen" iconURI="platform:/plugin/aero.minova.test.saw.rcp/icons/contacts.png"/>
         <children xsi:type="basic:Part" xmi:id="_6wlLlMgZEeSyMNYR5xypkQ" elementId="test.ui.part.sample" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.DetailPart" label="Sample Part" iconURI="platform:/plugin/aero.minova.test.saw.rcp/icons/home.png"/>
         <children xsi:type="basic:Part" xmi:id="_md6qwDmREeuJypk-9NJIRQ" elementId="test.ui.part.browsertest" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.BrowserPart" label="BrowserTest" iconURI="platform:/plugin/aero.minova.test.saw.rcp/icons/browser.png"/>
         <children xsi:type="basic:Part" xmi:id="_T-yqYECfEeuRleIaugyDgg" elementId="test.ui.part.nattable" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.NatTablePart" label="NatTable"/>
