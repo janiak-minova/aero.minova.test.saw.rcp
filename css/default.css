@@ -14,3 +14,7 @@ Label {
 .statusBar {
 	color: black;
 }
+
+Composite {
+	background-color: white;
+}
