@@ -7,7 +7,7 @@ package aero.minova.test.saw.rcp.model;
  */
 public class Contact {
 
-	private String Company;
+	private String company;
 	private String firstName;
 	private String jobDescription;
 	private String lastName;
@@ -19,7 +19,7 @@ public class Contact {
 	 * @return Name der Firma
 	 */
 	public String getCompany() {
-		return Company;
+		return company;
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class Contact {
 	}
 
 	public void setCompany(String company) {
-		Company = company;
+		this.company = company;
 	}
 
 	public void setFirstName(String firstName) {

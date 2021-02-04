@@ -1,14 +1,16 @@
-/*
 Text, Button {
-	font-size: 16;
+	font-size: 14;
 }
-*/
 
 Label {
-	/*
-	font-size: 14;
-	*/
+/*	font-size: 12; */
 	color: grey;
+}
+
+
+Link {
+/*	font-size: 12; */
+	color: #6060ff;
 }
 
 .statusBar {
@@ -22,13 +24,8 @@ Composite {
 .MPartStack {
     swt-maximize-visible: false;
     swt-minimize-visible: false;
-    background-color: white;
 }
 
-.MPart {
-    background-color: white;
-}
-
-.MPartSashContainer {
-    background-color: lightgrey;
+SashForm {
+	background-color: #A0A0A0;
 }
