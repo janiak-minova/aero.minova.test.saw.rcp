@@ -12,7 +12,6 @@ public class Contact {
 	private String jobDescription;
 	private String lastName;
 	private String title;
-
 	
 	/**
 	 * Name der Firma, Organsisation, ... bei der diese Person arbeitet
