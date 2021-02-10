@@ -13,12 +13,12 @@
                value="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.E4LifeCycle">
          </property>
          <property
-               name="applicationCSS"
-               value="platform:/plugin/aero.minova.test.saw.rcp/css/default.css">
-         </property>
-         <property
                name="appName"
                value="aero.minova.test.saw.rcp">
+         </property>
+         <property
+               name="applicationCSS"
+               value="platform:/plugin/aero.minova.test.saw.rcp/css/default.css">
          </property>
       </product>
    </extension>
