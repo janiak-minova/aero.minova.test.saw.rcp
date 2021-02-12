@@ -6,6 +6,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
+
 public class Database {
 	
 	private List<Contact> contacts;
@@ -126,6 +131,6 @@ public class Database {
 	public void removeGroup(Group g) {
 		if (groups.contains(g) && g.getGroupID() != 0) {
 			groups.remove(g);
-		}
+		} 
 	}
 }

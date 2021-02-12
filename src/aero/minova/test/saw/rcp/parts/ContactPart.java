@@ -23,8 +23,8 @@ import org.eclipse.e4.ui.model.application.ui.MUILabel;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.model.application.ui.menu.MToolBarElement;
 import org.eclipse.e4.ui.services.IServiceConstants;
-import org.eclipse.e4.ui.services.IStylingEngine;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
@@ -47,9 +47,11 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Control;
 
@@ -65,50 +67,47 @@ public class ContactPart implements GroupListViewer {
 	
 	private Database db = Database.getInstance();
 	
-	private NatTable groupTable;
-	SelectionLayer selectionLayerGroup;
-	DataLayer bodyDataLayerGroup;
-	
-	private Contact currentContact;
-	private List<Contact> contacts;
-	private List<Contact> selectedContacts;
-	private List<Group> groups;
-	private List<Group> selectedGroups;
-	private NatTable contactTable;
-	SelectionLayer selectionLayerContact;
-	DataLayer bodyDataLayerContact;
-	
-	private Label headLabel;
-	private Text headText;
-	private Label companyLabel;
-	private Text companyText;
-	private Combo phoneCombo;
-	private Text phoneText;
 	private Composite groupList;
 	private Composite contactList;
 	private Composite contactDetail;
 	private SashForm sashForm;
-	private Text notesText;
-	private Label notesLabel;
-	private Text hpText;
-	private Label hpLabel;
-	private boolean editable = false;
 	
+	private Button deleteGroupButton;
+	private NatTable groupTable;
+	private SelectionLayer selectionLayerGroup;
+	private DataLayer bodyDataLayerGroup;
+	private List<Group> groups;
+	private List<Group> selectedGroups;
+	
+	private NatTable contactTable;
+	private SelectionLayer selectionLayerContact;
+	private DataLayer bodyDataLayerContact;
+	private Contact currentContact;
+	private List<Contact> contacts;
+	private List<Contact> selectedContacts;
+	
+	private Label nameLabel;
+	private Text nameText;
+	private Label companyLabel;
+	private Text companyText;
+	private Combo phoneCombo;
+	private Text phoneText;
+	private Label hpLabel;
+	private Text hpText;
+	private Label notesLabel;
+	private Text notesText;
+	private boolean editable = false;
 	private LinkedHashMap<Text, Control> inputs;	
 	
-	public static final String COLUMN_ONE_LABEL = "ColumnOneLabel";
-
 	@Inject
 	private MPart part;
 	@Inject
-    ESelectionService service;
-	@Inject 
-	IStylingEngine engine;
+	private ESelectionService service;
+	@Inject
+	private Shell shell;
 	
 	@Inject
-	public ContactPart() {
-
-	}
+	public ContactPart() { }
 
 	@PostConstruct
 	public void postConstruct(Composite parent) {	
@@ -133,7 +132,7 @@ public class ContactPart implements GroupListViewer {
 		groupList.setLayout(new GridLayout(2, false));
 //		
 		newButton(SWT.PUSH).text("Neue Gruppe").onSelect(e -> newGroup()).create(groupList);
-		newButton(SWT.PUSH).text("Gruppe Löschen").onSelect(e -> deleteGroup()).create(groupList);
+		deleteGroupButton = newButton(SWT.PUSH).text("Gruppe Löschen").onSelect(e -> deleteGroup()).create(groupList);
 //		
 		IColumnPropertyAccessor<Group> columnPropertyAccessor = new GroupColumnPropertyAccessor();
 		IRowDataProvider<Group> bodyDataProvider = new ListDataProvider<Group>(groups, columnPropertyAccessor);
@@ -168,7 +167,7 @@ public class ContactPart implements GroupListViewer {
         groupTable.addConfiguration(new EditorConfiguration());
         groupTable.configure();
 				
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(groupTable); 
+		GridDataFactory.fillDefaults().span(2, 1).grab(true, true).applyTo(groupTable); 
 
 	}
 
@@ -212,37 +211,6 @@ public class ContactPart implements GroupListViewer {
 
 	}
 	
-	@Inject
-    @Optional
-    void handleSelectionContact(@Named(IServiceConstants.ACTIVE_SELECTION) List<Contact> selected) {
-        if (selected != null && selected.size() > 0 && selected.get(0) instanceof Contact) {
-        	currentContact = (Contact) selected.get(0);
-        	updateContactDetail((Contact) selected.get(0));
-        	selectedContacts = selected;
-        }
-    }
-	
-	@Inject
-    @Optional
-    void handleSelectionGroup(@Named(IServiceConstants.ACTIVE_SELECTION) List<Group> selected) {
-        if (selected != null && selected.size() > 0 && selected.get(0) instanceof Group) {
-        	contacts.clear();
-    		contacts.addAll(selected.get(0).getMembers());
-    		contactTable.refresh();
-    		selectedGroups = selected;
-        } 
-    }
-	
-	private void updateContactDetail(Contact c) {
-		headText.setText(c.getFirstName());
-		companyText.setText(c.getCompany());
-		phoneText.setText(c.getPhonenumber());
-		hpText.setText(c.getHomepage());
-		notesText.setText(c.getNotes());
-		
-		updateVisibility(editable);
-	}
-
 	private void createContactDetail(Composite body) {
 		
 		//Database db = Database.getInstance();
@@ -254,17 +222,17 @@ public class ContactPart implements GroupListViewer {
 		body.setLayout(new GridLayout(2, false));
 
 		// Kopf Label und Feld definieren
-		headLabel = new Label(body, SWT.RIGHT);
-		headLabel.setText("Name");
+		nameLabel = new Label(body, SWT.RIGHT);
+		nameLabel.setText("Name");
 		gd = new GridData(SWT.RIGHT, SWT.CENTER, true, false);
-		headLabel.setLayoutData(gd);
-		headText = new Text(body, SWT.NONE);
+		nameLabel.setLayoutData(gd);
+		nameText = new Text(body, SWT.NONE);
 		//headText.setText("Wilfried Saak");
-		headText.setEditable(false);
-		headText.setMessage("Vorname Nachname");
+		nameText.setEditable(false);
+		nameText.setMessage("Vorname Nachname");
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-		headText.setLayoutData(gd);
-		inputs.put(headText, headLabel);
+		nameText.setLayoutData(gd);
+		inputs.put(nameText, nameLabel);
 
 //		// Separator
 		Label separatorLabel = new Label(body, SWT.SEPARATOR | SWT.HORIZONTAL);
@@ -366,6 +334,47 @@ public class ContactPart implements GroupListViewer {
 
 	}
 	
+	@Inject
+    @Optional
+    private void handleSelectionGroup(@Named(IServiceConstants.ACTIVE_SELECTION) List<Group> selected) {
+        if (selected != null && selected.size() > 0 && selected.get(0) instanceof Group) {
+        	contacts.clear();
+    		contacts.addAll(selected.get(0).getMembers());
+    		contactTable.refresh();
+    		selectedGroups = selected;
+    		
+    		if (selected.get(0).getGroupID() == 0) deleteGroupButton.setEnabled(false);
+    		else deleteGroupButton.setEnabled(true);
+        } 
+    }
+	
+	@Inject
+    @Optional
+    private void handleSelectionContact(@Named(IServiceConstants.ACTIVE_SELECTION) List<Contact> selected) {
+        if (selected != null && selected.size() > 0 && selected.get(0) instanceof Contact) {
+        	currentContact = (Contact) selected.get(0);
+        	updateContactDetail((Contact) selected.get(0));
+        	selectedContacts = selected;
+        }
+    }
+	
+	private void updateContactTable() {
+		contacts.clear();
+		contacts.addAll(db.getContacts());
+		contactTable.refresh();
+		groupTable.refresh();
+	}
+	
+	private void updateContactDetail(Contact c) {
+		nameText.setText(c.getFirstName());
+		companyText.setText(c.getCompany());
+		phoneText.setText(c.getPhonenumber());
+		hpText.setText(c.getHomepage());
+		notesText.setText(c.getNotes());
+		
+		updateVisibility(editable);
+	}
+	
 	public void drawContactDetails(Map<Text, Control> objects, boolean edit, Composite body) {
 		GridData gd;
 		Label separatorLabel = new Label(body, SWT.SEPARATOR | SWT.HORIZONTAL);
@@ -430,41 +439,6 @@ public class ContactPart implements GroupListViewer {
 		
 	}
 	
-	private void updateContactTable() {
-		contacts.clear();
-		contacts.addAll(db.getContacts());
-		contactTable.refresh();
-		groupTable.refresh();
-	}
-	
-	@Inject
-	@Optional
-	private void subscribeTopicEditContact(@UIEventTopic(EventConstants.TOPIC_EDIT) boolean e) {
-		editable = !editable;
-		switchEditable(editable);
-	}
-	
-	@Inject
-	@Optional
-	private void subscribeTopicDeleteContact(@UIEventTopic(EventConstants.DELETE_CONTACT) String e) {
-		if (selectedContacts != null) { 
-			if (selectedGroups == null || selectedGroups.get(0).getGroupID() == 0) {
-				for (Contact c: selectedContacts) {
-					db.removeContact(c);
-				}
-			} else {
-				Group g = db.getGroupById(selectedGroups.get(0).getGroupID());
-				for (Contact c: selectedContacts) {
-					g.removeMember(c);
-				}
-			}
-		
-			updateContactTable();
-			//contactTable.refresh();
-			updateContactDetail(new Contact(-1));
-		}
-	}
-	
 	@Inject
 	@Optional
 	private void subscribeTopicNewContact(@UIEventTopic(EventConstants.NEW_CONTACT) Contact c) {
@@ -477,6 +451,50 @@ public class ContactPart implements GroupListViewer {
 		updateContactDetail(c);
 		editable = true;
 		switchEditable(editable);
+	}
+	
+	@Inject
+	@Optional
+	private void subscribeTopicEditContact(@UIEventTopic(EventConstants.TOPIC_EDIT) boolean e) {
+		editable = !editable;
+		switchEditable(editable);
+	}
+	
+	@Override
+	public void setGroupListVisible(boolean visible) {
+		groupList.setVisible(visible);
+		groupList.getParent().requestLayout();
+	}
+	
+	@Inject
+	@Optional
+	private void subscribeTopicDeleteContact(@UIEventTopic(EventConstants.DELETE_CONTACT) String e) {
+		if (selectedContacts != null) { 
+			if (selectedGroups == null || selectedGroups.get(0).getGroupID() == 0) {
+				Contact c = selectedContacts.get(0);
+				MessageDialog dia = new MessageDialog(shell, "Löschen", null, "Wollen Sie den Kontakt \"" + 
+						c.getFirstName() + "\" endgültig löschen?", MessageDialog.CONFIRM, new String[] {"Löschen", "Abbrechen"}, 0);
+				int result = dia.open();
+				if (result == 0) {
+					db.removeContact(c);
+				}
+			} else {
+				Group g = db.getGroupById(selectedGroups.get(0).getGroupID());
+				Contact c = selectedContacts.get(0);
+				MessageDialog dia = new MessageDialog(shell, "Entfernen", null, "Wollen Sie den Kontakt \"" + 
+						c.getFirstName() + "\" aus der Gruppe \"" + g.getName() + "\" entfernen?", MessageDialog.CONFIRM, new String[] {"Entfernen", "Abbrechen"}, 0);
+				int result = dia.open();
+				if (result == 0) {
+					g.removeMember(c);
+				}
+			}
+		
+			updateContactTable();
+			//contactTable.refresh();
+			updateContactDetail(new Contact(-1));
+		} else {
+			MessageDialog.openInformation(shell, null, "Es ist kein Kontakt ausgewählt");
+		}
 	}
 	
 	public void switchEditable(boolean editable) {
@@ -496,8 +514,8 @@ public class ContactPart implements GroupListViewer {
 			}
 		}
 				
-		headText.setEditable(editable);
-		headText.setFocus();
+		nameText.setEditable(editable);
+		nameText.setFocus();
 		companyText.setEditable(editable);
 		phoneText.setEditable(editable);
 		hpText.setEditable(editable);
@@ -512,7 +530,7 @@ public class ContactPart implements GroupListViewer {
 	
 	public void saveChanges() {
 		if (currentContact != null) {
-			currentContact.setFirstName(headText.getText());
+			currentContact.setFirstName(nameText.getText());
 			currentContact.setCompany(companyText.getText());
 			currentContact.setPhonenumber(phoneText.getText());
 			currentContact.setHomepage(hpText.getText());
@@ -521,9 +539,9 @@ public class ContactPart implements GroupListViewer {
 	
 	public void updateVisibility(boolean allVisible) {
 		
-		boolean vis = allVisible || !headText.getText().strip().equals("");
-		headLabel.setVisible(vis);
-		headText.setVisible(vis);
+		boolean vis = allVisible || !nameText.getText().strip().equals("");
+		nameLabel.setVisible(vis);
+		nameText.setVisible(vis);
 		 
 		vis = allVisible || !companyText.getText().strip().equals("");
 		companyLabel.setVisible(vis);
@@ -538,13 +556,6 @@ public class ContactPart implements GroupListViewer {
 		hpLabel.setVisible(vis);
 	}
 
-	@Override
-	public void setGroupListVisible(boolean visible) {
-		
-		groupList.setVisible(visible);
-		groupList.getParent().requestLayout();
-	}
-	
 	public void newGroup() {
 		db.addGroup("Neu");
 		groupTable.refresh();
@@ -552,11 +563,18 @@ public class ContactPart implements GroupListViewer {
 	
 	public void deleteGroup() {
 		if (selectedGroups != null) {
-			for (Group g: selectedGroups) {
+			Group g = selectedGroups.get(0);
+			MessageDialog dia = new MessageDialog(shell, "Löschen", null, "Wollen Sie wirklich Gruppe \"" + 
+					g.getName() + "\" löschen?", MessageDialog.CONFIRM, new String[] {"Löschen", "Abbrechen"}, 0);
+			int result = dia.open();
+
+			if (result == 0) {
 				db.removeGroup(g);
-			}
-			groupTable.refresh();
-			contactTable.refresh();
+				groupTable.refresh();
+				selectionLayerGroup.selectRow(0, 0, true, true);
+	        }
+		} else {
+			MessageDialog.openInformation(shell, null, "Es ist keine Gruppe ausgewählt");
 		}
 	}
 }

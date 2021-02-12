@@ -1,4 +1,4 @@
-Text, Button {
+Text {
 	font-size: 14;
 }
 
@@ -29,6 +29,8 @@ Composite {
 SashForm {
 	background-color: #A0A0A0;
 }
+
+
 
 /* TODO: sortieren */
 NatTable {
