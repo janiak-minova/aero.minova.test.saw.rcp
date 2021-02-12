@@ -21,10 +21,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import aero.minova.test.saw.rcp.dataset.person.Person.Gender;
+import aero.minova.test.saw.rcp.dataset.person.Contact.Gender;
 
 /**
- * Class that acts as service for accessing numerous {@link Person}s. The values
+ * Class that acts as service for accessing numerous {@link Contact}s. The values
  * are randomly put together out of names and places from "The Simpsons"
  */
 public final class PersonService {
@@ -55,14 +55,14 @@ public final class PersonService {
             + "magna aliquyam erat, sed diam voluptua.";
 
     /**
-     * Creates a list of random {@link Person}s.
+     * Creates a list of random {@link Contact}s.
      *
      * @param numberOfPersons
-     *            The number of {@link Person}s that should be generated.
+     *            The number of {@link Contact}s that should be generated.
      * @return A list containing the given amount of random generated persons.
      */
-    public static List<Person> getRandomPersons(int numberOfPersons) {
-        List<Person> result = new ArrayList<>();
+    public static List<Contact> getRandomPersons(int numberOfPersons) {
+        List<Contact> result = new ArrayList<>();
 
         for (int i = 0; i < numberOfPersons; i++) {
             result.add(createPerson(i));
@@ -73,101 +73,101 @@ public final class PersonService {
 
     /**
      *
-     * @return A fixed list of {@link Person}s.
+     * @return A fixed list of {@link Contact}s.
      */
-    public static List<Person> getFixedPersons() {
-        List<Person> result = new ArrayList<>();
+    public static List<Contact> getFixedPersons() {
+        List<Contact> result = new ArrayList<>();
 
         // create 10 Simpsons
         // 3 Homer
-        result.add(new Person(1, maleNames[1], lastNames[0], Gender.MALE, true, new Date(), 100d));
-        result.add(new Person(2, maleNames[1], lastNames[0], Gender.MALE, true, new Date(), 100d));
-        result.add(new Person(3, maleNames[1], lastNames[0], Gender.MALE, true, new Date(), 100d));
+        result.add(new Contact(1, maleNames[1], lastNames[0], Gender.MALE, true, new Date(), 100d));
+        result.add(new Contact(2, maleNames[1], lastNames[0], Gender.MALE, true, new Date(), 100d));
+        result.add(new Contact(3, maleNames[1], lastNames[0], Gender.MALE, true, new Date(), 100d));
         // 3 Bart
-        result.add(new Person(4, maleNames[0], lastNames[0], Gender.MALE, false, new Date(), 100d));
-        result.add(new Person(5, maleNames[0], lastNames[0], Gender.MALE, false, new Date(), 100d));
-        result.add(new Person(6, maleNames[0], lastNames[0], Gender.MALE, false, new Date(), 100d));
+        result.add(new Contact(4, maleNames[0], lastNames[0], Gender.MALE, false, new Date(), 100d));
+        result.add(new Contact(5, maleNames[0], lastNames[0], Gender.MALE, false, new Date(), 100d));
+        result.add(new Contact(6, maleNames[0], lastNames[0], Gender.MALE, false, new Date(), 100d));
         // 2 Marge
-        result.add(new Person(7, femaleNames[0], lastNames[0], Gender.FEMALE, true, new Date(), 100d));
-        result.add(new Person(8, femaleNames[0], lastNames[0], Gender.FEMALE, true, new Date(), 100d));
+        result.add(new Contact(7, femaleNames[0], lastNames[0], Gender.FEMALE, true, new Date(), 100d));
+        result.add(new Contact(8, femaleNames[0], lastNames[0], Gender.FEMALE, true, new Date(), 100d));
         // 2 Lisa
-        result.add(new Person(9, femaleNames[1], lastNames[0], Gender.FEMALE, false, new Date(), 100d));
-        result.add(new Person(10, femaleNames[1], lastNames[0], Gender.FEMALE, false, new Date(), 100d));
+        result.add(new Contact(9, femaleNames[1], lastNames[0], Gender.FEMALE, false, new Date(), 100d));
+        result.add(new Contact(10, femaleNames[1], lastNames[0], Gender.FEMALE, false, new Date(), 100d));
 
         // create 8 Flanders
         // 2 Ned
-        result.add(new Person(11, maleNames[5], lastNames[4], Gender.MALE, true, new Date(), 100d));
-        result.add(new Person(12, maleNames[5], lastNames[4], Gender.MALE, true, new Date(), 100d));
+        result.add(new Contact(11, maleNames[5], lastNames[4], Gender.MALE, true, new Date(), 100d));
+        result.add(new Contact(12, maleNames[5], lastNames[4], Gender.MALE, true, new Date(), 100d));
         // 2 Maude
-        result.add(new Person(13, femaleNames[6], lastNames[4], Gender.FEMALE, true, new Date(), 100d));
-        result.add(new Person(14, femaleNames[6], lastNames[4], Gender.FEMALE, true, new Date(), 100d));
+        result.add(new Contact(13, femaleNames[6], lastNames[4], Gender.FEMALE, true, new Date(), 100d));
+        result.add(new Contact(14, femaleNames[6], lastNames[4], Gender.FEMALE, true, new Date(), 100d));
         // 2 Rod
-        result.add(new Person(15, maleNames[7], lastNames[4], Gender.MALE, false, new Date(), 100d));
-        result.add(new Person(16, maleNames[7], lastNames[4], Gender.MALE, false, new Date(), 100d));
+        result.add(new Contact(15, maleNames[7], lastNames[4], Gender.MALE, false, new Date(), 100d));
+        result.add(new Contact(16, maleNames[7], lastNames[4], Gender.MALE, false, new Date(), 100d));
         // 2 Tod
-        result.add(new Person(17, maleNames[8], lastNames[4], Gender.MALE, false, new Date(), 100d));
-        result.add(new Person(18, maleNames[8], lastNames[4], Gender.MALE, false, new Date(), 100d));
+        result.add(new Contact(17, maleNames[8], lastNames[4], Gender.MALE, false, new Date(), 100d));
+        result.add(new Contact(18, maleNames[8], lastNames[4], Gender.MALE, false, new Date(), 100d));
 
         return result;
     }
 
     /**
      *
-     * @return A fixed list of {@link Person}s with a few null values.
+     * @return A fixed list of {@link Contact}s with a few null values.
      */
-    public static List<Person> getFixedPersonsWithNull() {
-        List<Person> result = new ArrayList<>();
+    public static List<Contact> getFixedPersonsWithNull() {
+        List<Contact> result = new ArrayList<>();
 
         // create 5 Simpsons
         // 2 Homer
-        result.add(new Person(1, maleNames[1], lastNames[0], Gender.MALE, true, new Date(), 100d));
-        result.add(new Person(3, maleNames[1], lastNames[0], Gender.MALE, true, new Date(), 100d));
+        result.add(new Contact(1, maleNames[1], lastNames[0], Gender.MALE, true, new Date(), 100d));
+        result.add(new Contact(3, maleNames[1], lastNames[0], Gender.MALE, true, new Date(), 100d));
         // 2 Marge
-        result.add(new Person(7, femaleNames[0], lastNames[0], Gender.FEMALE, true, new Date(), 100d));
-        result.add(new Person(8, femaleNames[0], lastNames[0], Gender.FEMALE, true, new Date(), 100d));
+        result.add(new Contact(7, femaleNames[0], lastNames[0], Gender.FEMALE, true, new Date(), 100d));
+        result.add(new Contact(8, femaleNames[0], lastNames[0], Gender.FEMALE, true, new Date(), 100d));
         // 1 Bart without money
-        result.add(new Person(7, femaleNames[0], lastNames[0], Gender.FEMALE, true, new Date(), null));
+        result.add(new Contact(7, femaleNames[0], lastNames[0], Gender.FEMALE, true, new Date(), null));
 
         // create 2 Flanders without last name
         // 1 Ned
-        result.add(new Person(11, maleNames[5], null, Gender.MALE, true, new Date(), 100d));
+        result.add(new Contact(11, maleNames[5], null, Gender.MALE, true, new Date(), 100d));
         // 1 Maude
-        result.add(new Person(13, femaleNames[6], null, Gender.FEMALE, true, new Date(), 100d));
+        result.add(new Contact(13, femaleNames[6], null, Gender.FEMALE, true, new Date(), 100d));
 
         return result;
     }
 
     /**
      *
-     * @return A fixed list of {@link Person}s with a few double values.
+     * @return A fixed list of {@link Contact}s with a few double values.
      */
-    public static List<Person> getFixedMixedPersons() {
-        List<Person> result = new ArrayList<>();
+    public static List<Contact> getFixedMixedPersons() {
+        List<Contact> result = new ArrayList<>();
 
-        result.add(new Person(21, maleNames[0], lastNames[2], Gender.MALE, true, new Date(), 100d));
-        result.add(new Person(22, maleNames[1], lastNames[2], Gender.MALE, true, new Date(), 100d));
-        result.add(new Person(23, maleNames[5], lastNames[2], Gender.MALE, true, new Date(), 100d));
-        result.add(new Person(24, femaleNames[0], lastNames[2], Gender.FEMALE, false, new Date(), 100d));
-        result.add(new Person(25, femaleNames[6], lastNames[2], Gender.FEMALE, false, new Date(), 100d));
+        result.add(new Contact(21, maleNames[0], lastNames[2], Gender.MALE, true, new Date(), 100d));
+        result.add(new Contact(22, maleNames[1], lastNames[2], Gender.MALE, true, new Date(), 100d));
+        result.add(new Contact(23, maleNames[5], lastNames[2], Gender.MALE, true, new Date(), 100d));
+        result.add(new Contact(24, femaleNames[0], lastNames[2], Gender.FEMALE, false, new Date(), 100d));
+        result.add(new Contact(25, femaleNames[6], lastNames[2], Gender.FEMALE, false, new Date(), 100d));
 
         // add doubles
-        result.add(new Person(30, maleNames[1], lastNames[0], Gender.MALE, true, new Date(), 100d));
-        result.add(new Person(31, maleNames[1], lastNames[0], Gender.MALE, true, new Date(), 100d));
-        result.add(new Person(32, maleNames[1], lastNames[2], Gender.MALE, true, new Date(), 100d));
-        result.add(new Person(33, maleNames[1], lastNames[2], Gender.MALE, true, new Date(), 100d));
+        result.add(new Contact(30, maleNames[1], lastNames[0], Gender.MALE, true, new Date(), 100d));
+        result.add(new Contact(31, maleNames[1], lastNames[0], Gender.MALE, true, new Date(), 100d));
+        result.add(new Contact(32, maleNames[1], lastNames[2], Gender.MALE, true, new Date(), 100d));
+        result.add(new Contact(33, maleNames[1], lastNames[2], Gender.MALE, true, new Date(), 100d));
 
         return result;
     }
 
     /**
-     * Creates a list of {@link Person}s.
+     * Creates a list of {@link Contact}s.
      *
      * @param numberOfPersons
-     *            The number of {@link Person}s that should be generated.
-     * @return A list of {@link Person}s.
+     *            The number of {@link Contact}s that should be generated.
+     * @return A list of {@link Contact}s.
      */
-    public static List<Person> getPersons(int numberOfPersons) {
-        List<Person> result = new ArrayList<>();
+    public static List<Contact> getPersons(int numberOfPersons) {
+        List<Contact> result = new ArrayList<>();
 
         for (int i = 0; i < numberOfPersons; i++) {
             result.add(createPerson(i));
@@ -237,8 +237,8 @@ public final class PersonService {
      *            A unique id for the person.
      * @return A random person.
      */
-    private static Person createPerson(int id) {
-        Person result = new Person(id);
+    private static Contact createPerson(int id) {
+        Contact result = new Contact(id);
         result.setGender(Gender.values()[randomGenerator.nextInt(2)]);
 
         if (result.getGender().equals(Gender.MALE)) {

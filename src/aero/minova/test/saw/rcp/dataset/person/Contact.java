@@ -14,7 +14,7 @@ package aero.minova.test.saw.rcp.dataset.person;
 
 import java.util.Date;
 
-public class Person {
+public class Contact {
     public enum Gender {
         MALE, FEMALE
     }
@@ -28,11 +28,11 @@ public class Person {
     protected Double money;
     protected String description;
 
-    public Person(int id) {
+    public Contact(int id) {
         this.id = id;
     }
 
-    public Person(
+    public Contact(
             int id,
             String firstName,
             String lastName,
@@ -47,7 +47,7 @@ public class Person {
         this.birthday = birthday;
     }
 
-    public Person(
+    public Contact(
             int id,
             String firstName,
             String lastName,

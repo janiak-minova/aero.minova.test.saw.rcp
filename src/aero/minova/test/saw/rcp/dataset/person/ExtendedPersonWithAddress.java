@@ -39,7 +39,7 @@ public class ExtendedPersonWithAddress extends PersonWithAddress {
     }
 
     @SuppressWarnings("deprecation")
-    public ExtendedPersonWithAddress(Person person, Address address,
+    public ExtendedPersonWithAddress(Contact person, Address address,
             String password, String description, double money,
             List<String> favouriteFood, List<String> favouriteDrinks) {
         super(person, address);

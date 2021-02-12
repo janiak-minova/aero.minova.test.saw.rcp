@@ -14,7 +14,7 @@ package aero.minova.test.saw.rcp.dataset.person;
 
 import java.util.Date;
 
-public class PersonWithAddress extends Person {
+public class PersonWithAddress extends Contact {
 
     private Address address;
 
@@ -30,7 +30,7 @@ public class PersonWithAddress extends Person {
         this.address = address;
     }
 
-    public PersonWithAddress(Person person, Address address) {
+    public PersonWithAddress(Contact person, Address address) {
         super(person.getId(),
                 person.getFirstName(),
                 person.getLastName(),
