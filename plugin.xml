@@ -17,10 +17,18 @@
                value="aero.minova.test.saw.rcp">
          </property>
          <property
-               name="applicationCSS"
-               value="platform:/plugin/aero.minova.test.saw.rcp/css/default.css">
+               name="cssTheme"
+               value="aero.minova.test.saw.rcp.default">
          </property>
       </product>
+   </extension>
+   <extension
+         point="org.eclipse.e4.ui.css.swt.theme">
+      <theme
+            basestylesheeturi="css/default.css"
+            id="aero.minova.test.saw.rcp.default"
+            label="Default">
+      </theme>
    </extension>
 
 </plugin>

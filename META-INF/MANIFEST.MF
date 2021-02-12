@@ -28,7 +28,8 @@ Require-Bundle: javax.inject;bundle-version="0.0.0",
  org.eclipse.core.databinding;bundle-version="1.10.0",
  org.eclipse.jface.databinding;bundle-version="1.12.0",
  org.eclipse.core.databinding.beans;bundle-version="1.7.0",
- org.eclipse.core.databinding.property;bundle-version="1.8.100"
+ org.eclipse.core.databinding.property;bundle-version="1.8.100",
+ org.eclipse.e4.ui.css.swt.theme
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: aero.minova.test.saw.rcp
 Import-Package: javax.annotation;version="1.0.0";resolution:=optional,
