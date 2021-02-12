@@ -54,7 +54,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
 import aero.minova.test.saw.rcp.dataset.person.PersonService;
-import aero.minova.test.saw.rcp.dataset.person.Person.Gender;
+import aero.minova.test.saw.rcp.dataset.person.Contact.Gender;
 
 
 public class NatTablePart {
@@ -72,7 +72,7 @@ public class NatTablePart {
 									"favouriteFood", "favouriteDrinks", "filename" };
 
 		// mapping from property to label, needed for column header labels
-		Map propertyToLabelMap = new HashMap<>();
+		Map<String, String> propertyToLabelMap = new HashMap<>();
 		propertyToLabelMap.put("firstName", "Firstname");
 		propertyToLabelMap.put("lastName", "Lastname");
 		propertyToLabelMap.put("password", "Password");
@@ -485,6 +485,4 @@ class EditorConfiguration extends AbstractRegistryConfiguration {
 
 		};
 	}
-	
-	
 }

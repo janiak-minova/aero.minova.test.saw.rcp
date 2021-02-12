@@ -2,61 +2,47 @@
 package aero.minova.test.saw.rcp.parts;
 
 import static java.lang.Math.toIntExact;
+import static org.eclipse.jface.widgets.ButtonFactory.newButton;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.eclipse.core.databinding.beans.typed.BeanProperties;
-import org.eclipse.core.databinding.observable.list.WritableList;
+import org.eclipse.nebula.widgets.nattable.data.IRowIdAccessor;
 
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.di.UIEventTopic;
-import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.model.application.ui.MUILabel;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
-import org.eclipse.e4.ui.model.application.ui.basic.MWindow;
-import org.eclipse.e4.ui.model.application.ui.menu.MToolBar;
 import org.eclipse.e4.ui.model.application.ui.menu.MToolBarElement;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.services.IStylingEngine;
-import org.eclipse.e4.ui.workbench.modeling.EModelService;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.jface.databinding.viewers.ViewerSupport;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
-import org.eclipse.nebula.widgets.nattable.data.ExtendedReflectiveColumnPropertyAccessor;
 import org.eclipse.nebula.widgets.nattable.data.IColumnPropertyAccessor;
-import org.eclipse.nebula.widgets.nattable.data.IDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.IRowDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.ListDataProvider;
 import org.eclipse.nebula.widgets.nattable.extension.e4.selection.E4SelectionListener;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
-import org.eclipse.nebula.widgets.nattable.grid.data.DefaultColumnHeaderDataProvider;
-import org.eclipse.nebula.widgets.nattable.grid.layer.DefaultGridLayer;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
-import org.eclipse.nebula.widgets.nattable.layer.cell.ColumnOverrideLabelAccumulator;
-import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
+import org.eclipse.nebula.widgets.nattable.selection.RowSelectionModel;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.selection.config.DefaultRowSelectionLayerConfiguration;
-import org.eclipse.nebula.widgets.nattable.tooltip.NatTableContentTooltip;
 import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -64,26 +50,33 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Control;
 
-import aero.minova.test.saw.rcp.dataset.person.PersonService;
 import aero.minova.test.saw.rcp.events.EventConstants;
 import aero.minova.test.saw.rcp.handlers.ContactColumnPropertyAccessor;
+import aero.minova.test.saw.rcp.handlers.GroupColumnPropertyAccessor;
+import aero.minova.test.saw.rcp.handlers.DragAndDropSupport;
 import aero.minova.test.saw.rcp.model.Contact;
 import aero.minova.test.saw.rcp.model.Database;
+import aero.minova.test.saw.rcp.model.Group;
+
 public class ContactPart implements GroupListViewer {
 	
-	private boolean editable = false;
+	private Database db = Database.getInstance();
+	
+	private NatTable groupTable;
+	SelectionLayer selectionLayerGroup;
+	DataLayer bodyDataLayerGroup;
 	
 	private Contact currentContact;
+	private List<Contact> contacts;
 	private List<Contact> selectedContacts;
-	private NatTable natTable;
-	SelectionLayer selectionLayer;
-	DataLayer bodyDataLayer;
+	private List<Group> groups;
+	private List<Group> selectedGroups;
+	private NatTable contactTable;
+	SelectionLayer selectionLayerContact;
+	DataLayer bodyDataLayerContact;
 	
 	private Label headLabel;
 	private Text headText;
@@ -99,8 +92,11 @@ public class ContactPart implements GroupListViewer {
 	private Label notesLabel;
 	private Text hpText;
 	private Label hpLabel;
+	private boolean editable = false;
 	
 	private LinkedHashMap<Text, Control> inputs;	
+	
+	public static final String COLUMN_ONE_LABEL = "ColumnOneLabel";
 
 	@Inject
 	private MPart part;
@@ -109,15 +105,16 @@ public class ContactPart implements GroupListViewer {
 	@Inject 
 	IStylingEngine engine;
 	
-	private Database db = Database.getInstance();
-
 	@Inject
 	public ContactPart() {
 
 	}
 
 	@PostConstruct
-	public void postConstruct(Composite parent) {
+	public void postConstruct(Composite parent) {	
+		contacts = new ArrayList<Contact>(db.getContacts());
+		groups = db.getGroups();
+		
 		sashForm = new SashForm(parent, SWT.HORIZONTAL);
 		sashForm.addControlListener(new ContactRezieListener(sashForm));
 		sashForm.setSashWidth(1);
@@ -132,8 +129,47 @@ public class ContactPart implements GroupListViewer {
 	}
 
 	private void createGroupList(Composite groupList) {
+		//groupList.setVisible(false);
+		groupList.setLayout(new GridLayout(2, false));
+//		
+		newButton(SWT.PUSH).text("Neue Gruppe").onSelect(e -> newGroup()).create(groupList);
+		newButton(SWT.PUSH).text("Gruppe Löschen").onSelect(e -> deleteGroup()).create(groupList);
+//		
+		IColumnPropertyAccessor<Group> columnPropertyAccessor = new GroupColumnPropertyAccessor();
+		IRowDataProvider<Group> bodyDataProvider = new ListDataProvider<Group>(groups, columnPropertyAccessor);
 
-		groupList.setVisible(false);
+		bodyDataLayerGroup = new DataLayer(bodyDataProvider);
+		
+		selectionLayerGroup = new SelectionLayer(bodyDataLayerGroup);
+		selectionLayerGroup.addConfiguration(new DefaultRowSelectionLayerConfiguration());
+		E4SelectionListener<Group> eslGroup = new E4SelectionListener<Group>(service, selectionLayerGroup, bodyDataProvider);
+        selectionLayerGroup.addLayerListener(eslGroup);
+				
+		ViewportLayer viewportLayer = new ViewportLayer(selectionLayerGroup);
+        viewportLayer.setRegionName(GridRegion.BODY);
+        
+        groupTable = new NatTable(groupList, viewportLayer, false);
+        
+        DragAndDropSupport dndSupport = new DragAndDropSupport(groupTable, selectionLayerGroup, groups);
+        Transfer[] transfer = { TextTransfer.getInstance() };
+        groupTable.addDropSupport(DND.DROP_COPY, transfer, dndSupport);
+        
+        //Edit support
+        //groupTable.addConfiguration(new DefaultNatTableStyleConfiguration());
+//        groupTable.addConfiguration(new AbstractRegistryConfiguration() {
+//            @Override
+//            public void configureRegistry(IConfigRegistry configRegistry) {
+//                configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITABLE_RULE, IEditableRule.ALWAYS_EDITABLE);
+//            }
+//        });
+ //       groupTable.configure();
+        
+        groupTable.addConfiguration(new DefaultNatTableStyleConfiguration());
+        groupTable.addConfiguration(new EditorConfiguration());
+        groupTable.configure();
+				
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(groupTable); 
+
 	}
 
 	private void createContactListDetail(Composite contactList) {
@@ -141,33 +177,60 @@ public class ContactPart implements GroupListViewer {
 		contactList.setLayout(new GridLayout(2, false));
 				
 		IColumnPropertyAccessor<Contact> columnPropertyAccessor = new ContactColumnPropertyAccessor();
-		IRowDataProvider<Contact> bodyDataProvider = new ListDataProvider<Contact>(db.getContacts(), columnPropertyAccessor);
+		IRowDataProvider<Contact> bodyDataProvider = new ListDataProvider<Contact>(contacts, columnPropertyAccessor);
 
-		bodyDataLayer = new DataLayer(bodyDataProvider);
+		bodyDataLayerContact = new DataLayer(bodyDataProvider);
 		
-		selectionLayer = new SelectionLayer(bodyDataLayer);
-		selectionLayer.addConfiguration(new DefaultRowSelectionLayerConfiguration());
+		selectionLayerContact = new SelectionLayer(bodyDataLayerContact);
+		//selectionLayerContact.addConfiguration(new DefaultRowSelectionLayerConfiguration());
 		
-		ViewportLayer viewportLayer = new ViewportLayer(selectionLayer);
+		selectionLayerContact.setSelectionModel(new RowSelectionModel<>(
+				selectionLayerContact,
+                bodyDataProvider,
+                new IRowIdAccessor<Contact>() {
+                    @Override
+                    public Serializable getRowId(Contact rowObject) {
+                        return rowObject.getId();
+                    }
+                },
+                false));
+		
+		ViewportLayer viewportLayer = new ViewportLayer(selectionLayerContact);
         viewportLayer.setRegionName(GridRegion.BODY);
                 
-        E4SelectionListener<Contact> esl = new E4SelectionListener<Contact>(service, selectionLayer, bodyDataProvider);
-        selectionLayer.addLayerListener(esl);
+        E4SelectionListener<Contact> esl = new E4SelectionListener<Contact>(service, selectionLayerContact, bodyDataProvider);
+        selectionLayerContact.addLayerListener(esl);
         
-		natTable = new NatTable(contactList, viewportLayer);
+		contactTable = new NatTable(contactList, viewportLayer);
+		
+		DragAndDropSupport dndSupport = new DragAndDropSupport(contactTable, selectionLayerContact, contacts);
+        Transfer[] transfer = { TextTransfer.getInstance() };
+        contactTable.addDragSupport(DND.DROP_COPY, transfer, dndSupport);
+        //contactTable.addDropSupport(DND.DROP_COPY, transfer, dndSupport);
 				
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(natTable);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(contactTable);
 
 	}
 	
 	@Inject
     @Optional
-    void handleSelection(@Named(IServiceConstants.ACTIVE_SELECTION) List<Contact> selected) {
-        if (selected != null && selected.size() > 0) {
-        	currentContact = selected.get(0);
-        	updateContactDetail(selected.get(0));
+    void handleSelectionContact(@Named(IServiceConstants.ACTIVE_SELECTION) List<Contact> selected) {
+        if (selected != null && selected.size() > 0 && selected.get(0) instanceof Contact) {
+        	currentContact = (Contact) selected.get(0);
+        	updateContactDetail((Contact) selected.get(0));
         	selectedContacts = selected;
         }
+    }
+	
+	@Inject
+    @Optional
+    void handleSelectionGroup(@Named(IServiceConstants.ACTIVE_SELECTION) List<Group> selected) {
+        if (selected != null && selected.size() > 0 && selected.get(0) instanceof Group) {
+        	contacts.clear();
+    		contacts.addAll(selected.get(0).getMembers());
+    		contactTable.refresh();
+    		selectedGroups = selected;
+        } 
     }
 	
 	private void updateContactDetail(Contact c) {
@@ -367,6 +430,13 @@ public class ContactPart implements GroupListViewer {
 		
 	}
 	
+	private void updateContactTable() {
+		contacts.clear();
+		contacts.addAll(db.getContacts());
+		contactTable.refresh();
+		groupTable.refresh();
+	}
+	
 	@Inject
 	@Optional
 	private void subscribeTopicEditContact(@UIEventTopic(EventConstants.TOPIC_EDIT) boolean e) {
@@ -377,11 +447,20 @@ public class ContactPart implements GroupListViewer {
 	@Inject
 	@Optional
 	private void subscribeTopicDeleteContact(@UIEventTopic(EventConstants.DELETE_CONTACT) String e) {
-		if (selectedContacts != null) {
-			for (Contact c: selectedContacts) {
-				db.removeContact(c);
+		if (selectedContacts != null) { 
+			if (selectedGroups == null || selectedGroups.get(0).getGroupID() == 0) {
+				for (Contact c: selectedContacts) {
+					db.removeContact(c);
+				}
+			} else {
+				Group g = db.getGroupById(selectedGroups.get(0).getGroupID());
+				for (Contact c: selectedContacts) {
+					g.removeMember(c);
+				}
 			}
-			natTable.refresh();
+		
+			updateContactTable();
+			//contactTable.refresh();
 			updateContactDetail(new Contact(-1));
 		}
 	}
@@ -392,8 +471,9 @@ public class ContactPart implements GroupListViewer {
 		saveChanges();
 		
 		currentContact = c;
-		natTable.refresh();
-		selectionLayer.selectRow(0, toIntExact(c.getId()), false, false);
+		updateContactTable();
+		//contactTable.refresh();
+		selectionLayerContact.selectRow(0, toIntExact(c.getId()), false, false);
 		updateContactDetail(c);
 		editable = true;
 		switchEditable(editable);
@@ -410,7 +490,7 @@ public class ContactPart implements GroupListViewer {
 					//engine.setClassname(item, "MyCSSTagForLabel");
 				} else {
 					((MUILabel) item).setLabel("Bearbeiten");
-					natTable.redraw();
+					contactTable.redraw();
 				}
 				
 			}
@@ -463,5 +543,20 @@ public class ContactPart implements GroupListViewer {
 		
 		groupList.setVisible(visible);
 		groupList.getParent().requestLayout();
+	}
+	
+	public void newGroup() {
+		db.addGroup("Neu");
+		groupTable.refresh();
+	}
+	
+	public void deleteGroup() {
+		if (selectedGroups != null) {
+			for (Group g: selectedGroups) {
+				db.removeGroup(g);
+			}
+			groupTable.refresh();
+			contactTable.refresh();
+		}
 	}
 }

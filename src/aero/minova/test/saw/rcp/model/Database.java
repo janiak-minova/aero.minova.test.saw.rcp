@@ -12,13 +12,15 @@ public class Database {
 	private List<Group> groups;
 	
 	private static AtomicInteger currentContacts = new AtomicInteger(0);
-	private static AtomicInteger currentGroups = new AtomicInteger(0);
+	private static AtomicInteger currentGroups = new AtomicInteger(1);
 	
 	private static final Database db = new Database(); 
     
     private Database() { 
         this.contacts = new ArrayList<Contact>();
         this.groups = new ArrayList<Group>();
+        
+        groups.add(new Group("Alle Kontakte", 0));
         
         generateTestData();
     } 
@@ -40,21 +42,38 @@ public class Database {
 		return null;
 	}
 	
+	public Group getGroupById(long id) {
+		for (Group g: groups) {
+			if (g.getGroupID() == id) {
+				return g;
+			}
+		}
+		return null;
+	}
+	
+	public Group getGroupByPosition(int pos) {
+		if (groups.size() >= pos && pos >= 0) return groups.get(pos);
+		else return null;
+	}
+	
 	public Contact addContact() {
 		Contact c = new Contact(currentContacts.getAndIncrement());
 		contacts.add(c);
+		getGroupById(0).addMember(c);
 		return c;
 	}
 	
 	public Contact addContact(String company, String name) {
 		Contact c = new Contact(company, name, currentContacts.getAndIncrement());
 		contacts.add(c);
+		getGroupById(0).addMember(c);
 		return c;
 	}
 	
 	public Contact addContact(String company, String name, String homepage, String phonenumber, String notes) {
 		Contact c = new Contact(company, name, homepage, phonenumber, notes, currentContacts.getAndIncrement());
 		contacts.add(c);
+		getGroupById(0).addMember(c);
 		return c;
 	}
 
@@ -70,6 +89,10 @@ public class Database {
 		 groups.add(new Group(mList, name, currentGroups.getAndIncrement()));
 	}
 	
+	public void addGroup(String name) {
+		 groups.add(new Group(name, currentGroups.getAndIncrement()));
+	}
+	
 	private void generateTestData() {
 		addContact("Minova", "Erik Fisher");
 		addContact("Minova", "Max Mustermann");
@@ -81,6 +104,7 @@ public class Database {
 		addContact("Company", "Andrea Zimmer", "", "03381 15 45 05", "");
 		
 		addGroup(List.of(getContactById(0), getContactById(1)), "Freunde");
+		addGroup(List.of(getContactById(3), getContactById(4), getContactById(5), getContactById(6)), "Arbeit");
 	}
 	
 	public void consume(Consumer<List<Contact>> taskConsumer) {
@@ -97,5 +121,11 @@ public class Database {
 			g.removeMember(c);
 		}
 		//System.out.println(c.getFirstName());
+	}
+	
+	public void removeGroup(Group g) {
+		if (groups.contains(g) && g.getGroupID() != 0) {
+			groups.remove(g);
+		}
 	}
 }

@@ -19,8 +19,17 @@ public class Group {
 		this.name = name;
 	}
 	
+	public Group(String name, long id) {
+		
+		this.members = new ArrayList<Contact>();
+		this.groupID = id;
+		this.name = name;
+	}
+	
 	public List<Contact> addMember(Contact c) {
-		members.add(c);
+		if (!members.contains(c)) {
+			members.add(c);
+		}
 		return members;
 	}
 	
