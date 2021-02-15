@@ -28,13 +28,19 @@ import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.nebula.widgets.nattable.NatTable;
+import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
+import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;
+import org.eclipse.nebula.widgets.nattable.config.IEditableRule;
 import org.eclipse.nebula.widgets.nattable.data.IColumnPropertyAccessor;
 import org.eclipse.nebula.widgets.nattable.data.IRowDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.ListDataProvider;
+import org.eclipse.nebula.widgets.nattable.edit.EditConfigAttributes;
 import org.eclipse.nebula.widgets.nattable.extension.e4.selection.E4SelectionListener;
+import org.eclipse.nebula.widgets.nattable.extension.glazedlists.GlazedListsEventLayer;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
+import org.eclipse.nebula.widgets.nattable.layer.cell.ColumnOverrideLabelAccumulator;
 import org.eclipse.nebula.widgets.nattable.selection.RowSelectionModel;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.selection.config.DefaultRowSelectionLayerConfiguration;
@@ -62,9 +68,13 @@ import aero.minova.test.saw.rcp.events.EventConstants;
 import aero.minova.test.saw.rcp.handlers.ContactColumnPropertyAccessor;
 import aero.minova.test.saw.rcp.handlers.GroupColumnPropertyAccessor;
 import aero.minova.test.saw.rcp.handlers.DragAndDropSupport;
+import aero.minova.test.saw.rcp.handlers.EditorConfigurationGrouplist;
 import aero.minova.test.saw.rcp.model.Contact;
 import aero.minova.test.saw.rcp.model.Database;
 import aero.minova.test.saw.rcp.model.Group;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.FilterList;
+import ca.odell.glazedlists.GlazedLists;
 
 public class ContactPart implements GroupListViewer {
 	
@@ -80,12 +90,15 @@ public class ContactPart implements GroupListViewer {
 	private static final int MIN_WIDTH_CONTACTLIST = 300;
 	private static final int MIN_WIDTH_CONTACTDETAIL = 50;
 	
+	public static final String COLUMN_ONE_LABEL = "ColumnOneLabel";
+	public static final String COLUMN_TWO_LABEL = "ColumnTwoLabel";
+	
 	private Button deleteGroupButton;
 	private NatTable groupTable;
 	private SelectionLayer selectionLayerGroup;
 	private DataLayer bodyDataLayerGroup;
 	private List<Group> groups;
-	private List<Group> selectedGroups;
+	private List<Group> selectedGroups = new ArrayList<>();
 	
 	private NatTable contactTable;
 	private SelectionLayer selectionLayerContact;
@@ -123,6 +136,7 @@ public class ContactPart implements GroupListViewer {
 		
 		contacts = new ArrayList<Contact>(db.getContacts());
 		groups = db.getGroups();
+		selectedGroups.add(db.getGroupById(0));
 		
 		sashForm = new SashForm(parent, SWT.HORIZONTAL);
 		sashForm.addControlListener(new ContactRezieListener(sashForm));
@@ -133,7 +147,7 @@ public class ContactPart implements GroupListViewer {
 		contactDetail = new Composite(sashForm, SWT.None);
 
 		createGroupList(groupList);
-		createContactListDetail(contactList);
+		createContactList(contactList);
 		createContactDetail(contactDetail);
 	}
 
@@ -164,33 +178,65 @@ public class ContactPart implements GroupListViewer {
         groupTable.addDropSupport(DND.DROP_COPY, transfer, dndSupport);
         
         //Edit support
-        //groupTable.addConfiguration(new DefaultNatTableStyleConfiguration());
+//        groupTable.addConfiguration(new DefaultNatTableStyleConfiguration());
 //        groupTable.addConfiguration(new AbstractRegistryConfiguration() {
 //            @Override
 //            public void configureRegistry(IConfigRegistry configRegistry) {
 //                configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITABLE_RULE, IEditableRule.ALWAYS_EDITABLE);
 //            }
 //        });
- //       groupTable.configure();
-        
+//        groupTable.configure();
+        final ColumnOverrideLabelAccumulator columnLabelAccumulator = new ColumnOverrideLabelAccumulator(bodyDataLayerGroup);
+        bodyDataLayerGroup.setConfigLabelAccumulator(columnLabelAccumulator);
+        columnLabelAccumulator.registerColumnOverrides(0, COLUMN_ONE_LABEL);
+		columnLabelAccumulator.registerColumnOverrides(1, COLUMN_TWO_LABEL);
+		
         groupTable.addConfiguration(new DefaultNatTableStyleConfiguration());
-        groupTable.addConfiguration(new EditorConfiguration());
+        groupTable.addConfiguration(new EditorConfigurationGrouplist());
         groupTable.configure();
+                
+//        groupTable.addConfiguration(new DefaultNatTableStyleConfiguration());
+//        groupTable.addConfiguration(new EditorConfiguration());
+//        groupTable.configure();
 				
 		GridDataFactory.fillDefaults().span(2, 1).grab(true, true).applyTo(groupTable); 
 
 	}
 
-	private void createContactListDetail(Composite contactList) {
+	private void createContactList(Composite contactList) {
 		
-		contactList.setLayout(new GridLayout(2, false));
+		contactList.setLayout(new GridLayout(1, false));
+		
+		Text search = new Text(contactList, SWT.SEARCH | SWT.CANCEL | SWT.ICON_SEARCH );
+		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		search.setLayoutData(gd);
+		search.setMessage("Suche Kontakt");
+		search.setSize(1000, 200);
+		ModifyListener listener = new ModifyListener() {
+		    public void modifyText(ModifyEvent e) {
+		    	String s = search.getText().toLowerCase().trim();
+		    	filterContactTable(s);
+		    	//else updateContactTable();
+		    }
+		};
+		search.addModifyListener(listener);
 				
 		IColumnPropertyAccessor<Contact> columnPropertyAccessor = new ContactColumnPropertyAccessor();
+		
+		EventList<Contact> eventList = GlazedLists.eventList(contacts);
+		FilterList<Contact> filterList = new FilterList<>(eventList);
+		
 		IRowDataProvider<Contact> bodyDataProvider = new ListDataProvider<Contact>(contacts, columnPropertyAccessor);
+		//IRowDataProvider<Contact> bodyDataProvider = new ListDataProvider<Contact>(filterList, columnPropertyAccessor);
 
 		bodyDataLayerContact = new DataLayer(bodyDataProvider);
 		
+		GlazedListsEventLayer<Contact> eventLayer = new GlazedListsEventLayer<>(bodyDataLayerContact, filterList);
+		
 		selectionLayerContact = new SelectionLayer(bodyDataLayerContact);
+		//selectionLayerContact = new SelectionLayer(eventLayer);
+		
+		
 		//selectionLayerContact.addConfiguration(new DefaultRowSelectionLayerConfiguration());
 		
 		selectionLayerContact.setSelectionModel(new RowSelectionModel<>(
@@ -286,6 +332,7 @@ public class ContactPart implements GroupListViewer {
 		phoneText.setText("");
 		phoneText.setMessage("Telefon Nummer");
 		phoneText.setVisible(false);
+		phoneText.setEditable(false);
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		gd.widthHint = 300;
 		phoneText.setLayoutData(gd);
@@ -308,6 +355,7 @@ public class ContactPart implements GroupListViewer {
 		hpText.setText("");
 		hpText.setMessage("URL");
 		hpText.setVisible(false);
+		hpText.setEditable(false);
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		gd.widthHint = 300;
 		hpText.setLayoutData(gd);
@@ -373,6 +421,16 @@ public class ContactPart implements GroupListViewer {
 		contacts.addAll(db.getContacts());
 		contactTable.refresh();
 		groupTable.refresh();
+	}
+	
+	private void filterContactTable(String s) {
+		List<Contact> list = new ArrayList<Contact>();
+		for (Contact c: selectedGroups.get(0).getMembers()) {
+			if (c.getFirstName().toLowerCase().contains(s)) list.add(c);
+		}
+		contacts.clear();
+		contacts.addAll(list);
+		contactTable.refresh();
 	}
 	
 	private void updateContactDetail(Contact c) {

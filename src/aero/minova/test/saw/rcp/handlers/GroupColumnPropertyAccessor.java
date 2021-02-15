@@ -29,7 +29,6 @@ public class GroupColumnPropertyAccessor implements IColumnPropertyAccessor<Grou
 
 	@Override
 	public int getColumnCount() {
-		// TODO Auto-generated method stub
 		return 2;
 	}
 
