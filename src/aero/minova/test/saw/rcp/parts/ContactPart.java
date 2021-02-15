@@ -6,6 +6,7 @@ import static org.eclipse.jface.widgets.ButtonFactory.newButton;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -51,9 +52,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 
 import aero.minova.test.saw.rcp.events.EventConstants;
 import aero.minova.test.saw.rcp.handlers.ContactColumnPropertyAccessor;
@@ -71,6 +74,11 @@ public class ContactPart implements GroupListViewer {
 	private Composite contactList;
 	private Composite contactDetail;
 	private SashForm sashForm;
+	
+	private int[] weights = new int[] {1, 1, 2};
+	private static final int MIN_WIDTH_GROUPLIST = 300;
+	private static final int MIN_WIDTH_CONTACTLIST = 300;
+	private static final int MIN_WIDTH_CONTACTDETAIL = 50;
 	
 	private Button deleteGroupButton;
 	private NatTable groupTable;
@@ -111,6 +119,8 @@ public class ContactPart implements GroupListViewer {
 
 	@PostConstruct
 	public void postConstruct(Composite parent) {	
+		shell.setBounds(3500, -500, 800, 600);
+		
 		contacts = new ArrayList<Contact>(db.getContacts());
 		groups = db.getGroups();
 		
@@ -128,7 +138,7 @@ public class ContactPart implements GroupListViewer {
 	}
 
 	private void createGroupList(Composite groupList) {
-		//groupList.setVisible(false);
+		groupList.setVisible(false);
 		groupList.setLayout(new GridLayout(2, false));
 //		
 		newButton(SWT.PUSH).text("Neue Gruppe").onSelect(e -> newGroup()).create(groupList);
