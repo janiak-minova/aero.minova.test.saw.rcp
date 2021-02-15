@@ -148,5 +148,11 @@
 		<unit id="hibernate-osgi.source.feature.group" version="5.2.16.Final"/>
 		<unit id="vogella-jpa-libs.feature.group" version="0.1.0"/>
 	</location>
+	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+		<groupId>com.googlecode.ez-vcard</groupId>
+		<artifactId>ez-vcard</artifactId>
+		<version>0.11.2</version>
+		<type>jar</type>
+	</location>
 </locations>
 </target>
