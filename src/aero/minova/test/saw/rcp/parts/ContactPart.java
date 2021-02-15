@@ -6,7 +6,6 @@ import static org.eclipse.jface.widgets.ButtonFactory.newButton;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,14 +27,10 @@ import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.nebula.widgets.nattable.NatTable;
-import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
-import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;
-import org.eclipse.nebula.widgets.nattable.config.IEditableRule;
 import org.eclipse.nebula.widgets.nattable.data.IColumnPropertyAccessor;
 import org.eclipse.nebula.widgets.nattable.data.IRowDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.ListDataProvider;
-import org.eclipse.nebula.widgets.nattable.edit.EditConfigAttributes;
 import org.eclipse.nebula.widgets.nattable.extension.e4.selection.E4SelectionListener;
 import org.eclipse.nebula.widgets.nattable.extension.glazedlists.GlazedListsEventLayer;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
@@ -58,15 +53,13 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-
 import aero.minova.test.saw.rcp.events.EventConstants;
 import aero.minova.test.saw.rcp.handlers.ContactColumnPropertyAccessor;
 import aero.minova.test.saw.rcp.handlers.GroupColumnPropertyAccessor;
+import aero.minova.test.saw.rcp.handlers.VCardExportHandler;
 import aero.minova.test.saw.rcp.handlers.DragAndDropSupport;
 import aero.minova.test.saw.rcp.handlers.EditorConfigurationGrouplist;
 import aero.minova.test.saw.rcp.model.Contact;
@@ -85,10 +78,10 @@ public class ContactPart implements GroupListViewer {
 	private Composite contactDetail;
 	private SashForm sashForm;
 	
-	private int[] weights = new int[] {1, 1, 2};
-	private static final int MIN_WIDTH_GROUPLIST = 300;
-	private static final int MIN_WIDTH_CONTACTLIST = 300;
-	private static final int MIN_WIDTH_CONTACTDETAIL = 50;
+//	private int[] weights = new int[] {1, 1, 2};
+//	private static final int MIN_WIDTH_GROUPLIST = 300;
+//	private static final int MIN_WIDTH_CONTACTLIST = 300;
+//	private static final int MIN_WIDTH_CONTACTDETAIL = 50;
 	
 	public static final String COLUMN_ONE_LABEL = "ColumnOneLabel";
 	public static final String COLUMN_TWO_LABEL = "ColumnTwoLabel";
@@ -208,7 +201,7 @@ public class ContactPart implements GroupListViewer {
 		contactList.setLayout(new GridLayout(1, false));
 		
 		Text search = new Text(contactList, SWT.SEARCH | SWT.CANCEL | SWT.ICON_SEARCH );
-		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		GridData gd = new GridData(SWT.FILL, SWT.FILL, false, false);
 		search.setLayoutData(gd);
 		search.setMessage("Suche Kontakt");
 		search.setSize(1000, 200);
@@ -216,22 +209,21 @@ public class ContactPart implements GroupListViewer {
 		    public void modifyText(ModifyEvent e) {
 		    	String s = search.getText().toLowerCase().trim();
 		    	filterContactTable(s);
-		    	//else updateContactTable();
 		    }
 		};
 		search.addModifyListener(listener);
 				
 		IColumnPropertyAccessor<Contact> columnPropertyAccessor = new ContactColumnPropertyAccessor();
 		
-		EventList<Contact> eventList = GlazedLists.eventList(contacts);
-		FilterList<Contact> filterList = new FilterList<>(eventList);
+		//EventList<Contact> eventList = GlazedLists.eventList(contacts);
+		//FilterList<Contact> filterList = new FilterList<>(eventList);
 		
 		IRowDataProvider<Contact> bodyDataProvider = new ListDataProvider<Contact>(contacts, columnPropertyAccessor);
 		//IRowDataProvider<Contact> bodyDataProvider = new ListDataProvider<Contact>(filterList, columnPropertyAccessor);
 
 		bodyDataLayerContact = new DataLayer(bodyDataProvider);
 		
-		GlazedListsEventLayer<Contact> eventLayer = new GlazedListsEventLayer<>(bodyDataLayerContact, filterList);
+		//GlazedListsEventLayer<Contact> eventLayer = new GlazedListsEventLayer<>(bodyDataLayerContact, filterList);
 		
 		selectionLayerContact = new SelectionLayer(bodyDataLayerContact);
 		//selectionLayerContact = new SelectionLayer(eventLayer);
@@ -563,6 +555,12 @@ public class ContactPart implements GroupListViewer {
 		} else {
 			MessageDialog.openInformation(shell, null, "Es ist kein Kontakt ausgewählt");
 		}
+	}
+	
+	@Inject
+	@Optional
+	private void subscribeTopicRefreshContacts(@UIEventTopic(EventConstants.EXPORT_VCARD) String e) {
+		VCardExportHandler.exportVCard(currentContact);
 	}
 	
 	public void switchEditable(boolean editable) {
