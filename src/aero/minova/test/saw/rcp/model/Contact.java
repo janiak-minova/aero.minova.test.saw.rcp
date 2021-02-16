@@ -6,62 +6,65 @@ package aero.minova.test.saw.rcp.model;
  * @author saak
  */
 public class Contact {
-	
+
 	public static final String FIELD_ID = "id";
 	public static final String FIELD_NAME = "Name";
 	public static final String FIELD_COMPANY = "Firma";
 
-	private String company;
-	private String firstName;
-	private String jobDescription;
-	private String lastName;
-	private String title;
-	private String homepage;
-	private String phonenumber;
-	private String notes;
+	private String company = "";
+	private String firstName = "";
+	private String jobDescription = "";
+	private String lastName = "";
+	private String title = "";
+	private String homepage = "";
+	private String phonenumber = "";
+	private String notes = "";
 	private final long id;
-	
+	private String picLocation = "";
+
+	public String getPicLocation() {
+		return picLocation;
+	}
+
+	public void setPicLocation(String picLocation) {
+		this.picLocation = picLocation;
+	}
+
 	public Contact(String company, String firstName, long id) {
 		super();
 		this.company = company;
 		this.firstName = firstName;
 		this.id = id;
-		this.jobDescription = "";
-		this.lastName = "";
-		this.title = "";
-		this.homepage = "";
-		this.phonenumber = "";
-		this.notes = "";
 	}
 
 	public Contact(long id) {
 		super();
 		this.id = id;
-		this.company = "";
-		this.firstName = "";
-		this.jobDescription = "";
-		this.lastName = "";
-		this.title = "";
-		this.homepage = "";
-		this.phonenumber = "";
-		this.notes = "";
 	}
-	
+
 	public Contact(String company, String firstName, String homepage, String phonenumber, String notes, long id) {
 		super();
 		this.company = company;
 		this.firstName = firstName;
-		this.jobDescription = "";
-		this.lastName = "";
-		this.title = "";
 		this.homepage = homepage;
 		this.phonenumber = phonenumber;
 		this.notes = notes;
 		this.id = id;
 	}
 
-	public Contact(String company, String firstName, String jobDescription, String lastName, String title,
-			String homepage, String phonenumber, String notes, long id) {
+	public Contact(String company, String firstName, String homepage, String phonenumber, String notes, String picLocation, long id) {
+		super();
+		this.company = company;
+		this.firstName = firstName;
+		this.homepage = homepage;
+		this.phonenumber = phonenumber;
+		this.notes = notes;
+		this.picLocation = picLocation;
+		this.id = id;
+	}
+
+	public Contact(String company, String firstName, String jobDescription, String lastName, String title, String homepage, String phonenumber, String notes,
+			long id) {
 		super();
 		this.company = company;
 		this.firstName = firstName;
@@ -73,11 +76,11 @@ public class Contact {
 		this.notes = notes;
 		this.id = id;
 	}
-	
+
 	public long getId() {
 		return id;
 	}
-	
+
 	public String getHomepage() {
 		return homepage;
 	}
@@ -167,10 +170,9 @@ public class Contact {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
+
 	public Contact copy() {
-		return new Contact(this.company, this.firstName, this.jobDescription, this.lastName, this.title,
-			this.homepage, this.phonenumber, this.notes, this.id);
+		return new Contact(this.company, this.firstName, this.jobDescription, this.lastName, this.title, this.homepage, this.phonenumber, this.notes, this.id);
 	}
 
 }
