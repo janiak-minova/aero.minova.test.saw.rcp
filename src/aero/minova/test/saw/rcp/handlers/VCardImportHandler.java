@@ -39,7 +39,6 @@ public class VCardImportHandler {
 		}
 	    VCard vcard = readVCard(content);
 	    Contact c = createContact(vcard);
-	    System.out.println(c.getFirstName());
 	    
 	    broker.send(EventConstants.NEW_CONTACT, c);
 	}
@@ -51,18 +50,26 @@ public class VCardImportHandler {
 	
 	public VCard readVCard(String vCardString) {
 		VCard vcard = Ezvcard.parse(vCardString).first();
-		
 		return vcard;
 	}
 	
 	
+	//TODO einzelne Einträge seperat behandeln?
 	public Contact createContact(VCard vcard) {
 		
-		String name = vcard.getFormattedName().getValue();
-		String company = vcard.getOrganization().getValues().get(0);
-		String homepage = vcard.getUrls().get(0).getValue();
-		String phonenumber = vcard.getTelephoneNumbers().get(0).getText();
-		String notes = vcard.getNotes().get(0).getValue();
+		String name = "";
+		String company = "";
+		String homepage = "";
+		String phonenumber = "";
+		String notes = "";
+		
+		try {
+			name = vcard.getFormattedName().getValue();
+			company = vcard.getOrganization().getValues().get(0);
+			homepage = vcard.getUrls().get(0).getValue();
+			phonenumber = vcard.getTelephoneNumbers().get(0).getText();
+			notes = vcard.getNotes().get(0).getValue();
+		} catch (Exception e) {  }
 		
 		return db.addContact(company, name, homepage, phonenumber, notes);
 	}

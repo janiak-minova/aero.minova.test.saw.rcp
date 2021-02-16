@@ -18,6 +18,7 @@ import aero.minova.test.saw.rcp.events.EventConstants;
 import aero.minova.test.saw.rcp.model.Contact;
 import ezvcard.VCard;
 import ezvcard.parameter.TelephoneType;
+import ezvcard.property.StructuredName;
 
 public class VCardExportHandler {
 	
@@ -36,6 +37,13 @@ public class VCardExportHandler {
 	public static void exportVCard(Contact c) {
 
 		VCard vcard = new VCard();	
+		
+		//TODO change to fit first/last name
+		StructuredName sname = new StructuredName();
+		sname.setFamily(c.getFirstName().split(" ")[1]);
+		sname.setGiven(c.getFirstName().split(" ")[0]);
+		vcard.setStructuredName(sname);
+		
 		vcard.setFormattedName(c.getFirstName());
 		vcard.setOrganization(c.getCompany());
 		vcard.addUrl(c.getHomepage());
