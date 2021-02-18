@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.nebula.widgets.nattable.NatTable;
@@ -57,24 +58,25 @@ public class DragAndDropSupportContacts implements DragSourceListener, DropTarge
 	public void dragSetData(DragSourceEvent event) {
 		// we know that we use the RowSelectionModel with single selection
 		List<Contact> selection = ((RowSelectionModel<Contact>) this.selectionLayer.getSelectionModel()).getSelectedRowObjects();
+		List<String> paths = new ArrayList<String>();
+		for (int i = 0; i < selection.size(); i++) {
+			this.draggedContact = selection.get(i);
 
-		if (!selection.isEmpty()) {
-			this.draggedContact = selection.get(0);
-//			event.data = VCardExportHandler.getVCardString(draggedContact);
-
-			event.data = new File("/Users/janiak/Desktop/Erik Fisher.vcf");
 			try {
 				File file = File.createTempFile(draggedContact.getFirstName(), ".vcf");
 				FileWriter myWriter = new FileWriter(file.getAbsolutePath());
 				myWriter.write(VCardExportHandler.getVCardString(draggedContact));
 				myWriter.close();
-				event.data = new String[] { file.getAbsolutePath() };
+				paths.add(file.getAbsolutePath());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 		}
+
+		String[] array = new String[paths.size()];
+		paths.toArray(array); // fill the array
+		event.data = array;
 	}
 
 	@Override

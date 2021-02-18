@@ -245,13 +245,15 @@ public class ContactPart implements GroupListViewer {
 			public Serializable getRowId(Contact rowObject) {
 				return rowObject.getId();
 			}
-		}, false));
+		}, true));
 
-		ViewportLayer viewportLayer = new ViewportLayer(selectionLayerContact);
-		viewportLayer.setRegionName(GridRegion.BODY);
+		// selectionLayerContact.addConfiguration(new DefaultRowSelectionLayerConfiguration());
 
 		E4SelectionListener<Contact> esl = new E4SelectionListener<Contact>(service, selectionLayerContact, bodyDataProvider);
 		selectionLayerContact.addLayerListener(esl);
+
+		ViewportLayer viewportLayer = new ViewportLayer(selectionLayerContact);
+		viewportLayer.setRegionName(GridRegion.BODY);
 
 		contactTable = new NatTable(contactList, viewportLayer);
 
@@ -555,6 +557,8 @@ public class ContactPart implements GroupListViewer {
 		updateContactDetail(c);
 		editable = true;
 		switchEditable(editable);
+
+		selectionLayerGroup.selectRow(0, 0, false, false);
 	}
 
 	@Inject

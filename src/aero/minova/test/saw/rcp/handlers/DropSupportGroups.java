@@ -41,16 +41,6 @@ public class DropSupportGroups implements DropTargetListener {
 
 	@Override
 	public void drop(DropTargetEvent event) {
-
-//		if (event.data.toString().length() > 0) {
-//			Contact c = db.getContactById(Long.parseLong(event.data.toString()));
-//			Group g = db.getGroupByPosition(getRowPosition(event));
-//
-//			if (g != null)
-//				g.addMember(c);
-//
-//			this.natTable.refresh();
-//		}
 		if (event.data.getClass().equals(String[].class)) {
 			String[] data = (String[]) event.data;
 			for (String path : data) {
@@ -64,10 +54,8 @@ public class DropSupportGroups implements DropTargetListener {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-
 			}
 		}
-
 	}
 
 	@Override

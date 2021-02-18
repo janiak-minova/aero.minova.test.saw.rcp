@@ -12,7 +12,7 @@ public class Contact {
 	public static final String FIELD_COMPANY = "Firma";
 
 	private String company = "";
-	private String firstName = "";
+	private String firstName = "Neuer Kontakt";
 	private String jobDescription = "";
 	private String lastName = "";
 	private String title = "";
