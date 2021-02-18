@@ -463,6 +463,7 @@ public class ContactPart implements GroupListViewer {
 			currentContact = selected.get(0);
 			updateContactDetail(selected.get(0));
 			selectedContacts = selected;
+			switchEditable(false);
 		}
 	}
 
@@ -621,12 +622,13 @@ public class ContactPart implements GroupListViewer {
 	public void switchEditable(boolean editable) {
 		// drawContactDetails(inputs);
 
+		this.editable = editable;
+
 		// Change label
 		for (MToolBarElement item : part.getToolbar().getChildren()) {
 			if ("aero.minova.test.saw.rcp.handledtoolitem.bearbeiten".equals(item.getElementId())) {
 				if (editable) {
 					((MUILabel) item).setLabel("Fertig!");
-					// engine.setClassname(item, "MyCSSTagForLabel");
 				} else {
 					((MUILabel) item).setLabel("Bearbeiten");
 					contactTable.redraw();

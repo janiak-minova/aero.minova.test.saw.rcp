@@ -32,13 +32,13 @@ public class VCardImportHandler {
 		dialog.setFilterExtensions(new String[] { "*.vcf" });
 		String path = dialog.open();
 		String content = "";
-		try {
-			content = new String(Files.readAllBytes(Paths.get(path)));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		if (path != null) {
+			try {
+				content = new String(Files.readAllBytes(Paths.get(path)));
+			} catch (IOException e) {}
+			createContactFromString(content);
 		}
-		createContactFromString(content);
 
 	}
 

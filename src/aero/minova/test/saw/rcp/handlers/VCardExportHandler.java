@@ -42,15 +42,18 @@ public class VCardExportHandler {
 		FileDialog dialog = new FileDialog(new Shell(), SWT.SAVE);
 		dialog.setFileName(c.getFirstName() + ".vcf");
 		String open = dialog.open();
-		File file = new File(open);
-		try {
-			file.createNewFile();
-			FileWriter myWriter = new FileWriter(open);
-			myWriter.write(vCardString);
-			myWriter.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		if (open != null) {
+			try {
+				File file = new File(open);
+				file.createNewFile();
+				FileWriter myWriter = new FileWriter(open);
+				myWriter.write(vCardString);
+				myWriter.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
