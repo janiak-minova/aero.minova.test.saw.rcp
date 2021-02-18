@@ -48,7 +48,7 @@ import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -72,7 +72,8 @@ import org.osgi.framework.FrameworkUtil;
 
 import aero.minova.test.saw.rcp.events.EventConstants;
 import aero.minova.test.saw.rcp.handlers.ContactColumnPropertyAccessor;
-import aero.minova.test.saw.rcp.handlers.DragAndDropSupport;
+import aero.minova.test.saw.rcp.handlers.DragAndDropSupportContacts;
+import aero.minova.test.saw.rcp.handlers.DropSupportGroups;
 import aero.minova.test.saw.rcp.handlers.EditorConfigurationGrouplist;
 import aero.minova.test.saw.rcp.handlers.GroupColumnPropertyAccessor;
 import aero.minova.test.saw.rcp.handlers.VCardExportHandler;
@@ -165,7 +166,8 @@ public class ContactPart implements GroupListViewer {
 //		
 		newButton(SWT.PUSH).text("Neue Gruppe").onSelect(e -> newGroup()).create(groupList);
 		deleteGroupButton = newButton(SWT.PUSH).text("Gruppe Löschen").onSelect(e -> deleteGroup()).create(groupList);
-//		
+		deleteGroupButton.setEnabled(false);
+
 		IColumnPropertyAccessor<Group> columnPropertyAccessor = new GroupColumnPropertyAccessor();
 		IRowDataProvider<Group> bodyDataProvider = new ListDataProvider<Group>(groups, columnPropertyAccessor);
 
@@ -181,8 +183,8 @@ public class ContactPart implements GroupListViewer {
 
 		groupTable = new NatTable(groupList, viewportLayer, false);
 
-		DragAndDropSupport dndSupport = new DragAndDropSupport(groupTable, selectionLayerGroup, groups);
-		Transfer[] transfer = { TextTransfer.getInstance() };
+		DropSupportGroups dndSupport = new DropSupportGroups(groupTable);
+		Transfer[] transfer = { FileTransfer.getInstance() };
 		groupTable.addDropSupport(DND.DROP_COPY, transfer, dndSupport);
 
 		// Edit support
@@ -212,6 +214,7 @@ public class ContactPart implements GroupListViewer {
 
 		GridDataFactory.fillDefaults().span(2, 1).grab(true, true).applyTo(groupTable);
 
+		selectionLayerGroup.selectRow(0, 0, false, false);
 	}
 
 	private void createContactList(Composite contactList) {
@@ -252,9 +255,10 @@ public class ContactPart implements GroupListViewer {
 
 		contactTable = new NatTable(contactList, viewportLayer);
 
-		DragAndDropSupport dndSupport = new DragAndDropSupport(contactTable, selectionLayerContact, contacts);
-		Transfer[] transfer = { TextTransfer.getInstance() };
-		contactTable.addDragSupport(DND.DROP_COPY, transfer, dndSupport);
+		DragAndDropSupportContacts dndContact = new DragAndDropSupportContacts(contactTable, selectionLayerContact, contacts);
+		Transfer[] transferFile = { FileTransfer.getInstance() };
+		contactTable.addDragSupport(DND.DROP_COPY, transferFile, dndContact);
+		contactTable.addDropSupport(DND.DROP_COPY, transferFile, dndContact);
 
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(contactTable);
 
@@ -551,6 +555,12 @@ public class ContactPart implements GroupListViewer {
 		updateContactDetail(c);
 		editable = true;
 		switchEditable(editable);
+	}
+
+	@Inject
+	@Optional
+	private void subscribeTopicExistingContact(@UIEventTopic(EventConstants.CONTACT_EXISTS) Contact c) {
+		MessageDialog.openInformation(shell, null, "Dieser Kontakt existiert bereits");
 	}
 
 	@Inject

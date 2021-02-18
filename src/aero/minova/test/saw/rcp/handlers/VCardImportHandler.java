@@ -23,8 +23,8 @@ import ezvcard.VCard;
 public class VCardImportHandler {
 
 	@Inject
-	IEventBroker broker;
-	Database db = Database.getInstance();
+	static IEventBroker broker;
+	static Database db = Database.getInstance();
 
 	@Execute
 	public void execute(MPart part) {
@@ -38,10 +38,16 @@ public class VCardImportHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		VCard vcard = readVCard(content);
+		createContactFromString(content);
+
+	}
+
+	public static Contact createContactFromString(String contactString) {
+		VCard vcard = readVCard(contactString);
 		Contact c = createContact(vcard);
 
 		broker.send(EventConstants.NEW_CONTACT, c);
+		return c;
 	}
 
 	@CanExecute
@@ -49,13 +55,25 @@ public class VCardImportHandler {
 		return true;
 	}
 
-	public VCard readVCard(String vCardString) {
+	public static VCard readVCard(String vCardString) {
 		VCard vcard = Ezvcard.parse(vCardString).first();
 		return vcard;
 	}
 
-	// TODO einzelne Einträge seperat behandeln?
-	public Contact createContact(VCard vcard) {
+	// TODO einzelne Einträge seperat behandeln? (Falls einzelne Einträge nicht vorhanden sind)
+
+	public static Contact createContact(VCard vcard) {
+
+		String sid = "-100";
+		try {
+			sid = vcard.getExtendedProperties("X-CONTACTID").get(0).getValue();
+		} catch (IndexOutOfBoundsException e) {}
+		int id = Integer.parseInt(sid);
+		if (db.getContactById(id) != null) {
+			// TODO Duplicate anders behandeln?
+			// broker.send(EventConstants.CONTACT_EXISTS, "");
+			return db.getContactById(id);
+		}
 
 		String name = "";
 		String company = "";

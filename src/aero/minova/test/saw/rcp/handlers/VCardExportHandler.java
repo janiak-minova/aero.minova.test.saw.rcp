@@ -21,9 +21,10 @@ import ezvcard.parameter.TelephoneType;
 import ezvcard.property.StructuredName;
 
 public class VCardExportHandler {
-	
-	@Inject IEventBroker broker;
-	
+
+	@Inject
+	IEventBroker broker;
+
 	@Execute
 	public void execute(MPart part) {
 		broker.send(EventConstants.EXPORT_VCARD, "");
@@ -33,36 +34,49 @@ public class VCardExportHandler {
 	public boolean canExecute() {
 		return true;
 	}
-	
+
 	public static void exportVCard(Contact c) {
 
-		VCard vcard = new VCard();	
-		
-		//TODO change to fit first/last name
-		StructuredName sname = new StructuredName();
-		sname.setFamily(c.getFirstName().split(" ")[1]);
-		sname.setGiven(c.getFirstName().split(" ")[0]);
-		vcard.setStructuredName(sname);
-		
-		vcard.setFormattedName(c.getFirstName());
-		vcard.setOrganization(c.getCompany());
-		vcard.addUrl(c.getHomepage());
-		vcard.addTelephoneNumber(c.getPhonenumber(), TelephoneType.HOME);
-		vcard.addNote(c.getNotes());
-		
+		String vCardString = getVCardString(c);
+
 		FileDialog dialog = new FileDialog(new Shell(), SWT.SAVE);
 		dialog.setFileName(c.getFirstName() + ".vcf");
 		String open = dialog.open();
-        File file = new File(open);
-        try {
-            file.createNewFile();
+		File file = new File(open);
+		try {
+			file.createNewFile();
 			FileWriter myWriter = new FileWriter(open);
-			myWriter.write(vcard.write());
+			myWriter.write(vCardString);
 			myWriter.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public static String getVCardString(Contact c) {
+
+		VCard vcard = new VCard();
+
+		// TODO change to fit first/last name
+		StructuredName sname = new StructuredName();
+		if (c.getFirstName().contains(" ")) {
+			sname.setFamily(c.getFirstName().split(" ")[1]);
+			sname.setGiven(c.getFirstName().split(" ")[0]);
+		} else {
+			sname.setFamily(c.getFirstName());
+		}
+		vcard.setStructuredName(sname);
+
+		vcard.setFormattedName(c.getFirstName());
+		vcard.setOrganization(c.getCompany());
+		vcard.addUrl(c.getHomepage());
+		vcard.addTelephoneNumber(c.getPhonenumber(), TelephoneType.HOME);
+		vcard.addNote(c.getNotes());
+
+		vcard.addExtendedProperty("X-CONTACTID", c.getId() + "");
+
+		return vcard.write();
 	}
 
 }
