@@ -7,11 +7,9 @@ import static org.eclipse.jface.widgets.ButtonFactory.newButton;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -59,9 +57,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
@@ -78,6 +74,7 @@ import aero.minova.test.saw.rcp.handlers.EditorConfigurationGrouplist;
 import aero.minova.test.saw.rcp.handlers.GroupColumnPropertyAccessor;
 import aero.minova.test.saw.rcp.handlers.VCardExportHandler;
 import aero.minova.test.saw.rcp.model.Contact;
+import aero.minova.test.saw.rcp.model.ContactDetailEntry;
 import aero.minova.test.saw.rcp.model.Database;
 import aero.minova.test.saw.rcp.model.Group;
 
@@ -114,18 +111,10 @@ public class ContactPart implements GroupListViewer {
 
 	private String defaultPic = "icons/user.png";
 	private Label profileLable;
-	private Label nameLabel;
-	private Text nameText;
-	private Label companyLabel;
-	private Text companyText;
-	private Combo phoneCombo;
-	private Text phoneText;
-	private Label hpLabel;
-	private Text hpText;
 	private Label notesLabel;
 	private Text notesText;
 	private boolean editable = false;
-	private LinkedHashMap<Text, Control> inputs;
+	private Map<String, ContactDetailEntry> entries;
 
 	@Inject
 	private MPart part;
@@ -133,8 +122,6 @@ public class ContactPart implements GroupListViewer {
 	private ESelectionService service;
 	@Inject
 	private Shell shell;
-	@Inject
-	private Display display;
 
 	@Inject
 	public ContactPart() {}
@@ -247,8 +234,6 @@ public class ContactPart implements GroupListViewer {
 			}
 		}, true));
 
-		// selectionLayerContact.addConfiguration(new DefaultRowSelectionLayerConfiguration());
-
 		E4SelectionListener<Contact> esl = new E4SelectionListener<Contact>(service, selectionLayerContact, bodyDataProvider);
 		selectionLayerContact.addLayerListener(esl);
 
@@ -270,12 +255,12 @@ public class ContactPart implements GroupListViewer {
 	private void createContactDetail(Composite body) {
 
 		GridData gd;
-		inputs = new LinkedHashMap<Text, Control>();
+		entries = new LinkedHashMap<String, ContactDetailEntry>();
 
 		// Layout für Body definieren
 		body.setLayout(new GridLayout(2, false));
 
-		// Profile picture
+		// Profilbild
 		profileLable = new Label(body, SWT.RIGHT);
 		gd = new GridData(SWT.LEFT, SWT.TOP, false, false);
 		gd.horizontalSpan = 2;
@@ -288,118 +273,29 @@ public class ContactPart implements GroupListViewer {
 			}
 		});
 
-		// Kopf Label und Feld definieren
-		nameLabel = new Label(body, SWT.RIGHT);
-		nameLabel.setText("Name");
-		gd = new GridData(SWT.RIGHT, SWT.CENTER, true, false);
-		nameLabel.setLayoutData(gd);
-		nameText = new Text(body, SWT.NONE);
-		// headText.setText("Wilfried Saak");
-		nameText.setEditable(false);
-		nameText.setMessage("Vorname Nachname");
-		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-		nameText.setLayoutData(gd);
-		inputs.put(nameText, nameLabel);
+		// Normale input Felder
+		entries.put("Name", new ContactDetailEntry(body, "Name", "Vorname Nachname"));
+		entries.put("Firma", new ContactDetailEntry(body, "Firma", "Konzern"));
+		entries.put("Telefon", new ContactDetailEntry(body, "Privat", "Telefon Nummer"));
+		entries.put("Homepage", new ContactDetailEntry(body, "Homepage", "URL"));
 
-//		// Separator
-		Label separatorLabel = new Label(body, SWT.SEPARATOR | SWT.HORIZONTAL);
-		gd = new GridData(SWT.LEFT, SWT.CENTER, true, false);
-		gd.horizontalSpan = 2; // Beide Spalten verwenden
-		gd.widthHint = 500;
-		separatorLabel.setLayoutData(gd);
-		separatorLabel.setData("org.eclipse.e4.ui.css.CssClassName", "hrule");
-
-		// Weiteres Feld definieren
-		companyLabel = new Label(body, SWT.RIGHT);
-		companyLabel.setText("Firma");
-		gd = new GridData(SWT.RIGHT, SWT.CENTER, true, false);
-		companyLabel.setLayoutData(gd);
-		companyText = new Text(body, SWT.NONE);
-		// companyText.setText("MINOVA Information Services GmbH");
-		companyText.setEditable(false);
-		companyText.setMessage("Konzern");
-		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-		gd.widthHint = 300;
-		companyText.setLayoutData(gd);
-		inputs.put(companyText, companyLabel);
-
-		// Separator
-		separatorLabel = new Label(body, SWT.SEPARATOR | SWT.HORIZONTAL);
-		gd = new GridData(SWT.LEFT, SWT.CENTER, true, false);
-		gd.horizontalSpan = 2; // Beide Spalten verwenden
-		gd.widthHint = 500;
-		separatorLabel.setLayoutData(gd);
-		separatorLabel.setData("org.eclipse.e4.ui.css.CssClassName", "hrule");
-
-//		//
-		phoneCombo = new Combo(body, SWT.READ_ONLY | SWT.FLAT | SWT.SIMPLE);
-		gd = new GridData(SWT.RIGHT, SWT.CENTER, true, false);
-		phoneCombo.setLayoutData(gd);
-		phoneCombo.setText("Privat ▼");
-		phoneCombo.setItems("Privat", "Arbeit", "Zentrale", "Eigene...");
-		phoneCombo.select(0);
-		phoneCombo.setVisible(false);
-		phoneText = new Text(body, SWT.NONE);
-		phoneText.setText("");
-		phoneText.setMessage("Telefon Nummer");
-		phoneText.setVisible(false);
-		phoneText.setEditable(false);
-		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-		gd.widthHint = 300;
-		phoneText.setLayoutData(gd);
-		inputs.put(phoneText, phoneCombo);
-
-		// Separator
-		separatorLabel = new Label(body, SWT.SEPARATOR | SWT.HORIZONTAL);
-		gd = new GridData(SWT.LEFT, SWT.CENTER, true, false);
-		gd.horizontalSpan = 2; // Beide Spalten verwenden
-		gd.widthHint = 500;
-		separatorLabel.setLayoutData(gd);
-		separatorLabel.setData("org.eclipse.e4.ui.css.CssClassName", "hrule");
-
-		hpLabel = new Label(body, SWT.FLAT);
-		gd = new GridData(SWT.RIGHT, SWT.CENTER, true, false);
-		hpLabel.setLayoutData(gd);
-		hpLabel.setText("Homepage");
-		hpLabel.setVisible(false);
-		hpText = new Text(body, SWT.NONE);
-		hpText.setText("");
-		hpText.setMessage("URL");
-		hpText.setVisible(false);
-		hpText.setEditable(false);
-		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-		gd.widthHint = 300;
-		hpText.setLayoutData(gd);
-		inputs.put(hpText, hpLabel);
-
-		// Separator
-		separatorLabel = new Label(body, SWT.SEPARATOR | SWT.HORIZONTAL);
-		gd = new GridData(SWT.LEFT, SWT.CENTER, true, false);
-		gd.horizontalSpan = 2; // Beide Spalten verwenden
-		gd.widthHint = 500;
-		separatorLabel.setLayoutData(gd);
-		separatorLabel.setData("org.eclipse.e4.ui.css.CssClassName", "hrule");
-
+		// Notizen
 		notesLabel = new Label(body, SWT.RIGHT | SWT.TOP);
 		gd = new GridData(SWT.RIGHT, SWT.TOP, true, false);
+		gd.widthHint = 5;
 		notesLabel.setLayoutData(gd);
 		notesLabel.setText("Notizen");
 		notesText = new Text(body, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		notesText.setLayoutData(new GridData(GridData.FILL_BOTH));
-		inputs.put(notesText, notesLabel);
-
 		ModifyListener listener = new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
 				String newNotes = ((Text) e.widget).getText();
-				if (currentContact != null) {
+				if (currentContact != null)
 					currentContact.setNotes(newNotes);
-				}
 			}
 		};
 		notesText.addModifyListener(listener);
-
-		// drawContactDetails(inputs);
 
 	}
 
@@ -460,6 +356,7 @@ public class ContactPart implements GroupListViewer {
 	@Optional
 	private void handleSelectionContact(@Named(IServiceConstants.ACTIVE_SELECTION) List<Contact> selected) {
 		if (selected != null && selected.size() > 0 && selected.get(0) instanceof Contact) {
+			saveChanges();
 			currentContact = selected.get(0);
 			updateContactDetail(selected.get(0));
 			selectedContacts = selected;
@@ -467,7 +364,7 @@ public class ContactPart implements GroupListViewer {
 		}
 	}
 
-	private void updateContactTable() {
+	private void showAllContacts() {
 		contacts.clear();
 		contacts.addAll(db.getContacts());
 		contactTable.refresh();
@@ -487,63 +384,13 @@ public class ContactPart implements GroupListViewer {
 
 	private void updateContactDetail(Contact c) {
 		addProfilePic(c.getPicLocation());
-		nameText.setText(c.getFirstName());
-		companyText.setText(c.getCompany());
-		phoneText.setText(c.getPhonenumber());
-		hpText.setText(c.getHomepage());
 		notesText.setText(c.getNotes());
 
+		for (String s : entries.keySet()) {
+			entries.get(s).setInput(c);
+		}
+
 		updateVisibility(editable);
-	}
-
-	public void drawContactDetails(Map<Text, Control> objects) {
-		GridData gd;
-		Label separatorLabel = new Label(contactDetail, SWT.SEPARATOR | SWT.HORIZONTAL);
-		gd = new GridData(SWT.LEFT, SWT.CENTER, true, false);
-		gd.horizontalSpan = 2; // Beide Spalten verwenden
-		gd.widthHint = 500;
-		separatorLabel.setLayoutData(gd);
-		separatorLabel.setData("org.eclipse.e4.ui.css.CssClassName", "hrule");
-
-		for (Text o : objects.keySet()) {
-			if (editable || !o.getText().strip().equals("")) {
-
-				System.out.println(o.getMessage());
-				gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-				o.setLayoutData(gd);
-				gd = new GridData(SWT.RIGHT, SWT.CENTER, true, false);
-				objects.get(o).setLayoutData(gd);
-				objects.get(o).moveAbove(separatorLabel);
-				o.moveAbove(separatorLabel);
-
-				// Separator
-//				separatorLabel = new Label(contactDetail, SWT.SEPARATOR | SWT.HORIZONTAL);
-//				gd = new GridData(SWT.LEFT, SWT.CENTER, true, false);
-//				gd.horizontalSpan = 2; // Beide Spalten verwenden
-//				gd.widthHint = 500;
-//				separatorLabel.setLayoutData(gd);
-//				separatorLabel.setData("org.eclipse.e4.ui.css.CssClassName", "hrule");
-
-			} else {
-
-			}
-
-		}
-		Entry<Text, Control> notes = null;
-		Iterator<Entry<Text, Control>> iterator = objects.entrySet().iterator();
-		while (iterator.hasNext()) {
-			notes = iterator.next();
-		}
-
-		contactDetail.layout(true, true);
-
-		gd = new GridData(SWT.RIGHT, SWT.TOP, true, false);
-		notes.getValue().setLayoutData(gd);
-		notes.getKey().setLayoutData(new GridData(GridData.FILL_BOTH));
-
-		notes.getKey().moveBelow(separatorLabel);
-		notes.getValue().moveBelow(separatorLabel);
-
 	}
 
 	@Inject
@@ -552,7 +399,7 @@ public class ContactPart implements GroupListViewer {
 		saveChanges();
 
 		currentContact = c;
-		updateContactTable();
+		showAllContacts();
 		// contactTable.refresh();
 		selectionLayerContact.selectRow(0, toIntExact(c.getId()), false, false);
 		updateContactDetail(c);
@@ -605,7 +452,7 @@ public class ContactPart implements GroupListViewer {
 				}
 			}
 
-			updateContactTable();
+			showAllContacts();
 			// contactTable.refresh();
 			updateContactDetail(new Contact(-1));
 		} else {
@@ -620,8 +467,6 @@ public class ContactPart implements GroupListViewer {
 	}
 
 	public void switchEditable(boolean editable) {
-		// drawContactDetails(inputs);
-
 		this.editable = editable;
 
 		// Change label
@@ -633,16 +478,13 @@ public class ContactPart implements GroupListViewer {
 					((MUILabel) item).setLabel("Bearbeiten");
 					contactTable.redraw();
 				}
-
 			}
 		}
 
-		nameText.setEditable(editable);
-		nameText.setFocus();
-		companyText.setEditable(editable);
-		phoneText.setEditable(editable);
-		hpText.setEditable(editable);
-
+		for (String s : entries.keySet()) {
+			entries.get(s).getInput().setEditable(editable);
+		}
+		entries.get("Name").getInput().setFocus();
 		updateVisibility(editable);
 
 		// Update Contact
@@ -653,30 +495,30 @@ public class ContactPart implements GroupListViewer {
 
 	public void saveChanges() {
 		if (currentContact != null) {
-			currentContact.setFirstName(nameText.getText());
-			currentContact.setCompany(companyText.getText());
-			currentContact.setPhonenumber(phoneText.getText());
-			currentContact.setHomepage(hpText.getText());
+			for (String s : entries.keySet()) {
+				entries.get(s).updateContact(currentContact);
+			}
 		}
 	}
 
 	public void updateVisibility(boolean allVisible) {
+		for (String name : entries.keySet()) {
+			ContactDetailEntry entry = entries.get(name);
+			boolean vis = allVisible || !entry.getInput().getText().strip().equals("");
 
-		boolean vis = allVisible || !nameText.getText().strip().equals("");
-		nameLabel.setVisible(vis);
-		nameText.setVisible(vis);
+			GridData gd = (GridData) entry.getName().getLayoutData();
+			gd.exclude = !vis;
+			entry.getName().setVisible(vis);
 
-		vis = allVisible || !companyText.getText().strip().equals("");
-		companyLabel.setVisible(vis);
-		companyText.setVisible(vis);
+			gd = (GridData) entry.getInput().getLayoutData();
+			gd.exclude = !vis;
+			entry.getInput().setVisible(vis);
 
-		vis = allVisible || !phoneText.getText().strip().equals("");
-		phoneText.setVisible(vis);
-		phoneCombo.setVisible(vis);
-
-		vis = allVisible || !hpText.getText().strip().equals("");
-		hpText.setVisible(vis);
-		hpLabel.setVisible(vis);
+			gd = (GridData) entry.getSeperator().getLayoutData();
+			gd.exclude = !vis;
+			entry.getSeperator().setVisible(vis);
+		}
+		contactDetail.requestLayout();
 	}
 
 	public void newGroup() {
