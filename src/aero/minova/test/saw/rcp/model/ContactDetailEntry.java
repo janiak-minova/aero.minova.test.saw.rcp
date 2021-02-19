@@ -18,11 +18,11 @@ public class ContactDetailEntry {
 		name = new Label(body, SWT.RIGHT);
 		name.setText(nameString);
 		GridData gd = new GridData(SWT.RIGHT, SWT.CENTER, true, false);
+		gd.widthHint = 50;
 		name.setLayoutData(gd);
 
 		// Input
 		input = new Text(body, SWT.NONE);
-		// input.setEditable(false);
 		input.setMessage(textMessage);
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		input.setLayoutData(gd);
@@ -31,7 +31,7 @@ public class ContactDetailEntry {
 		seperator = new Label(body, SWT.SEPARATOR | SWT.HORIZONTAL);
 		gd = new GridData(SWT.LEFT, SWT.CENTER, true, false);
 		gd.horizontalSpan = 2; // Beide Spalten verwenden
-		gd.widthHint = 500;
+		gd.widthHint = 1000;
 		seperator.setLayoutData(gd);
 		seperator.setData("org.eclipse.e4.ui.css.CssClassName", "hrule");
 	}
@@ -48,6 +48,7 @@ public class ContactDetailEntry {
 		return seperator;
 	}
 
+	// TODO: Logik in Contact bewegen?
 	public void setInput(Contact c) {
 		String content = "";
 		switch (name.getText()) {
@@ -70,6 +71,7 @@ public class ContactDetailEntry {
 		input.setText(content);
 	}
 
+	// TODO: Logik in Contact bewegen?
 	public void updateContact(Contact c) {
 		switch (name.getText()) {
 		case "Name":

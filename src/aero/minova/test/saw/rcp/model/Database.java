@@ -58,6 +58,16 @@ public class Database {
 			return null;
 	}
 
+	public int getPositionOfGroup(Group g) {
+		int i = 0;
+		for (Group group : groups) {
+			if (g.equals(group))
+				return i;
+			i += 1;
+		}
+		return -1;
+	}
+
 	public Contact addContact() {
 		Contact c = new Contact(currentContacts.getAndIncrement());
 		contacts.add(c);

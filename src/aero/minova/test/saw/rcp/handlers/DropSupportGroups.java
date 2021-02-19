@@ -1,6 +1,5 @@
 package aero.minova.test.saw.rcp.handlers;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -22,7 +21,6 @@ public class DropSupportGroups implements DropTargetListener {
 
 	public DropSupportGroups(NatTable natTable) {
 		this.natTable = natTable;
-
 	}
 
 	@Override
@@ -51,9 +49,7 @@ public class DropSupportGroups implements DropTargetListener {
 					Group g = db.getGroupByPosition(getRowPosition(event));
 					g.addMember(c);
 					this.natTable.refresh();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				} catch (Exception e) {}
 			}
 		}
 	}

@@ -39,14 +39,12 @@ public class VCardImportHandler {
 			} catch (IOException e) {}
 			createContactFromString(content);
 		}
-
 	}
 
 	public static Contact createContactFromString(String contactString) {
 		VCard vcard = readVCard(contactString);
 		Contact c = createContact(vcard);
 
-		broker.send(EventConstants.NEW_CONTACT, c);
 		return c;
 	}
 
@@ -89,7 +87,10 @@ public class VCardImportHandler {
 			notes = vcard.getNotes().get(0).getValue();
 		} catch (Exception e) {}
 
-		return db.addContact(company, name, homepage, phonenumber, notes);
+		Contact c = db.addContact(company, name, homepage, phonenumber, notes);
+		broker.send(EventConstants.NEW_CONTACT, c);
+
+		return c;
 	}
 
 }

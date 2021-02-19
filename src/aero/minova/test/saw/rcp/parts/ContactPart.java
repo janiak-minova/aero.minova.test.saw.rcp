@@ -1,7 +1,6 @@
 
 package aero.minova.test.saw.rcp.parts;
 
-import static java.lang.Math.toIntExact;
 import static org.eclipse.jface.widgets.ButtonFactory.newButton;
 
 import java.io.Serializable;
@@ -87,14 +86,6 @@ public class ContactPart implements GroupListViewer {
 	private Composite contactDetail;
 	private SashForm sashForm;
 
-//	private int[] weights = new int[] {1, 1, 2};
-//	private static final int MIN_WIDTH_GROUPLIST = 300;
-//	private static final int MIN_WIDTH_CONTACTLIST = 300;
-//	private static final int MIN_WIDTH_CONTACTDETAIL = 50;
-
-	public static final String COLUMN_ONE_LABEL = "ColumnOneLabel";
-	public static final String COLUMN_TWO_LABEL = "ColumnTwoLabel";
-
 	private Button deleteGroupButton;
 	private NatTable groupTable;
 	private SelectionLayer selectionLayerGroup;
@@ -150,7 +141,7 @@ public class ContactPart implements GroupListViewer {
 	private void createGroupList(Composite groupList) {
 		// groupList.setVisible(false);
 		groupList.setLayout(new GridLayout(2, false));
-//		
+
 		newButton(SWT.PUSH).text("Neue Gruppe").onSelect(e -> newGroup()).create(groupList);
 		deleteGroupButton = newButton(SWT.PUSH).text("Gruppe Löschen").onSelect(e -> deleteGroup()).create(groupList);
 		deleteGroupButton.setEnabled(false);
@@ -185,8 +176,6 @@ public class ContactPart implements GroupListViewer {
 //        groupTable.configure();
 		final ColumnOverrideLabelAccumulator columnLabelAccumulator = new ColumnOverrideLabelAccumulator(bodyDataLayerGroup);
 		bodyDataLayerGroup.setConfigLabelAccumulator(columnLabelAccumulator);
-		columnLabelAccumulator.registerColumnOverrides(0, COLUMN_ONE_LABEL);
-		columnLabelAccumulator.registerColumnOverrides(1, COLUMN_TWO_LABEL);
 
 		groupTable.addConfiguration(new DefaultNatTableStyleConfiguration());
 		groupTable.addConfiguration(new EditorConfigurationGrouplist());
@@ -254,7 +243,6 @@ public class ContactPart implements GroupListViewer {
 
 	private void createContactDetail(Composite body) {
 
-		GridData gd;
 		entries = new LinkedHashMap<String, ContactDetailEntry>();
 
 		// Layout für Body definieren
@@ -262,7 +250,7 @@ public class ContactPart implements GroupListViewer {
 
 		// Profilbild
 		profileLable = new Label(body, SWT.RIGHT);
-		gd = new GridData(SWT.LEFT, SWT.TOP, false, false);
+		GridData gd = new GridData(SWT.LEFT, SWT.TOP, false, false);
 		gd.horizontalSpan = 2;
 		profileLable.setLayoutData(gd);
 		addProfilePic(defaultPic);
@@ -282,7 +270,6 @@ public class ContactPart implements GroupListViewer {
 		// Notizen
 		notesLabel = new Label(body, SWT.RIGHT | SWT.TOP);
 		gd = new GridData(SWT.RIGHT, SWT.TOP, true, false);
-		gd.widthHint = 5;
 		notesLabel.setLayoutData(gd);
 		notesLabel.setText("Notizen");
 		notesText = new Text(body, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
@@ -303,6 +290,7 @@ public class ContactPart implements GroupListViewer {
 		if (path == null || path.equals(""))
 			path = defaultPic;
 
+		// Hole Bild (aus lokalem Ordner oder durch globalen Pfad)
 		Image image;
 		if (path.contains("icons")) {
 			Bundle bundle = FrameworkUtil.getBundle(getClass());
@@ -313,6 +301,7 @@ public class ContactPart implements GroupListViewer {
 			image = new Image(null, path);
 		}
 
+		// Scaliere Bild auf 50x50px
 		Image scaled = new Image(Display.getDefault(), 50, 50);
 		GC gc = new GC(scaled);
 		gc.setAntialias(SWT.ON);
@@ -344,6 +333,7 @@ public class ContactPart implements GroupListViewer {
 			contacts.addAll(selected.get(0).getMembers());
 			contactTable.refresh();
 			selectedGroups = selected;
+			selectionLayerContact.selectRow(0, 0, false, false);
 
 			if (selected.get(0).getGroupID() == 0)
 				deleteGroupButton.setEnabled(false);
@@ -364,9 +354,9 @@ public class ContactPart implements GroupListViewer {
 		}
 	}
 
-	private void showAllContacts() {
+	private void showContacts(List<Contact> contactsToShow) {
 		contacts.clear();
-		contacts.addAll(db.getContacts());
+		contacts.addAll(contactsToShow);
 		contactTable.refresh();
 		groupTable.refresh();
 	}
@@ -399,14 +389,14 @@ public class ContactPart implements GroupListViewer {
 		saveChanges();
 
 		currentContact = c;
-		showAllContacts();
-		// contactTable.refresh();
-		selectionLayerContact.selectRow(0, toIntExact(c.getId()), false, false);
+		selectedGroups.get(0).addMember(c);
 		updateContactDetail(c);
 		editable = true;
 		switchEditable(editable);
+		showContacts(selectedGroups.get(0).getMembers());
 
-		selectionLayerGroup.selectRow(0, 0, false, false);
+		selectionLayerGroup.selectRow(0, db.getPositionOfGroup(selectedGroups.get(0)), false, false);
+		selectionLayerContact.selectRow(0, selectedGroups.get(0).getPositionInList(c), false, false);
 	}
 
 	@Inject
@@ -452,9 +442,10 @@ public class ContactPart implements GroupListViewer {
 				}
 			}
 
-			showAllContacts();
-			// contactTable.refresh();
-			updateContactDetail(new Contact(-1));
+			showContacts(selectedGroups.get(0).getMembers());
+			selectionLayerGroup.selectRow(0, db.getPositionOfGroup(selectedGroups.get(0)), false, false);
+			selectionLayerContact.selectRow(0, 0, false, false);
+			groupTable.refresh();
 		} else {
 			MessageDialog.openInformation(shell, null, "Es ist kein Kontakt ausgewählt");
 		}
@@ -462,11 +453,11 @@ public class ContactPart implements GroupListViewer {
 
 	@Inject
 	@Optional
-	private void subscribeTopicRefreshContacts(@UIEventTopic(EventConstants.EXPORT_VCARD) String e) {
+	private void subscribeTopicExportVCard(@UIEventTopic(EventConstants.EXPORT_VCARD) String e) {
 		VCardExportHandler.exportVCard(currentContact);
 	}
 
-	public void switchEditable(boolean editable) {
+	private void switchEditable(boolean editable) {
 		this.editable = editable;
 
 		// Change label
@@ -484,16 +475,18 @@ public class ContactPart implements GroupListViewer {
 		for (String s : entries.keySet()) {
 			entries.get(s).getInput().setEditable(editable);
 		}
-		entries.get("Name").getInput().setFocus();
+		if (editable)
+			entries.get("Name").getInput().setFocus();
 		updateVisibility(editable);
 
 		// Update Contact
 		if (!editable) {
 			saveChanges();
 		}
+
 	}
 
-	public void saveChanges() {
+	private void saveChanges() {
 		if (currentContact != null) {
 			for (String s : entries.keySet()) {
 				entries.get(s).updateContact(currentContact);
