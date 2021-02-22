@@ -68,6 +68,10 @@ public class Database {
 		return -1;
 	}
 
+	public Group getByPositionOfGroup(int pos) {
+		return groups.get(pos);
+	}
+
 	public Contact addContact() {
 		Contact c = new Contact(currentContacts.getAndIncrement());
 		contacts.add(c);

@@ -25,23 +25,17 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 
 import aero.minova.test.saw.rcp.model.Contact;
-import aero.minova.test.saw.rcp.model.Database;
 
 public class DragAndDropSupportContacts implements DragSourceListener, DropTargetListener {
 
 	private final NatTable natTable;
 	private final SelectionLayer selectionLayer;
-	private final List data;
-	private final Database db = Database.getInstance();
 
 	private Contact draggedContact;
 
-	private static final String DATA_SEPARATOR = "|";
-
-	public DragAndDropSupportContacts(NatTable natTable, SelectionLayer selectionLayer, List data) {
+	public DragAndDropSupportContacts(NatTable natTable, SelectionLayer selectionLayer) {
 		this.natTable = natTable;
 		this.selectionLayer = selectionLayer;
-		this.data = data;
 	}
 
 	@Override
@@ -123,16 +117,6 @@ public class DragAndDropSupportContacts implements DragSourceListener, DropTarge
 				}
 			}
 		}
-
-//		if (event.data.toString().length() > 0) {
-//			Contact c = db.getContactById(Long.parseLong(event.data.toString()));
-//			Group g = db.getGroupByPosition(getRowPosition(event));
-//
-//			if (g != null)
-//				g.addMember(c);
-//
-//			this.natTable.refresh();
-//		}
 	}
 
 	@Override

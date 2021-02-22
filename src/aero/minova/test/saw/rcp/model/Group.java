@@ -70,4 +70,8 @@ public class Group {
 		}
 		return -1;
 	}
+
+	public Contact getByPositionInList(int pos) {
+		return members.get(pos);
+	}
 }

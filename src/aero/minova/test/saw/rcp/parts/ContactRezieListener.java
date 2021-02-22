@@ -26,11 +26,11 @@ public class ContactRezieListener implements ControlListener {
 
 	@Override
 	public void controlResized(ControlEvent e) {
-		System.out.println(e + "" + sashForm.getWeights().length + "[" //
-				+ sashForm.getWeights()[0] + "," //
-				+ sashForm.getWeights()[1] + "," //
-				+ sashForm.getWeights()[2] + "]" //
-				+ ", width = " + sashForm.getSashWidth() + "/" + sashForm.getSize().x);
+//		System.out.println(e + "" + sashForm.getWeights().length + "[" //
+//				+ sashForm.getWeights()[0] + "," //
+//				+ sashForm.getWeights()[1] + "," //
+//				+ sashForm.getWeights()[2] + "]" //
+//				+ ", width = " + sashForm.getSashWidth() + "/" + sashForm.getSize().x);
 		sashForm.setWeights(new int[] { 130, 120, 180 });
 		
 		
@@ -51,7 +51,7 @@ public class ContactRezieListener implements ControlListener {
 
         }
 
-        System.out.println(width + " " + Arrays.toString(weights));
+        //System.out.println(width + " " + Arrays.toString(weights));
 
         //sashForm.setWeights(weights);
 	}

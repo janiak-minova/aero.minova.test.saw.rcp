@@ -21,6 +21,7 @@ import org.eclipse.e4.ui.di.UIEventTopic;
 import org.eclipse.e4.ui.model.application.ui.MUILabel;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.e4.ui.model.application.ui.menu.MToolBarElement;
+import org.eclipse.e4.ui.services.EMenuService;
 import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -113,6 +114,8 @@ public class ContactPart implements GroupListViewer {
 	private ESelectionService service;
 	@Inject
 	private Shell shell;
+	@Inject
+	EMenuService menuService;
 
 	@Inject
 	public ContactPart() {}
@@ -229,9 +232,12 @@ public class ContactPart implements GroupListViewer {
 		ViewportLayer viewportLayer = new ViewportLayer(selectionLayerContact);
 		viewportLayer.setRegionName(GridRegion.BODY);
 
-		contactTable = new NatTable(contactList, viewportLayer);
+		contactTable = new NatTable(contactList, viewportLayer, true);
 
-		DragAndDropSupportContacts dndContact = new DragAndDropSupportContacts(contactTable, selectionLayerContact, contacts);
+		// Rightclick Menu
+		menuService.registerContextMenu(contactTable, "aero.minova.test.saw.rcp.popupmenu.contactMenu");
+
+		DragAndDropSupportContacts dndContact = new DragAndDropSupportContacts(contactTable, selectionLayerContact);
 		Transfer[] transferFile = { FileTransfer.getInstance() };
 		contactTable.addDragSupport(DND.DROP_COPY, transferFile, dndContact);
 		contactTable.addDropSupport(DND.DROP_COPY, transferFile, dndContact);
