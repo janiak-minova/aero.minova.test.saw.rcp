@@ -52,6 +52,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -234,8 +235,20 @@ public class ContactPart implements GroupListViewer {
 
 		contactTable = new NatTable(contactList, viewportLayer, true);
 
-		// Rightclick Menu
+		// Rechtsklick-Menü
 		menuService.registerContextMenu(contactTable, "aero.minova.test.saw.rcp.popupmenu.contactMenu");
+		contactTable.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {}
+
+			@Override
+			public void mouseUp(MouseEvent e) {}
+
+			@Override
+			public void mouseDown(MouseEvent e) {
+				selectionLayerContact.selectRow(0, contactTable.getRowPositionByY(e.y), false, false);
+			}
+		});
 
 		DragAndDropSupportContacts dndContact = new DragAndDropSupportContacts(contactTable, selectionLayerContact);
 		Transfer[] transferFile = { FileTransfer.getInstance() };

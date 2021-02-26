@@ -5,9 +5,12 @@
       <children xsi:type="basic:PartStack" xmi:id="_6wlLk8gZEeSyMNYR5xypkQ" elementId="aero.minova.test.saw.rcp.partstack.sample">
         <children xsi:type="basic:Part" xmi:id="_cWiE4F5NEeueVs-Fc5A0nw" elementId="aero.minova.test.saw.rcp.part.kontakte" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.ContactPart" label="Kontakte" iconURI="platform:/plugin/aero.minova.test.saw.rcp/icons/contacts.png">
           <menus xsi:type="menu:PopupMenu" xmi:id="_92J2cHK-EeuRMfXqjRvjrw" elementId="aero.minova.test.saw.rcp.popupmenu.contactMenu">
-            <children xsi:type="menu:HandledMenuItem" xmi:id="_BBaRgHK_EeuRMfXqjRvjrw" elementId="aero.minova.test.saw.rcp.handledmenuitem.bearbeiten" label="Bearbeiten"/>
-            <children xsi:type="menu:HandledMenuItem" xmi:id="_HPI_EHK_EeuRMfXqjRvjrw" elementId="aero.minova.test.saw.rcp.handledmenuitem.exportieren" label="Exportieren"/>
-            <children xsi:type="menu:HandledMenuItem" xmi:id="_FxeHMHK_EeuRMfXqjRvjrw" elementId="aero.minova.test.saw.rcp.handledmenuitem.lschen" label="Löschen"/>
+            <children xsi:type="menu:HandledMenuItem" xmi:id="_BBaRgHK_EeuRMfXqjRvjrw" elementId="aero.minova.test.saw.rcp.handledmenuitem.bearbeiten" label="Bearbeiten" command="_34WgUF47EeueVs-Fc5A0nw"/>
+            <children xsi:type="menu:HandledMenuItem" xmi:id="_HPI_EHK_EeuRMfXqjRvjrw" elementId="aero.minova.test.saw.rcp.handledmenuitem.exportieren" label="Exportieren" command="_q5SJkG-ZEeuRMfXqjRvjrw"/>
+            <children xsi:type="menu:HandledMenuItem" xmi:id="_FxeHMHK_EeuRMfXqjRvjrw" elementId="aero.minova.test.saw.rcp.handledmenuitem.lschen" label="Löschen" command="_0EyP8GugEeu4fNbMuvXYeg"/>
+          </menus>
+          <menus xsi:type="menu:PopupMenu" xmi:id="_nG0zEHUUEeuRMfXqjRvjrw" elementId="aero.minova.test.saw.rcp.popupmenu.groupMenu" label="">
+            <children xsi:type="menu:HandledMenuItem" xmi:id="_pcAhwHUUEeuRMfXqjRvjrw" elementId="aero.minova.test.saw.rcp.handledmenuitem.lschen" label="Löschen"/>
           </menus>
           <toolbar xmi:id="_iLHSoF5NEeueVs-Fc5A0nw" elementId="aero.minova.test.saw.rcp.toolbar.0">
             <children xsi:type="menu:HandledToolItem" xmi:id="_dGhxAGuLEeu4fNbMuvXYeg" elementId="aero.minova.test.saw.rcp.handledtoolitem.neu" label="Neu" enabled="false" command="_foILEGuLEeu4fNbMuvXYeg"/>
