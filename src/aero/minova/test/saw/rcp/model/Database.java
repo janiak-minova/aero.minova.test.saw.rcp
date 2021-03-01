@@ -130,7 +130,7 @@ public class Database {
 		addContact("Test", "Thorsten Schuster");
 		addContact("Test", "Ursula Fischer");
 
-		addContact("Company", "Tim Biermann", "www.homepage.de", "12345678", "some notes", "icons/user2.png");
+		addContact("Company", "Tim Biermann", "www.homepage.de", "12345678", "tim.biermann@gmail.com", "some notes", "icons/user2.png");
 		addContact("Company", "Andrea Zimmer", "", "03381 15 45 05", "");
 
 		addGroup(List.of(getContactById(0), getContactById(1)), "Freunde");

@@ -12,7 +12,7 @@
           <menus xsi:type="menu:PopupMenu" xmi:id="_nG0zEHUUEeuRMfXqjRvjrw" elementId="aero.minova.test.saw.rcp.popupmenu.groupMenu" label="Group Menu">
             <children xsi:type="menu:HandledMenuItem" xmi:id="_2vgYsHplEeuri8i5zazpEQ" elementId="aero.minova.test.saw.rcp.handledmenuitem.exportgroup" label="Gruppe Exportieren" command="_tQzFwHppEeuri8i5zazpEQ"/>
             <children xsi:type="menu:HandledMenuItem" xmi:id="_pcAhwHUUEeuRMfXqjRvjrw" elementId="aero.minova.test.saw.rcp.handledmenuitem.deletegroup" label="Gruppe Löschen" command="_jnX0wHpmEeuri8i5zazpEQ"/>
-            <children xsi:type="menu:HandledMenuItem" xmi:id="_SRLlAHpmEeuri8i5zazpEQ" elementId="aero.minova.test.saw.rcp.handledmenuitem.sendmail" label="E-Mail an Gruppe schicken"/>
+            <children xsi:type="menu:HandledMenuItem" xmi:id="_SRLlAHpmEeuri8i5zazpEQ" elementId="aero.minova.test.saw.rcp.handledmenuitem.sendmail" label="E-Mail an Gruppe schicken" command="_nHnqkHp1Eeuri8i5zazpEQ"/>
           </menus>
           <toolbar xmi:id="_iLHSoF5NEeueVs-Fc5A0nw" elementId="aero.minova.test.saw.rcp.toolbar.0">
             <children xsi:type="menu:HandledToolItem" xmi:id="_dGhxAGuLEeu4fNbMuvXYeg" elementId="aero.minova.test.saw.rcp.handledtoolitem.neu" label="Neu" enabled="false" command="_foILEGuLEeu4fNbMuvXYeg"/>
@@ -69,6 +69,7 @@
   <handlers xmi:id="_zfRvAG-ZEeuRMfXqjRvjrw" elementId="aero.minova.test.saw.rcp.handler.exportVCard" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.handlers.VCardExportHandler" command="_q5SJkG-ZEeuRMfXqjRvjrw"/>
   <handlers xmi:id="_nQrdwHpmEeuri8i5zazpEQ" elementId="aero.minova.test.saw.rcp.handler.deleteGroup" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.handlers.DeleteGroupHandler" command="_jnX0wHpmEeuri8i5zazpEQ"/>
   <handlers xmi:id="_u4BiQHppEeuri8i5zazpEQ" elementId="aero.minova.test.saw.rcp.handler.exportGroup" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.handlers.ExportGroupHandler" command="_tQzFwHppEeuri8i5zazpEQ"/>
+  <handlers xmi:id="_ppaR4Hp1Eeuri8i5zazpEQ" elementId="aero.minova.test.saw.rcp.handler.sendMail" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.handlers.SendMailHandler" command="_nHnqkHp1Eeuri8i5zazpEQ"/>
   <bindingTables xmi:id="_6wlLfsgZEeSyMNYR5xypkQ" elementId="aero.minova.test.saw.rcp.bindingtable" bindingContext="_6wlLecgZEeSyMNYR5xypkQ">
     <bindings xmi:id="_6wlLf8gZEeSyMNYR5xypkQ" elementId="aero.minova.test.saw.rcp.keybinding.m1q" keySequence="M1+Q" command="_6wlLfMgZEeSyMNYR5xypkQ"/>
     <bindings xmi:id="_6wlLgsgZEeSyMNYR5xypkQ" elementId="aero.minova.test.saw.rcp.keybinding.m1o" keySequence="M1+O" command="_6wlLgMgZEeSyMNYR5xypkQ"/>
@@ -92,6 +93,7 @@
   <commands xmi:id="_q5SJkG-ZEeuRMfXqjRvjrw" elementId="aero.minova.test.saw.rcp.command.exportvcard" commandName="exportVCard"/>
   <commands xmi:id="_jnX0wHpmEeuri8i5zazpEQ" elementId="aero.minova.test.saw.rcp.command.deletegroup" commandName="deleteGroup"/>
   <commands xmi:id="_tQzFwHppEeuri8i5zazpEQ" elementId="aero.minova.test.saw.rcp.command.exportgroup" commandName="exportGroup"/>
+  <commands xmi:id="_nHnqkHp1Eeuri8i5zazpEQ" elementId="aero.minova.test.saw.rcp.command.sendmail" commandName="sendMail"/>
   <addons xmi:id="_6wlLcsgZEeSyMNYR5xypkQ" elementId="org.eclipse.e4.core.commands.service" contributionURI="bundleclass://org.eclipse.e4.core.commands/org.eclipse.e4.core.commands.CommandServiceAddon"/>
   <addons xmi:id="_6wlLc8gZEeSyMNYR5xypkQ" elementId="org.eclipse.e4.ui.contexts.service" contributionURI="bundleclass://org.eclipse.e4.ui.services/org.eclipse.e4.ui.services.ContextServiceAddon"/>
   <addons xmi:id="_6wlLdMgZEeSyMNYR5xypkQ" elementId="org.eclipse.e4.ui.bindings.service" contributionURI="bundleclass://org.eclipse.e4.ui.bindings/org.eclipse.e4.ui.bindings.BindingServiceAddon"/>

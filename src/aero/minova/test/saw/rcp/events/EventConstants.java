@@ -12,4 +12,6 @@ public interface EventConstants {
 
 	String DELETE_GROUP = "DELETE_GROUP";
 	String EXPORT_GROUP = "EXPORT_GROUP";
+
+	String SEND_MAIL = "SEND_MAIL";
 }

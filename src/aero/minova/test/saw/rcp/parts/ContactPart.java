@@ -72,6 +72,7 @@ import aero.minova.test.saw.rcp.handlers.DragAndDropSupportContacts;
 import aero.minova.test.saw.rcp.handlers.DragAndDropSupportGroups;
 import aero.minova.test.saw.rcp.handlers.EditorConfigurationGrouplist;
 import aero.minova.test.saw.rcp.handlers.GroupColumnPropertyAccessor;
+import aero.minova.test.saw.rcp.handlers.SendMailHandler;
 import aero.minova.test.saw.rcp.handlers.VCardExportHandler;
 import aero.minova.test.saw.rcp.model.Contact;
 import aero.minova.test.saw.rcp.model.ContactDetailEntry;
@@ -507,6 +508,12 @@ public class ContactPart implements GroupListViewer {
 	@Optional
 	private void subscribeTopicExportGroup(@UIEventTopic(EventConstants.EXPORT_GROUP) String e) {
 		VCardExportHandler.exportVCard(selectedGroups.get(0));
+	}
+
+	@Inject
+	@Optional
+	private void subscribeTopicSendMail(@UIEventTopic(EventConstants.SEND_MAIL) String e) {
+		SendMailHandler.sendMail(selectedGroups.get(0));
 	}
 
 	@Inject
