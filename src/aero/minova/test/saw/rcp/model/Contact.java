@@ -18,6 +18,7 @@ public class Contact {
 	private String title = "";
 	private String homepage = "";
 	private String phonenumber = "";
+	private String mail = "";
 	private String notes = "";
 	private final long id;
 	private String picLocation = "";
@@ -58,6 +59,18 @@ public class Contact {
 		this.firstName = firstName;
 		this.homepage = homepage;
 		this.phonenumber = phonenumber;
+		this.notes = notes;
+		this.picLocation = picLocation;
+		this.id = id;
+	}
+
+	public Contact(String company, String firstName, String homepage, String phonenumber, String mail, String notes, String picLocation, long id) {
+		super();
+		this.company = company;
+		this.firstName = firstName;
+		this.homepage = homepage;
+		this.phonenumber = phonenumber;
+		this.mail = mail;
 		this.notes = notes;
 		this.picLocation = picLocation;
 		this.id = id;

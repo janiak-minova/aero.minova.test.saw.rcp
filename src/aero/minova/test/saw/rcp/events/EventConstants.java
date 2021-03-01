@@ -9,4 +9,7 @@ public interface EventConstants {
 	String REFRESH_CONTACTS = "REFRESH_CONTACTS";
 	String EXPORT_VCARD = "EXPORT_VCARD";
 	String CONTACT_EXISTS = "CONTACT_EXISTS";
+
+	String DELETE_GROUP = "DELETE_GROUP";
+	String EXPORT_GROUP = "EXPORT_GROUP";
 }

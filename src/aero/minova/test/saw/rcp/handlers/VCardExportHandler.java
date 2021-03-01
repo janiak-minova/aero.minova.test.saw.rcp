@@ -3,6 +3,7 @@ package aero.minova.test.saw.rcp.handlers;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -16,6 +17,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import aero.minova.test.saw.rcp.events.EventConstants;
 import aero.minova.test.saw.rcp.model.Contact;
+import aero.minova.test.saw.rcp.model.Group;
 import ezvcard.VCard;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.property.StructuredName;
@@ -36,11 +38,19 @@ public class VCardExportHandler {
 	}
 
 	public static void exportVCard(Contact c) {
-
 		String vCardString = getVCardString(c);
+		writeVCard(vCardString, c.getFirstName());
+	}
+
+	public static void exportVCard(Group g) {
+		String vCardString = getVCardString(g.getMembers());
+		writeVCard(vCardString, g.getName());
+	}
+
+	public static void writeVCard(String vCardString, String filename) {
 
 		FileDialog dialog = new FileDialog(new Shell(), SWT.SAVE);
-		dialog.setFileName(c.getFirstName() + ".vcf");
+		dialog.setFileName(filename + ".vcf");
 		String open = dialog.open();
 
 		if (open != null) {
@@ -55,6 +65,14 @@ public class VCardExportHandler {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public static String getVCardString(List<Contact> contacts) {
+		String vCardString = "";
+		for (Contact c : contacts) {
+			vCardString += getVCardString(c);
+		}
+		return vCardString;
 	}
 
 	public static String getVCardString(Contact c) {

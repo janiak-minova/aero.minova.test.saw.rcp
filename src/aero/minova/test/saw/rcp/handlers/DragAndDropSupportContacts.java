@@ -50,7 +50,6 @@ public class DragAndDropSupportContacts implements DragSourceListener, DropTarge
 	@SuppressWarnings("unchecked")
 	@Override
 	public void dragSetData(DragSourceEvent event) {
-		// we know that we use the RowSelectionModel with single selection
 		List<Contact> selection = ((RowSelectionModel<Contact>) this.selectionLayer.getSelectionModel()).getSelectedRowObjects();
 		List<String> paths = new ArrayList<String>();
 		for (int i = 0; i < selection.size(); i++) {
@@ -79,7 +78,7 @@ public class DragAndDropSupportContacts implements DragSourceListener, DropTarge
 		this.draggedContact = null;
 
 		// clear selection
-		this.selectionLayer.clear();
+		// this.selectionLayer.clear();
 
 		this.natTable.refresh();
 	}

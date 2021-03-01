@@ -3,6 +3,8 @@ package aero.minova.test.saw.rcp.handlers;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -41,11 +43,16 @@ public class VCardImportHandler {
 		}
 	}
 
-	public static Contact createContactFromString(String contactString) {
-		VCard vcard = readVCard(contactString);
-		Contact c = createContact(vcard);
+	public static List<Contact> createContactFromString(String contactString) {
 
-		return c;
+		List<VCard> vCardList = readVCard(contactString);
+		List<Contact> contacts = new ArrayList<Contact>();
+		for (VCard vCard : vCardList) {
+			Contact c = createContact(vCard);
+			contacts.add(c);
+		}
+
+		return contacts;
 	}
 
 	@CanExecute
@@ -53,9 +60,12 @@ public class VCardImportHandler {
 		return true;
 	}
 
-	public static VCard readVCard(String vCardString) {
-		VCard vcard = Ezvcard.parse(vCardString).first();
-		return vcard;
+	public static List<VCard> readVCard(String vCardString) {
+		List<VCard> vCardList = new ArrayList<VCard>();
+		for (VCard vCard : Ezvcard.parse(vCardString).all()) {
+			vCardList.add(vCard);
+		}
+		return vCardList;
 	}
 
 	// TODO einzelne Einträge seperat behandeln? (Falls einzelne Einträge nicht vorhanden sind)

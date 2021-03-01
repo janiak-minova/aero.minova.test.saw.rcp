@@ -41,7 +41,6 @@ import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.nebula.widgets.nattable.layer.cell.ColumnOverrideLabelAccumulator;
 import org.eclipse.nebula.widgets.nattable.selection.RowSelectionModel;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
-import org.eclipse.nebula.widgets.nattable.selection.config.DefaultRowSelectionLayerConfiguration;
 import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -70,7 +69,7 @@ import org.osgi.framework.FrameworkUtil;
 import aero.minova.test.saw.rcp.events.EventConstants;
 import aero.minova.test.saw.rcp.handlers.ContactColumnPropertyAccessor;
 import aero.minova.test.saw.rcp.handlers.DragAndDropSupportContacts;
-import aero.minova.test.saw.rcp.handlers.DropSupportGroups;
+import aero.minova.test.saw.rcp.handlers.DragAndDropSupportGroups;
 import aero.minova.test.saw.rcp.handlers.EditorConfigurationGrouplist;
 import aero.minova.test.saw.rcp.handlers.GroupColumnPropertyAccessor;
 import aero.minova.test.saw.rcp.handlers.VCardExportHandler;
@@ -123,7 +122,7 @@ public class ContactPart implements GroupListViewer {
 
 	@PostConstruct
 	public void postConstruct(Composite parent) {
-		shell.setBounds(3500, -500, 800, 600);
+		shell.setBounds(-1200, -500, 800, 600);
 
 		contacts = new ArrayList<Contact>(db.getContacts());
 		groups = db.getGroups();
@@ -156,7 +155,13 @@ public class ContactPart implements GroupListViewer {
 		bodyDataLayerGroup = new DataLayer(bodyDataProvider);
 
 		selectionLayerGroup = new SelectionLayer(bodyDataLayerGroup);
-		selectionLayerGroup.addConfiguration(new DefaultRowSelectionLayerConfiguration());
+		// selectionLayerGroup.addConfiguration(new DefaultRowSelectionLayerConfiguration());
+		selectionLayerGroup.setSelectionModel(new RowSelectionModel<>(selectionLayerGroup, bodyDataProvider, new IRowIdAccessor<Group>() {
+			@Override
+			public Serializable getRowId(Group rowObject) {
+				return rowObject.getGroupID();
+			}
+		}, true));
 		E4SelectionListener<Group> eslGroup = new E4SelectionListener<Group>(service, selectionLayerGroup, bodyDataProvider);
 		selectionLayerGroup.addLayerListener(eslGroup);
 
@@ -165,8 +170,26 @@ public class ContactPart implements GroupListViewer {
 
 		groupTable = new NatTable(groupList, viewportLayer, false);
 
-		DropSupportGroups dndSupport = new DropSupportGroups(groupTable);
+		menuService.registerContextMenu(groupTable, "aero.minova.test.saw.rcp.popupmenu.groupMenu");
+		groupTable.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {}
+
+			@Override
+			public void mouseUp(MouseEvent e) {}
+
+			// Wähle Gruppe bei Rechtsklick
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (e.button == 3) {
+					selectionLayerGroup.selectRow(0, groupTable.getRowPositionByY(e.y), false, false);
+				}
+			}
+		});
+
+		DragAndDropSupportGroups dndSupport = new DragAndDropSupportGroups(groupTable, selectionLayerGroup);
 		Transfer[] transfer = { FileTransfer.getInstance() };
+		groupTable.addDragSupport(DND.DROP_COPY, transfer, dndSupport);
 		groupTable.addDropSupport(DND.DROP_COPY, transfer, dndSupport);
 
 		// Edit support
@@ -244,9 +267,12 @@ public class ContactPart implements GroupListViewer {
 			@Override
 			public void mouseUp(MouseEvent e) {}
 
+			// Wähle Kontakt bei Rechtsklick
 			@Override
 			public void mouseDown(MouseEvent e) {
-				selectionLayerContact.selectRow(0, contactTable.getRowPositionByY(e.y), false, false);
+				if (e.button == 3) {
+					selectionLayerContact.selectRow(0, contactTable.getRowPositionByY(e.y), false, false);
+				}
 			}
 		});
 
@@ -285,6 +311,7 @@ public class ContactPart implements GroupListViewer {
 		entries.put("Firma", new ContactDetailEntry(body, "Firma", "Konzern"));
 		entries.put("Telefon", new ContactDetailEntry(body, "Privat", "Telefon Nummer"));
 		entries.put("Homepage", new ContactDetailEntry(body, "Homepage", "URL"));
+		entries.put("Mail", new ContactDetailEntry(body, "E-Mail", "E-Mail"));
 
 		// Notizen
 		notesLabel = new Label(body, SWT.RIGHT | SWT.TOP);
@@ -474,6 +501,18 @@ public class ContactPart implements GroupListViewer {
 	@Optional
 	private void subscribeTopicExportVCard(@UIEventTopic(EventConstants.EXPORT_VCARD) String e) {
 		VCardExportHandler.exportVCard(currentContact);
+	}
+
+	@Inject
+	@Optional
+	private void subscribeTopicExportGroup(@UIEventTopic(EventConstants.EXPORT_GROUP) String e) {
+		VCardExportHandler.exportVCard(selectedGroups.get(0));
+	}
+
+	@Inject
+	@Optional
+	private void subscribeTopicDeleteGroup(@UIEventTopic(EventConstants.DELETE_GROUP) String e) {
+		deleteGroup();
 	}
 
 	private void switchEditable(boolean editable) {
