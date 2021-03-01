@@ -87,17 +87,19 @@ public class VCardImportHandler {
 		String company = "";
 		String homepage = "";
 		String phonenumber = "";
+		String mail = "";
 		String notes = "";
 
 		try {
 			name = vcard.getFormattedName().getValue();
+			mail = vcard.getEmails().get(0).getValue();
 			company = vcard.getOrganization().getValues().get(0);
 			homepage = vcard.getUrls().get(0).getValue();
 			phonenumber = vcard.getTelephoneNumbers().get(0).getText();
 			notes = vcard.getNotes().get(0).getValue();
 		} catch (Exception e) {}
 
-		Contact c = db.addContact(company, name, homepage, phonenumber, notes);
+		Contact c = db.addContact(company, name, homepage, phonenumber, mail, notes, "");
 		broker.send(EventConstants.NEW_CONTACT, c);
 
 		return c;

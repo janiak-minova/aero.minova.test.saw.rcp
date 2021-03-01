@@ -64,6 +64,9 @@ public class ContactDetailEntry {
 		case "Homepage":
 			content = c.getHomepage();
 			break;
+		case "E-Mail":
+			content = c.getMail();
+			break;
 		default:
 			System.err.println("Input not defined for Label " + name.getText());
 		}
@@ -85,6 +88,9 @@ public class ContactDetailEntry {
 			break;
 		case "Homepage":
 			c.setHomepage(input.getText());
+			break;
+		case "E-Mail":
+			c.setMail(input.getText());
 			break;
 		default:
 			System.err.println("Input not defined for Label " + name.getText());

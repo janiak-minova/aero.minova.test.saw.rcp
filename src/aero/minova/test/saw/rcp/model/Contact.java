@@ -70,7 +70,7 @@ public class Contact {
 		this.firstName = firstName;
 		this.homepage = homepage;
 		this.phonenumber = phonenumber;
-		this.mail = mail;
+		this.setMail(mail);
 		this.notes = notes;
 		this.picLocation = picLocation;
 		this.id = id;
@@ -186,6 +186,14 @@ public class Contact {
 
 	public Contact copy() {
 		return new Contact(this.company, this.firstName, this.jobDescription, this.lastName, this.title, this.homepage, this.phonenumber, this.notes, this.id);
+	}
+
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
 	}
 
 }

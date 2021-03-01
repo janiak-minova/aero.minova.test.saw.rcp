@@ -19,6 +19,7 @@ import aero.minova.test.saw.rcp.events.EventConstants;
 import aero.minova.test.saw.rcp.model.Contact;
 import aero.minova.test.saw.rcp.model.Group;
 import ezvcard.VCard;
+import ezvcard.parameter.EmailType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.property.StructuredName;
 
@@ -93,6 +94,7 @@ public class VCardExportHandler {
 		vcard.setOrganization(c.getCompany());
 		vcard.addUrl(c.getHomepage());
 		vcard.addTelephoneNumber(c.getPhonenumber(), TelephoneType.HOME);
+		vcard.addEmail(c.getMail(), EmailType.PREF);
 		vcard.addNote(c.getNotes());
 
 		vcard.addExtendedProperty("X-CONTACTID", c.getId() + "");

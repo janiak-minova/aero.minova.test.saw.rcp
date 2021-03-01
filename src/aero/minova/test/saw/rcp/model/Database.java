@@ -100,6 +100,13 @@ public class Database {
 		return c;
 	}
 
+	public Contact addContact(String company, String name, String homepage, String phonenumber, String mail, String notes, String picLocaiton) {
+		Contact c = new Contact(company, name, homepage, phonenumber, mail, notes, picLocaiton, currentContacts.getAndIncrement());
+		contacts.add(c);
+		getGroupById(0).addMember(c);
+		return c;
+	}
+
 	public List<Group> getGroups() {
 		return groups;
 	}
