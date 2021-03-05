@@ -73,11 +73,12 @@ import aero.minova.test.saw.rcp.handlers.DragAndDropSupportGroups;
 import aero.minova.test.saw.rcp.handlers.EditorConfigurationGrouplist;
 import aero.minova.test.saw.rcp.handlers.GroupColumnPropertyAccessor;
 import aero.minova.test.saw.rcp.handlers.SendMailHandler;
-import aero.minova.test.saw.rcp.handlers.VCardExportHandler;
 import aero.minova.test.saw.rcp.model.Contact;
-import aero.minova.test.saw.rcp.model.ContactDetailEntry;
+import aero.minova.test.saw.rcp.model.ContactPropertyEntry;
 import aero.minova.test.saw.rcp.model.Database;
 import aero.minova.test.saw.rcp.model.Group;
+import aero.minova.test.saw.rcp.vCard.VCardExportHandler;
+import aero.minova.test.saw.rcp.vCard.VCardOptions;
 
 public class ContactPart implements GroupListViewer {
 
@@ -107,7 +108,7 @@ public class ContactPart implements GroupListViewer {
 	private Label notesLabel;
 	private Text notesText;
 	private boolean editable = false;
-	private Map<String, ContactDetailEntry> entries;
+	private Map<String, ContactPropertyEntry> entries;
 
 	@Inject
 	private MPart part;
@@ -289,7 +290,7 @@ public class ContactPart implements GroupListViewer {
 
 	private void createContactDetail(Composite body) {
 
-		entries = new LinkedHashMap<String, ContactDetailEntry>();
+		entries = new LinkedHashMap<String, ContactPropertyEntry>();
 
 		// Layout für Body definieren
 		body.setLayout(new GridLayout(2, false));
@@ -308,11 +309,11 @@ public class ContactPart implements GroupListViewer {
 		});
 
 		// Normale input Felder
-		entries.put("Name", new ContactDetailEntry(body, "Name", "Vorname Nachname"));
-		entries.put("Firma", new ContactDetailEntry(body, "Firma", "Konzern"));
-		entries.put("Telefon", new ContactDetailEntry(body, "Privat", "Telefon Nummer"));
-		entries.put("Homepage", new ContactDetailEntry(body, "Homepage", "URL"));
-		entries.put("Mail", new ContactDetailEntry(body, "E-Mail", "E-Mail"));
+		entries.put(VCardOptions.NAME, new ContactPropertyEntry(body, VCardOptions.NAME));
+		entries.put(VCardOptions.ORG, new ContactPropertyEntry(body, VCardOptions.ORG));
+		entries.put(VCardOptions.TEL, new ContactPropertyEntry(body, VCardOptions.TEL));
+		entries.put(VCardOptions.EMAIL, new ContactPropertyEntry(body, VCardOptions.EMAIL));
+		entries.put(VCardOptions.ADR, new ContactPropertyEntry(body, VCardOptions.ADR));
 
 		// Notizen
 		notesLabel = new Label(body, SWT.RIGHT | SWT.TOP);
@@ -326,7 +327,7 @@ public class ContactPart implements GroupListViewer {
 			public void modifyText(ModifyEvent e) {
 				String newNotes = ((Text) e.widget).getText();
 				if (currentContact != null)
-					currentContact.setNotes(newNotes);
+					currentContact.setProperty(VCardOptions.NOTE, newNotes);
 			}
 		};
 		notesText.addModifyListener(listener);
@@ -366,7 +367,7 @@ public class ContactPart implements GroupListViewer {
 			FileDialog dialog = new FileDialog(new Shell(), SWT.OPEN);
 			dialog.setFilterExtensions(new String[] { "*.png", "*.gif", "*.bmp", "*.jpg", "*.tiff" });
 			String path = dialog.open();
-			currentContact.setPicLocation(path);
+			currentContact.setProperty(VCardOptions.PHOTO, path);
 			addProfilePic(path);
 			System.out.println(path);
 		}
@@ -411,7 +412,7 @@ public class ContactPart implements GroupListViewer {
 	private void filterContactTable(String s) {
 		List<Contact> list = new ArrayList<Contact>();
 		for (Contact c : selectedGroups.get(0).getMembers()) {
-			if (c.getFirstName().toLowerCase().contains(s))
+			if (c.getValue(VCardOptions.NAME).toLowerCase().contains(s))
 				list.add(c);
 		}
 		contacts.clear();
@@ -420,8 +421,8 @@ public class ContactPart implements GroupListViewer {
 	}
 
 	private void updateContactDetail(Contact c) {
-		addProfilePic(c.getPicLocation());
-		notesText.setText(c.getNotes());
+		addProfilePic(c.getValue(VCardOptions.PHOTO));
+		notesText.setText(c.getValue(VCardOptions.NOTE));
 
 		for (String s : entries.keySet()) {
 			entries.get(s).setInput(c);
@@ -471,8 +472,9 @@ public class ContactPart implements GroupListViewer {
 		if (selectedContacts != null) {
 			if (selectedGroups == null || selectedGroups.get(0).getGroupID() == 0) {
 				Contact c = selectedContacts.get(0);
-				MessageDialog dia = new MessageDialog(shell, "Löschen", null, "Wollen Sie den Kontakt \"" + c.getFirstName() + "\" endgültig löschen?",
-						MessageDialog.CONFIRM, new String[] { "Löschen", "Abbrechen" }, 0);
+				MessageDialog dia = new MessageDialog(shell, "Löschen", null,
+						"Wollen Sie den Kontakt \"" + c.getValue(VCardOptions.NAME) + "\" endgültig löschen?", MessageDialog.CONFIRM,
+						new String[] { "Löschen", "Abbrechen" }, 0);
 				int result = dia.open();
 				if (result == 0) {
 					db.removeContact(c);
@@ -481,8 +483,8 @@ public class ContactPart implements GroupListViewer {
 				Group g = db.getGroupById(selectedGroups.get(0).getGroupID());
 				Contact c = selectedContacts.get(0);
 				MessageDialog dia = new MessageDialog(shell, "Entfernen", null,
-						"Wollen Sie den Kontakt \"" + c.getFirstName() + "\" aus der Gruppe \"" + g.getName() + "\" entfernen?", MessageDialog.CONFIRM,
-						new String[] { "Entfernen", "Abbrechen" }, 0);
+						"Wollen Sie den Kontakt \"" + c.getValue(VCardOptions.NAME) + "\" aus der Gruppe \"" + g.getName() + "\" entfernen?",
+						MessageDialog.CONFIRM, new String[] { "Entfernen", "Abbrechen" }, 0);
 				int result = dia.open();
 				if (result == 0) {
 					g.removeMember(c);
@@ -525,7 +527,7 @@ public class ContactPart implements GroupListViewer {
 	private void switchEditable(boolean editable) {
 		this.editable = editable;
 
-		// Change label
+		// Change Text on Edit button
 		for (MToolBarElement item : part.getToolbar().getChildren()) {
 			if ("aero.minova.test.saw.rcp.handledtoolitem.bearbeiten".equals(item.getElementId())) {
 				if (editable) {
@@ -538,10 +540,10 @@ public class ContactPart implements GroupListViewer {
 		}
 
 		for (String s : entries.keySet()) {
-			entries.get(s).getInput().setEditable(editable);
+			entries.get(s).setEditable(editable);
 		}
-		if (editable)
-			entries.get("Name").getInput().setFocus();
+//		if (editable)
+//			entries.get("Name").getInput().setFocus();
 		updateVisibility(editable);
 
 		// Update Contact
@@ -554,28 +556,28 @@ public class ContactPart implements GroupListViewer {
 	private void saveChanges() {
 		if (currentContact != null) {
 			for (String s : entries.keySet()) {
-				entries.get(s).updateContact(currentContact);
+				entries.get(s).updateContact();
 			}
 		}
 	}
 
 	public void updateVisibility(boolean allVisible) {
-		for (String name : entries.keySet()) {
-			ContactDetailEntry entry = entries.get(name);
-			boolean vis = allVisible || !entry.getInput().getText().strip().equals("");
-
-			GridData gd = (GridData) entry.getName().getLayoutData();
-			gd.exclude = !vis;
-			entry.getName().setVisible(vis);
-
-			gd = (GridData) entry.getInput().getLayoutData();
-			gd.exclude = !vis;
-			entry.getInput().setVisible(vis);
-
-			gd = (GridData) entry.getSeperator().getLayoutData();
-			gd.exclude = !vis;
-			entry.getSeperator().setVisible(vis);
-		}
+//		for (String name : entries.keySet()) {
+//			ContactPropertyEntry entry = entries.get(name);
+//			boolean vis = allVisible || !entry.getInput().getText().strip().equals("");
+//
+//			GridData gd = (GridData) entry.getName().getLayoutData();
+//			gd.exclude = !vis;
+//			entry.getName().setVisible(vis);
+//
+//			gd = (GridData) entry.getInput().getLayoutData();
+//			gd.exclude = !vis;
+//			entry.getInput().setVisible(vis);
+//
+//			gd = (GridData) entry.getSeperator().getLayoutData();
+//			gd.exclude = !vis;
+//			entry.getSeperator().setVisible(vis);
+//		}
 		contactDetail.requestLayout();
 	}
 

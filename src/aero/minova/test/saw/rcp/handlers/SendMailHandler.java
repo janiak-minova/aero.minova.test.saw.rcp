@@ -15,6 +15,7 @@ import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import aero.minova.test.saw.rcp.events.EventConstants;
 import aero.minova.test.saw.rcp.model.Contact;
 import aero.minova.test.saw.rcp.model.Group;
+import aero.minova.test.saw.rcp.vCard.VCardOptions;
 
 public class SendMailHandler {
 
@@ -37,8 +38,8 @@ public class SendMailHandler {
 
 			String recipients = ",";
 			for (Contact c : g.getMembers()) {
-				if (!c.getMail().equals("")) {
-					recipients += c.getMail() + ",";
+				if (!c.getValue(VCardOptions.EMAIL).equals("")) {
+					recipients += c.getValue(VCardOptions.EMAIL) + ",";
 				}
 			}
 

@@ -22,6 +22,8 @@ import org.eclipse.swt.graphics.Point;
 import aero.minova.test.saw.rcp.model.Contact;
 import aero.minova.test.saw.rcp.model.Database;
 import aero.minova.test.saw.rcp.model.Group;
+import aero.minova.test.saw.rcp.vCard.VCardExportHandler;
+import aero.minova.test.saw.rcp.vCard.VCardImportHandler;
 
 public class DragAndDropSupportGroups implements DragSourceListener, DropTargetListener {
 
@@ -58,7 +60,7 @@ public class DragAndDropSupportGroups implements DragSourceListener, DropTargetL
 				String content;
 				try {
 					content = new String(Files.readAllBytes(Paths.get(path)));
-					Contact c = VCardImportHandler.createContactFromString(content).get(0);
+					Contact c = VCardImportHandler.createContactsFromString(content).get(0);
 					Group g = db.getGroupByPosition(getRowPosition(event));
 					g.addMember(c);
 					this.natTable.refresh();

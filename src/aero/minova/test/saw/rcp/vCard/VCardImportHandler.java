@@ -1,9 +1,10 @@
-package aero.minova.test.saw.rcp.handlers;
+package aero.minova.test.saw.rcp.vCard;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -21,6 +22,7 @@ import aero.minova.test.saw.rcp.model.Contact;
 import aero.minova.test.saw.rcp.model.Database;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
+import ezvcard.property.VCardProperty;
 
 public class VCardImportHandler {
 
@@ -39,11 +41,11 @@ public class VCardImportHandler {
 			try {
 				content = new String(Files.readAllBytes(Paths.get(path)));
 			} catch (IOException e) {}
-			createContactFromString(content);
+			createContactsFromString(content);
 		}
 	}
 
-	public static List<Contact> createContactFromString(String contactString) {
+	public static List<Contact> createContactsFromString(String contactString) {
 
 		List<VCard> vCardList = readVCard(contactString);
 		List<Contact> contacts = new ArrayList<Contact>();
@@ -68,41 +70,28 @@ public class VCardImportHandler {
 		return vCardList;
 	}
 
-	// TODO einzelne Einträge seperat behandeln? (Falls einzelne Einträge nicht vorhanden sind)
-
 	public static Contact createContact(VCard vcard) {
 
-		String sid = "-100";
-		try {
-			sid = vcard.getExtendedProperties("X-CONTACTID").get(0).getValue();
-		} catch (IndexOutOfBoundsException e) {}
-		int id = Integer.parseInt(sid);
-		if (db.getContactById(id) != null) {
-			// TODO Duplicate anders behandeln?
-			// broker.send(EventConstants.CONTACT_EXISTS, "");
-			return db.getContactById(id);
+		// TODO: check dupes based on name
+		if (db.getContactById(-10) != null) {
+			return db.getContactById(-10);
 		}
 
-		String name = "";
-		String company = "";
-		String homepage = "";
-		String phonenumber = "";
-		String mail = "";
-		String notes = "";
+		Contact c = db.addContact();
+		for (VCardProperty prop : vcard.getProperties()) {
+			String propString = VCardMapping.getPropertyString(prop);
+			if (Arrays.asList(VCardOptions.PROPERTIES).contains(propString)) {
+				String type = prop.getParameter("TYPE");
+				String value = VCardMapping.getValue(prop);
+				if (VCardOptions.TYPES.get(propString) != null && Arrays.asList(VCardOptions.TYPES.get(propString)).contains(type)) {
+					c.setProperty(propString, type, value);
+				} else {
+					c.setProperty(propString, value);
+				}
+			}
+		}
 
-		try {
-			name = vcard.getFormattedName().getValue();
-			mail = vcard.getEmails().get(0).getValue();
-			company = vcard.getOrganization().getValues().get(0);
-			homepage = vcard.getUrls().get(0).getValue();
-			phonenumber = vcard.getTelephoneNumbers().get(0).getText();
-			notes = vcard.getNotes().get(0).getValue();
-		} catch (Exception e) {}
-
-		Contact c = db.addContact(company, name, homepage, phonenumber, mail, notes, "");
 		broker.send(EventConstants.NEW_CONTACT, c);
-
 		return c;
 	}
-
 }

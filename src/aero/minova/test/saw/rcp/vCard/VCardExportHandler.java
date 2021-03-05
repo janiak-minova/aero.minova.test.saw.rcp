@@ -1,4 +1,4 @@
-package aero.minova.test.saw.rcp.handlers;
+package aero.minova.test.saw.rcp.vCard;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -19,9 +19,7 @@ import aero.minova.test.saw.rcp.events.EventConstants;
 import aero.minova.test.saw.rcp.model.Contact;
 import aero.minova.test.saw.rcp.model.Group;
 import ezvcard.VCard;
-import ezvcard.parameter.EmailType;
-import ezvcard.parameter.TelephoneType;
-import ezvcard.property.StructuredName;
+import ezvcard.property.RawProperty;
 
 public class VCardExportHandler {
 
@@ -40,7 +38,7 @@ public class VCardExportHandler {
 
 	public static void exportVCard(Contact c) {
 		String vCardString = getVCardString(c);
-		writeVCard(vCardString, c.getFirstName());
+		writeVCard(vCardString, c.getValue(VCardOptions.NAME));
 	}
 
 	public static void exportVCard(Group g) {
@@ -80,24 +78,14 @@ public class VCardExportHandler {
 
 		VCard vcard = new VCard();
 
-		// TODO change to fit first/last name
-		StructuredName sname = new StructuredName();
-		if (c.getFirstName().contains(" ")) {
-			sname.setFamily(c.getFirstName().split(" ")[1]);
-			sname.setGiven(c.getFirstName().split(" ")[0]);
-		} else {
-			sname.setFamily(c.getFirstName());
+		for (String property : c.getProperties()) {
+			for (String type : c.getTypesAndValues(property).keySet()) {
+				RawProperty raw = vcard.addExtendedProperty(property, c.getTypesAndValues(property).get(type));
+				if (!type.equals("")) {
+					raw.setParameter("TYPE", type);
+				}
+			}
 		}
-		vcard.setStructuredName(sname);
-
-		vcard.setFormattedName(c.getFirstName());
-		vcard.setOrganization(c.getCompany());
-		vcard.addUrl(c.getHomepage());
-		vcard.addTelephoneNumber(c.getPhonenumber(), TelephoneType.HOME);
-		vcard.addEmail(c.getMail(), EmailType.PREF);
-		vcard.addNote(c.getNotes());
-
-		vcard.addExtendedProperty("X-CONTACTID", c.getId() + "");
 
 		return vcard.write();
 	}

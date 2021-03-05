@@ -46,11 +46,11 @@ NatTable {
 	font-weight: normal;
 	font-style: normal;
 	font-family: tahoma;
-	font-size: 11px;
 	tree-structure-painter: background tree;
 	text-align: left;
 	padding-left: 7px;
 	
+	font-size: 11px;
 	--fontSizeGeneral: attr(font-size)
 }
 

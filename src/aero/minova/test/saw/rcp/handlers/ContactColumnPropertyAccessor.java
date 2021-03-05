@@ -3,27 +3,34 @@ package aero.minova.test.saw.rcp.handlers;
 import org.eclipse.nebula.widgets.nattable.data.IColumnPropertyAccessor;
 
 import aero.minova.test.saw.rcp.model.Contact;
+import aero.minova.test.saw.rcp.vCard.VCardOptions;
 
 public class ContactColumnPropertyAccessor implements IColumnPropertyAccessor<Contact> {
 
 	@Override
 	public Object getDataValue(Contact c, int columnIndex) {
 		switch (columnIndex) {
-		case 0: return c.getFirstName();
-		case 1: return c.getCompany();
-		default: return "UNDEFINED";
-		
+		case 0:
+			return c.getValue(VCardOptions.NAME);
+		case 1:
+			return c.getValue(VCardOptions.ORG);
+		default:
+			return "UNDEFINED";
+
 		}
 	}
 
 	@Override
 	public void setDataValue(Contact c, int columnIndex, Object newValue) {
 		switch (columnIndex) {
-			case 0: c.setFirstName(String.valueOf(newValue));
-			case 1: c.setCompany(String.valueOf(newValue));
-			default: throw new IllegalArgumentException("column number out of range");
+		case 0:
+			c.setProperty(VCardOptions.NAME, String.valueOf(newValue));
+		case 1:
+			c.setProperty(VCardOptions.ORG, String.valueOf(newValue));
+		default:
+			throw new IllegalArgumentException("column number out of range");
 		}
-		
+
 	}
 
 	@Override

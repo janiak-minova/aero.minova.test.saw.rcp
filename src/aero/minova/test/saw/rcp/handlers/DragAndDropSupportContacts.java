@@ -25,6 +25,9 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 
 import aero.minova.test.saw.rcp.model.Contact;
+import aero.minova.test.saw.rcp.vCard.VCardExportHandler;
+import aero.minova.test.saw.rcp.vCard.VCardImportHandler;
+import aero.minova.test.saw.rcp.vCard.VCardOptions;
 
 public class DragAndDropSupportContacts implements DragSourceListener, DropTargetListener {
 
@@ -56,7 +59,7 @@ public class DragAndDropSupportContacts implements DragSourceListener, DropTarge
 			this.draggedContact = selection.get(i);
 
 			try {
-				File file = File.createTempFile(draggedContact.getFirstName(), ".vcf");
+				File file = File.createTempFile(draggedContact.getValue(VCardOptions.NAME), ".vcf");
 				FileWriter myWriter = new FileWriter(file.getAbsolutePath());
 				myWriter.write(VCardExportHandler.getVCardString(draggedContact));
 				myWriter.close();
@@ -108,7 +111,7 @@ public class DragAndDropSupportContacts implements DragSourceListener, DropTarge
 				if (path.contains(".vcf")) {
 					try {
 						String content = new String(Files.readAllBytes(Paths.get(path)));
-						VCardImportHandler.createContactFromString(content);
+						VCardImportHandler.createContactsFromString(content);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

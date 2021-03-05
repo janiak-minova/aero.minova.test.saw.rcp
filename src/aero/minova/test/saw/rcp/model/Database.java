@@ -3,8 +3,8 @@ package aero.minova.test.saw.rcp.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
+
+import aero.minova.test.saw.rcp.vCard.VCardOptions;
 
 public class Database {
 
@@ -33,19 +33,19 @@ public class Database {
 		return contacts;
 	}
 
-	public Contact getContactById(long id) {
-		for (Contact c : contacts) {
-			if (c.getId() == id) {
-				return c;
+	public Group getGroupById(long id) {
+		for (Group g : groups) {
+			if (g.getGroupID() == id) {
+				return g;
 			}
 		}
 		return null;
 	}
 
-	public Group getGroupById(long id) {
-		for (Group g : groups) {
-			if (g.getGroupID() == id) {
-				return g;
+	public Contact getContactById(long id) {
+		for (Contact c : contacts) {
+			if (c.getId() == id) {
+				return c;
 			}
 		}
 		return null;
@@ -79,33 +79,33 @@ public class Database {
 		return c;
 	}
 
-	public Contact addContact(String company, String name) {
-		Contact c = new Contact(company, name, currentContacts.getAndIncrement());
-		contacts.add(c);
-		getGroupById(0).addMember(c);
-		return c;
-	}
-
-	public Contact addContact(String company, String name, String homepage, String phonenumber, String notes) {
-		Contact c = new Contact(company, name, homepage, phonenumber, notes, currentContacts.getAndIncrement());
-		contacts.add(c);
-		getGroupById(0).addMember(c);
-		return c;
-	}
-
-	public Contact addContact(String company, String name, String homepage, String phonenumber, String notes, String picLocaiton) {
-		Contact c = new Contact(company, name, homepage, phonenumber, notes, picLocaiton, currentContacts.getAndIncrement());
-		contacts.add(c);
-		getGroupById(0).addMember(c);
-		return c;
-	}
-
-	public Contact addContact(String company, String name, String homepage, String phonenumber, String mail, String notes, String picLocaiton) {
-		Contact c = new Contact(company, name, homepage, phonenumber, mail, notes, picLocaiton, currentContacts.getAndIncrement());
-		contacts.add(c);
-		getGroupById(0).addMember(c);
-		return c;
-	}
+//	public Contact addContact(String company, String name) {
+//		Contact c = new Contact(company, name, currentContacts.getAndIncrement());
+//		contacts.add(c);
+//		getGroupById(0).addMember(c);
+//		return c;
+//	}
+//
+//	public Contact addContact(String company, String name, String homepage, String phonenumber, String notes) {
+//		Contact c = new Contact(company, name, homepage, phonenumber, notes, currentContacts.getAndIncrement());
+//		contacts.add(c);
+//		getGroupById(0).addMember(c);
+//		return c;
+//	}
+//
+//	public Contact addContact(String company, String name, String homepage, String phonenumber, String notes, String picLocaiton) {
+//		Contact c = new Contact(company, name, homepage, phonenumber, notes, picLocaiton, currentContacts.getAndIncrement());
+//		contacts.add(c);
+//		getGroupById(0).addMember(c);
+//		return c;
+//	}
+//
+//	public Contact addContact(String company, String name, String homepage, String phonenumber, String mail, String notes, String picLocaiton) {
+//		Contact c = new Contact(company, name, homepage, phonenumber, mail, notes, picLocaiton, currentContacts.getAndIncrement());
+//		contacts.add(c);
+//		getGroupById(0).addMember(c);
+//		return c;
+//	}
 
 	public List<Group> getGroups() {
 		return groups;
@@ -124,23 +124,53 @@ public class Database {
 	}
 
 	private void generateTestData() {
-		addContact("Minova", "Erik Fisher");
-		addContact("Minova", "Max Mustermann");
-		addContact("Minova", "Dieter Vogel");
-		addContact("Test", "Thorsten Schuster");
-		addContact("Test", "Ursula Fischer");
+		Contact c = addContact();
+		c.setProperty(VCardOptions.NAME, "Fischer;Erik;;;");
+		c.setProperty(VCardOptions.ORG, "Minova");
+		c.setProperty(VCardOptions.TEL, VCardOptions.WORK, "123345346");
+		c.setProperty(VCardOptions.TEL, VCardOptions.HOME, "9876543");
 
-		addContact("Company", "Tim Biermann", "www.homepage.de", "12345678", "tim.biermann@gmail.com", "some notes", "icons/user2.png");
-		addContact("Company", "Andrea Zimmer", "", "03381 15 45 05", "");
+		c = addContact();
+		c.setProperty(VCardOptions.NAME, "Mustermann;Max;;;");
+		c.setProperty(VCardOptions.ORG, "Minova");
+		c.setProperty(VCardOptions.TEL, VCardOptions.HOME, "9876543");
+
+		c = addContact();
+		c.setProperty(VCardOptions.NAME, "Vogel;Dieter;;;");
+		c.setProperty(VCardOptions.ORG, "Company");
+
+		c = addContact();
+		c.setProperty(VCardOptions.NAME, "Schuster;Thorsten;;;");
+		c.setProperty(VCardOptions.ORG, "Company");
+
+		c = addContact();
+		c.setProperty(VCardOptions.NAME, "Fischer;Ursula;;;");
+		c.setProperty(VCardOptions.ORG, "Company");
+
+		c = addContact();
+		c.setProperty(VCardOptions.NAME, "Biermann;Tim;;;");
+		c.setProperty(VCardOptions.ORG, "Testfirma");
+		c.setProperty(VCardOptions.TEL, VCardOptions.WORK, "5647");
+		c.setProperty(VCardOptions.EMAIL, VCardOptions.HOME, "tim.biermann@gmail.com");
+		c.setProperty(VCardOptions.ADR, VCardOptions.HOME, ";;Straße 123;Würzburg;;97070;Deutschland");
+		c.setProperty(VCardOptions.NOTE, "some notes");
+
+		c = addContact();
+		c.setProperty(VCardOptions.NAME, "Zimmer;Andrea;;Dr;");
+		c.setProperty(VCardOptions.ORG, "Testfirma");
+		c.setProperty(VCardOptions.TEL, VCardOptions.WORK, "42424242");
+		c.setProperty(VCardOptions.EMAIL, VCardOptions.HOME, "mail@gmail.com");
+		c.setProperty(VCardOptions.ADR, VCardOptions.HOME, ";;Gasse 42;Würzburg;;97080;Deutschland");
+		c.setProperty(VCardOptions.NOTE, "mehr Notizen");
 
 		addGroup(List.of(getContactById(0), getContactById(1)), "Freunde");
 		addGroup(List.of(getContactById(3), getContactById(4), getContactById(5), getContactById(6)), "Arbeit");
 	}
 
-	public void consume(Consumer<List<Contact>> taskConsumer) {
-		// always pass a new copy of the data
-		taskConsumer.accept(contacts.stream().map(Contact::copy).collect(Collectors.toList()));
-	}
+//	public void consume(Consumer<List<Contact>> taskConsumer) {
+//		// always pass a new copy of the data
+//		taskConsumer.accept(contacts.stream().map(Contact::copy).collect(Collectors.toList()));
+//	}
 
 	public void removeContact(Contact c) {
 		if (contacts.contains(c)) {
