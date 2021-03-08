@@ -542,8 +542,8 @@ public class ContactPart implements GroupListViewer {
 		for (String s : entries.keySet()) {
 			entries.get(s).setEditable(editable);
 		}
-//		if (editable)
-//			entries.get("Name").getInput().setFocus();
+		if (!editable)
+			entries.get(VCardOptions.NAME).getTypeEntryByType("").getTypeLabel().setFocus();
 		updateVisibility(editable);
 
 		// Update Contact

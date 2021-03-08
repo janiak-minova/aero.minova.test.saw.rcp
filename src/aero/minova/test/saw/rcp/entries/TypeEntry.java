@@ -158,4 +158,8 @@ public class TypeEntry {
 	public Value getValue() {
 		return input.getValue();
 	}
+
+	public Label getTypeLabel() {
+		return typeLabel;
+	}
 }
