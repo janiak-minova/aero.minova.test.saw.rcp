@@ -1,21 +1,21 @@
-package aero.minova.test.saw.rcp.model;
+package aero.minova.test.saw.rcp.entries;
 
 import java.util.List;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 
-public class ContactTypeEntry {
+import aero.minova.test.saw.rcp.model.Value;
+import aero.minova.test.saw.rcp.vCard.VCardOptions;
 
-	private ContactPropertyEntry parent;
+public class TypeEntry {
+
+	private PropertyEntry parent;
 	private final String property;
 	private String type;
 
@@ -23,13 +23,15 @@ public class ContactTypeEntry {
 
 	private Combo typeCombo;
 
-	private Text input;
-	private ModifyListener inputModifyListener;
+	private ValueEntry input;
 
-	public ContactTypeEntry(Composite body, ContactPropertyEntry contactPropertyEntry, String property, String type, Boolean editable) {
+	Composite body;
+
+	public TypeEntry(Composite body, PropertyEntry contactPropertyEntry, String property, String type, Boolean editable) {
 
 		this.parent = contactPropertyEntry;
 		this.property = property;
+		this.body = body;
 
 		// Feldname Label
 		typeLabel = new Label(body, SWT.RIGHT);
@@ -55,20 +57,16 @@ public class ContactTypeEntry {
 		});
 
 		// Input
-		// TODO: change to own class (with Interface?)
-		input = new Text(body, SWT.NONE);
-		input.setMessage(property);
-		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-		input.setLayoutData(gd);
-		input.setEditable(editable);
-		inputModifyListener = new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				parent.addCTE();
-				input.removeModifyListener(this);
-			}
-		};
-		input.addModifyListener(inputModifyListener);
+		switch (property) {
+		case (VCardOptions.NAME):
+			input = new NameValueEntry(body);
+			break;
+		case (VCardOptions.ADR):
+			input = new AddressValueEntry(body, contactPropertyEntry, editable);
+			break;
+		default:
+			input = new TextValueEntry(body, contactPropertyEntry, property, editable);
+		}
 
 		setType(type);
 	}
@@ -96,13 +94,13 @@ public class ContactTypeEntry {
 		setEditable(input.getEditable());
 	}
 
-	public String getInput() {
-		input.removeModifyListener(inputModifyListener);
-		return input.getText();
-	}
+//	public String getInput() {
+//		input.removeModifyListener();
+//		return input.getText();
+//	}
 
-	public void setInput(String inputString) {
-		input.setText(inputString);
+	public void setInput(Value value) {
+		input.setText(value);
 	}
 
 	public void setEditable(boolean editable) {
@@ -122,9 +120,9 @@ public class ContactTypeEntry {
 		gd.exclude = !showCombo;
 		typeCombo.setVisible(showCombo);
 
-		gd = (GridData) input.getLayoutData();
-		gd.exclude = !showInput;
 		input.setVisible(showInput);
+
+		parent.requestLayout();
 	}
 
 	public boolean hasContent() {
@@ -146,8 +144,6 @@ public class ContactTypeEntry {
 		gd.exclude = !vis;
 		typeCombo.setVisible(vis);
 
-		gd = (GridData) input.getLayoutData();
-		gd.exclude = !vis;
 		input.setVisible(vis);
 
 		parent.requestLayout();
@@ -157,5 +153,9 @@ public class ContactTypeEntry {
 		typeLabel.dispose();
 		typeCombo.dispose();
 		input.dispose();
+	}
+
+	public Value getValue() {
+		return input.getValue();
 	}
 }

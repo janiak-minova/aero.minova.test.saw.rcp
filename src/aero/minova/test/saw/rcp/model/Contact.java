@@ -10,35 +10,28 @@ import aero.minova.test.saw.rcp.vCard.VCardOptions;
 /**
  * Jede natürliche Peron stellt einen Kontakt dar.
  * 
- * @author saak
+ * @author janiak
  */
 public class Contact {
 
 	private final int id;
 
-	private Map<String, Map<String, String>> properties;
-
-	public Contact(int id, String name) {
-		this(id);
-
-		properties.put(VCardOptions.NAME, new LinkedHashMap<String, String>());
-		properties.get(VCardOptions.NAME).put("", name);
-	}
+	private Map<String, Map<String, Value>> properties;
 
 	public Contact(int id) {
 		this.id = id;
-		properties = new LinkedHashMap<String, Map<String, String>>();
+		properties = new LinkedHashMap<String, Map<String, Value>>();
 
 //		for (String prop : VCardOptions.PROPERTIES) {
 //			properties.put(prop, new LinkedHashMap<String, String>());
 //		}
 	}
 
-	public void setProperty(String prop, String type, String val) {
+	public void setProperty(String prop, String type, Value val) {
 		if (Arrays.asList(VCardOptions.PROPERTIES).contains(prop)
 				&& (VCardOptions.TYPES.get(prop) != null && Arrays.asList(VCardOptions.TYPES.get(prop)).contains(type) || type.equals(""))) {
 			if (properties.get(prop) == null) {
-				properties.put(prop, new LinkedHashMap<String, String>());
+				properties.put(prop, new LinkedHashMap<String, Value>());
 			}
 
 			properties.get(prop).put(type, val);
@@ -47,10 +40,10 @@ public class Contact {
 		}
 	}
 
-	public void setProperty(String prop, String val) {
+	public void setProperty(String prop, Value val) {
 		if (Arrays.asList(VCardOptions.PROPERTIES).contains(prop) && VCardOptions.TYPES.get(prop) == null) {
 			if (properties.get(prop) == null) {
-				properties.put(prop, new LinkedHashMap<String, String>());
+				properties.put(prop, new LinkedHashMap<String, Value>());
 			}
 
 			properties.get(prop).put("", val);
@@ -59,23 +52,63 @@ public class Contact {
 		}
 	}
 
-	public String getValue(String prop) {
+	public void setProperty(String prop, String val) {
+		switch (prop) {
+		case (VCardOptions.NAME):
+			setProperty(prop, new StructuredName(val));
+			break;
+		case (VCardOptions.ADR):
+			setProperty(prop, new Address(val));
+			break;
+		default:
+			setProperty(prop, new TextValue(val));
+		}
+	}
+
+	public void setProperty(String prop, String type, String val) {
+		switch (prop) {
+		case (VCardOptions.NAME):
+			setProperty(prop, type, new StructuredName(val));
+			break;
+		case (VCardOptions.ADR):
+			setProperty(prop, type, new Address(val));
+			break;
+		default:
+			setProperty(prop, type, new TextValue(val));
+		}
+	}
+
+	public String getValueString(String prop) {
 		String val = "";
 		if (properties.get(prop) != null) {
-			val = properties.get(prop).entrySet().iterator().next().getValue();
+			val = properties.get(prop).entrySet().iterator().next().getValue().getStringRepresentation();
 		}
 		return val;
 	}
 
-	public String getValue(String prop, String type) {
+	public String getValueString(String prop, String type) {
 		String val = "";
 		if (properties.get(prop) != null) {
-			val = properties.get(prop).get(type);
+			val = properties.get(prop).get(type).getStringRepresentation();
 		}
 		return val;
 	}
 
-	public Map<String, String> getTypesAndValues(String prop) {
+	public Value getValue(String prop) {
+		if (properties.get(prop) != null) {
+			return properties.get(prop).entrySet().iterator().next().getValue();
+		}
+		return null;
+	}
+
+	public Value getValue(String prop, String type) {
+		if (properties.get(prop) != null) {
+			return properties.get(prop).get(type);
+		}
+		return null;
+	}
+
+	public Map<String, Value> getTypesAndValues(String prop) {
 		return properties.get(prop);
 	}
 

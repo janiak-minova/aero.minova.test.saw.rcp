@@ -1,4 +1,4 @@
-package aero.minova.test.saw.rcp.model;
+package aero.minova.test.saw.rcp.entries;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,9 +9,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import aero.minova.test.saw.rcp.model.Contact;
 import aero.minova.test.saw.rcp.vCard.VCardOptions;
 
-public class ContactPropertyEntry {
+public class PropertyEntry {
 
 	private Composite body;
 
@@ -19,7 +20,7 @@ public class ContactPropertyEntry {
 
 	private List<String> types;
 
-	private List<ContactTypeEntry> typeEntries;
+	private List<TypeEntry> typeEntries;
 
 	private Label seperator;
 
@@ -27,11 +28,11 @@ public class ContactPropertyEntry {
 
 	private boolean editable = false;
 
-	public ContactPropertyEntry(Composite body, String property) {
+	public PropertyEntry(Composite body, String property) {
 
 		this.body = body;
 		this.property = property;
-		typeEntries = new ArrayList<ContactTypeEntry>();
+		typeEntries = new ArrayList<TypeEntry>();
 
 		if (VCardOptions.TYPES.get(property) == null) {
 			types = new ArrayList<>();
@@ -39,10 +40,6 @@ public class ContactPropertyEntry {
 		} else {
 			types = Arrays.asList(VCardOptions.TYPES.get(property));
 		}
-
-//		ContactTypeEntry cte = new ContactTypeEntry(body, this, property, null);
-//		typeEntries.add(cte);
-//		setCombo(cte);
 
 		// Separator
 		seperator = new Label(body, SWT.SEPARATOR | SWT.HORIZONTAL);
@@ -53,8 +50,8 @@ public class ContactPropertyEntry {
 		seperator.setData("org.eclipse.e4.ui.css.CssClassName", "hrule");
 	}
 
-	public ContactTypeEntry addCTE(String type) {
-		ContactTypeEntry cte = new ContactTypeEntry(body, this, property, type, editable);
+	public TypeEntry addCTE(String type) {
+		TypeEntry cte = new TypeEntry(body, this, property, type, editable);
 		typeEntries.add(cte);
 		cte.moveAbove(seperator);
 		typeChanged(null);
@@ -74,7 +71,7 @@ public class ContactPropertyEntry {
 		if (c.getTypesAndValues(property) != null) {
 			for (String type : c.getTypesAndValues(property).keySet()) {
 				neededTypes.add(type);
-				ContactTypeEntry cte = getTypeEntryByType(type);
+				TypeEntry cte = getTypeEntryByType(type);
 				if (cte == null) {
 					cte = addCTE(type);
 				}
@@ -83,15 +80,15 @@ public class ContactPropertyEntry {
 		}
 		for (String t : usedTypes) {
 			if (!neededTypes.contains(t)) {
-				ContactTypeEntry cte = getTypeEntryByType(t);
+				TypeEntry cte = getTypeEntryByType(t);
 				removeEntry(cte);
 			}
 		}
 		setEditable(false);
 	}
 
-	public ContactTypeEntry getTypeEntryByType(String type) {
-		for (ContactTypeEntry cte : typeEntries) {
+	public TypeEntry getTypeEntryByType(String type) {
+		for (TypeEntry cte : typeEntries) {
 			if (cte.getType().equals(type)) {
 				return cte;
 			}
@@ -100,9 +97,9 @@ public class ContactPropertyEntry {
 	}
 
 	public void updateContact() {
-		for (ContactTypeEntry cte : typeEntries) {
+		for (TypeEntry cte : typeEntries) {
 			if (cte.hasContent())
-				currentContact.setProperty(property, cte.getType(), cte.getInput());
+				currentContact.setProperty(property, cte.getType(), cte.getValue());
 		}
 	}
 
@@ -114,18 +111,18 @@ public class ContactPropertyEntry {
 		}
 
 		if (!editable) {
-			List<ContactTypeEntry> remove = new ArrayList<ContactTypeEntry>();
-			for (ContactTypeEntry cte : typeEntries) {
+			List<TypeEntry> remove = new ArrayList<TypeEntry>();
+			for (TypeEntry cte : typeEntries) {
 				if (!cte.hasContent())
 					remove.add(cte);
 			}
-			for (ContactTypeEntry cte : remove) {
+			for (TypeEntry cte : remove) {
 				removeEntry(cte);
 			}
 		}
 
 		boolean vis = false;
-		for (ContactTypeEntry cte : typeEntries) {
+		for (TypeEntry cte : typeEntries) {
 			cte.setEditable(editable);
 			if (cte.hasContent())
 				vis = true;
@@ -141,7 +138,7 @@ public class ContactPropertyEntry {
 
 	public List<String> getUsedTypes() {
 		List<String> usedTypes = new ArrayList<>();
-		for (ContactTypeEntry cte : typeEntries) {
+		for (TypeEntry cte : typeEntries) {
 			usedTypes.add(cte.getType());
 		}
 		return usedTypes;
@@ -153,7 +150,7 @@ public class ContactPropertyEntry {
 		return unusedTypes;
 	}
 
-	public void setCombo(ContactTypeEntry cte) {
+	public void setCombo(TypeEntry cte) {
 		List<String> availableTypes = getUnusedTypes();
 		if (cte.getType() != null)
 			availableTypes.add(0, cte.getType());
@@ -163,7 +160,7 @@ public class ContactPropertyEntry {
 	public void typeChanged(String before) {
 		if (before != null && currentContact.getTypesAndValues(property) != null)
 			currentContact.getTypesAndValues(property).remove(before);
-		for (ContactTypeEntry cte : typeEntries) {
+		for (TypeEntry cte : typeEntries) {
 			setCombo(cte);
 		}
 	}
@@ -172,7 +169,7 @@ public class ContactPropertyEntry {
 		body.requestLayout();
 	}
 
-	public void removeEntry(ContactTypeEntry cte) {
+	public void removeEntry(TypeEntry cte) {
 		cte.dispose();
 		typeEntries.remove(cte);
 	}

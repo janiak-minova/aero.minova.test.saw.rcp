@@ -38,7 +38,7 @@ public class VCardExportHandler {
 
 	public static void exportVCard(Contact c) {
 		String vCardString = getVCardString(c);
-		writeVCard(vCardString, c.getValue(VCardOptions.NAME));
+		writeVCard(vCardString, c.getValueString(VCardOptions.NAME));
 	}
 
 	public static void exportVCard(Group g) {
@@ -80,7 +80,7 @@ public class VCardExportHandler {
 
 		for (String property : c.getProperties()) {
 			for (String type : c.getTypesAndValues(property).keySet()) {
-				RawProperty raw = vcard.addExtendedProperty(property, c.getTypesAndValues(property).get(type));
+				RawProperty raw = vcard.addExtendedProperty(property, c.getTypesAndValues(property).get(type).getVCardString());
 				if (!type.equals("")) {
 					raw.setParameter("TYPE", type);
 				}

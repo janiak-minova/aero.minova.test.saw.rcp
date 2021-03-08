@@ -38,8 +38,8 @@ public class SendMailHandler {
 
 			String recipients = ",";
 			for (Contact c : g.getMembers()) {
-				if (!c.getValue(VCardOptions.EMAIL).equals("")) {
-					recipients += c.getValue(VCardOptions.EMAIL) + ",";
+				if (!c.getValueString(VCardOptions.EMAIL).equals("")) {
+					recipients += c.getValueString(VCardOptions.EMAIL) + ",";
 				}
 			}
 

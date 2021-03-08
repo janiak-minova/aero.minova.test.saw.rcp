@@ -59,7 +59,7 @@ public class DragAndDropSupportContacts implements DragSourceListener, DropTarge
 			this.draggedContact = selection.get(i);
 
 			try {
-				File file = File.createTempFile(draggedContact.getValue(VCardOptions.NAME), ".vcf");
+				File file = File.createTempFile(draggedContact.getValueString(VCardOptions.NAME), ".vcf");
 				FileWriter myWriter = new FileWriter(file.getAbsolutePath());
 				myWriter.write(VCardExportHandler.getVCardString(draggedContact));
 				myWriter.close();

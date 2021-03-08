@@ -1,5 +1,9 @@
 package aero.minova.test.saw.rcp.vCard;
 
+import java.util.List;
+
+import aero.minova.test.saw.rcp.model.TextValue;
+import aero.minova.test.saw.rcp.model.Value;
 import ezvcard.property.Address;
 import ezvcard.property.ImageProperty;
 import ezvcard.property.StructuredName;
@@ -34,22 +38,47 @@ public class VCardMapping {
 		}
 	}
 
-	public static String getValue(VCardProperty prop) {
+	public static Value getValue(VCardProperty prop) {
 		if (prop instanceof TextListProperty) { // Categories, Nickname, Organization
-			return ((TextListProperty) prop).getValues().get(0);
+			return new TextValue(((TextListProperty) prop).getValues().get(0));
 		} else if (prop instanceof TextProperty) { // Classification, Email, Expertise, FormattedName, Hobby, Interest, Kind, Label, Language, Mailer, Note,
 													// ProductId, Profile, RawPropertie, Role, SortString, SourceDisplayText, Title, UriProperty
-			return ((TextProperty) prop).getValue();
+			return new TextValue(((TextProperty) prop).getValue());
 		} else if (prop instanceof ImageProperty) { // Photo, Logo
-			return ((ImageProperty) prop).getUrl();
+			return new TextValue(((ImageProperty) prop).getUrl());
 		} else if (prop instanceof StructuredName) {
-			return ((StructuredName) prop).getGiven();
+			StructuredName sName = (StructuredName) prop;
+			String val = "";
+			val += ((sName.getFamily() == null) ? "" : sName.getFamily()) + ";";
+			val += ((sName.getGiven() == null) ? "" : sName.getGiven()) + ";";
+			val += getListAsString(sName.getAdditionalNames()) + ";";
+			val += getListAsString(sName.getPrefixes()) + ";";
+			val += getListAsString(sName.getSuffixes());
+			return new aero.minova.test.saw.rcp.model.StructuredName(val);
 		} else if (prop instanceof Telephone) {
-			return ((Telephone) prop).getText();
+			return new TextValue(((Telephone) prop).getText());
 		} else if (prop instanceof Address) {
-			return ((Address) prop).getStreetAddress();
+			Address addr = (Address) prop;
+			String val = "";
+			val += ((addr.getPoBox() == null) ? "" : addr.getPoBox()) + ";";
+			val += ((addr.getExtendedAddress() == null) ? "" : addr.getExtendedAddress()) + ";";
+			val += ((addr.getStreetAddress() == null) ? "" : addr.getStreetAddress()) + ";";
+			val += ((addr.getLocality() == null) ? "" : addr.getLocality()) + ";";
+			val += ((addr.getRegion() == null) ? "" : addr.getRegion()) + ";";
+			val += ((addr.getPostalCode() == null) ? "" : addr.getPostalCode()) + ";";
+			val += ((addr.getCountry() == null) ? "" : addr.getCountry());
+
+			return new aero.minova.test.saw.rcp.model.Address(val);
 		}
 
 		return null;
+	}
+
+	public static String getListAsString(List<String> list) {
+		String res = "";
+		for (String s : list) {
+			res += s + " ";
+		}
+		return res.trim();
 	}
 }

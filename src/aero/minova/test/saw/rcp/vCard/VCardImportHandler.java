@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Shell;
 import aero.minova.test.saw.rcp.events.EventConstants;
 import aero.minova.test.saw.rcp.model.Contact;
 import aero.minova.test.saw.rcp.model.Database;
+import aero.minova.test.saw.rcp.model.Value;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.property.VCardProperty;
@@ -72,17 +73,20 @@ public class VCardImportHandler {
 
 	public static Contact createContact(VCard vcard) {
 
-		// TODO: check dupes based on name
-		if (db.getContactById(-10) != null) {
-			return db.getContactById(-10);
+		System.out.println(vcard.getStructuredName());
+
+		Contact c;
+		if (vcard.getStructuredName() != null && db.getContactByName(VCardMapping.getValue(vcard.getStructuredName())) != null) {
+			c = db.getContactByName(VCardMapping.getValue(vcard.getStructuredName()));
+		} else {
+			c = db.addContact();
 		}
 
-		Contact c = db.addContact();
 		for (VCardProperty prop : vcard.getProperties()) {
 			String propString = VCardMapping.getPropertyString(prop);
 			if (Arrays.asList(VCardOptions.PROPERTIES).contains(propString)) {
 				String type = prop.getParameter("TYPE");
-				String value = VCardMapping.getValue(prop);
+				Value value = VCardMapping.getValue(prop);
 				if (VCardOptions.TYPES.get(propString) != null && Arrays.asList(VCardOptions.TYPES.get(propString)).contains(type)) {
 					c.setProperty(propString, type, value);
 				} else {

@@ -79,34 +79,6 @@ public class Database {
 		return c;
 	}
 
-//	public Contact addContact(String company, String name) {
-//		Contact c = new Contact(company, name, currentContacts.getAndIncrement());
-//		contacts.add(c);
-//		getGroupById(0).addMember(c);
-//		return c;
-//	}
-//
-//	public Contact addContact(String company, String name, String homepage, String phonenumber, String notes) {
-//		Contact c = new Contact(company, name, homepage, phonenumber, notes, currentContacts.getAndIncrement());
-//		contacts.add(c);
-//		getGroupById(0).addMember(c);
-//		return c;
-//	}
-//
-//	public Contact addContact(String company, String name, String homepage, String phonenumber, String notes, String picLocaiton) {
-//		Contact c = new Contact(company, name, homepage, phonenumber, notes, picLocaiton, currentContacts.getAndIncrement());
-//		contacts.add(c);
-//		getGroupById(0).addMember(c);
-//		return c;
-//	}
-//
-//	public Contact addContact(String company, String name, String homepage, String phonenumber, String mail, String notes, String picLocaiton) {
-//		Contact c = new Contact(company, name, homepage, phonenumber, mail, notes, picLocaiton, currentContacts.getAndIncrement());
-//		contacts.add(c);
-//		getGroupById(0).addMember(c);
-//		return c;
-//	}
-
 	public List<Group> getGroups() {
 		return groups;
 	}
@@ -125,52 +97,50 @@ public class Database {
 
 	private void generateTestData() {
 		Contact c = addContact();
-		c.setProperty(VCardOptions.NAME, "Fischer;Erik;;;");
+
+		c.setProperty(VCardOptions.NAME, new StructuredName("Fischer;Erik;;;"));
 		c.setProperty(VCardOptions.ORG, "Minova");
 		c.setProperty(VCardOptions.TEL, VCardOptions.WORK, "123345346");
 		c.setProperty(VCardOptions.TEL, VCardOptions.HOME, "9876543");
+		c.setProperty(VCardOptions.ADR, VCardOptions.HOME, new Address(";;Straße 123;Würzburg;;97070;Deutschland"));
 
 		c = addContact();
-		c.setProperty(VCardOptions.NAME, "Mustermann;Max;;;");
+		c.setProperty(VCardOptions.NAME, new StructuredName("Mustermann;Max;;;"));
 		c.setProperty(VCardOptions.ORG, "Minova");
 		c.setProperty(VCardOptions.TEL, VCardOptions.HOME, "9876543");
 
 		c = addContact();
-		c.setProperty(VCardOptions.NAME, "Vogel;Dieter;;;");
+		c.setProperty(VCardOptions.NAME, new StructuredName("Vogel;Dieter;;;"));
 		c.setProperty(VCardOptions.ORG, "Company");
 
 		c = addContact();
-		c.setProperty(VCardOptions.NAME, "Schuster;Thorsten;;;");
+		c.setProperty(VCardOptions.NAME, new StructuredName("Schuster;Thorsten;;;"));
 		c.setProperty(VCardOptions.ORG, "Company");
 
 		c = addContact();
-		c.setProperty(VCardOptions.NAME, "Fischer;Ursula;;;");
+		c.setProperty(VCardOptions.NAME, new StructuredName("Fischer;Ursula;;;"));
 		c.setProperty(VCardOptions.ORG, "Company");
 
 		c = addContact();
-		c.setProperty(VCardOptions.NAME, "Biermann;Tim;;;");
+		c.setProperty(VCardOptions.NAME, new StructuredName("Biermann;Tim;;;"));
 		c.setProperty(VCardOptions.ORG, "Testfirma");
 		c.setProperty(VCardOptions.TEL, VCardOptions.WORK, "5647");
 		c.setProperty(VCardOptions.EMAIL, VCardOptions.HOME, "tim.biermann@gmail.com");
-		c.setProperty(VCardOptions.ADR, VCardOptions.HOME, ";;Straße 123;Würzburg;;97070;Deutschland");
+		c.setProperty(VCardOptions.ADR, VCardOptions.HOME, new Address(";;Straße 123;Würzburg;;97070;Deutschland"));
 		c.setProperty(VCardOptions.NOTE, "some notes");
 
 		c = addContact();
-		c.setProperty(VCardOptions.NAME, "Zimmer;Andrea;;Dr;");
+		c.setProperty(VCardOptions.NAME, new StructuredName("Zimmer;Andrea;;Dr;"));
 		c.setProperty(VCardOptions.ORG, "Testfirma");
 		c.setProperty(VCardOptions.TEL, VCardOptions.WORK, "42424242");
 		c.setProperty(VCardOptions.EMAIL, VCardOptions.HOME, "mail@gmail.com");
-		c.setProperty(VCardOptions.ADR, VCardOptions.HOME, ";;Gasse 42;Würzburg;;97080;Deutschland");
+		c.setProperty(VCardOptions.ADR, VCardOptions.HOME, new Address(";;Gasse 42;Würzburg;;97080;Deutschland"));
+		c.setProperty(VCardOptions.ADR, VCardOptions.WORK, new Address(";;Straße 123;Würzburg;;97070;Deutschland"));
 		c.setProperty(VCardOptions.NOTE, "mehr Notizen");
 
 		addGroup(List.of(getContactById(0), getContactById(1)), "Freunde");
 		addGroup(List.of(getContactById(3), getContactById(4), getContactById(5), getContactById(6)), "Arbeit");
 	}
-
-//	public void consume(Consumer<List<Contact>> taskConsumer) {
-//		// always pass a new copy of the data
-//		taskConsumer.accept(contacts.stream().map(Contact::copy).collect(Collectors.toList()));
-//	}
 
 	public void removeContact(Contact c) {
 		if (contacts.contains(c)) {
@@ -180,12 +150,19 @@ public class Database {
 		for (Group g : groups) {
 			g.removeMember(c);
 		}
-		// System.out.println(c.getFirstName());
 	}
 
 	public void removeGroup(Group g) {
 		if (groups.contains(g) && g.getGroupID() != 0) {
 			groups.remove(g);
 		}
+	}
+
+	public Contact getContactByName(Value value) {
+		for (Contact c : contacts) {
+			if (c.getValue(VCardOptions.NAME).equals(value))
+				return c;
+		}
+		return null;
 	}
 }
