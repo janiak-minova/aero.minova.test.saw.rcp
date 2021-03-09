@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import aero.minova.test.saw.rcp.model.Contact;
+import aero.minova.test.saw.rcp.model.TextValue;
 import aero.minova.test.saw.rcp.vCard.VCardOptions;
 
 public class NotesPropertyEntry extends PropertyEntry {
@@ -55,7 +56,7 @@ public class NotesPropertyEntry extends PropertyEntry {
 
 	@Override
 	public void updateContact() {
-		currentContact.setProperty(VCardOptions.NOTE, input.getText());
+		currentContact.setProperty(VCardOptions.NOTE, new TextValue(input.getText()));
 	}
 
 }

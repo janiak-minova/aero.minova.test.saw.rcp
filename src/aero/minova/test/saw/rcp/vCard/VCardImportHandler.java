@@ -94,6 +94,7 @@ public class VCardImportHandler {
 			}
 		}
 
+		broker.send(EventConstants.REFRESH_CONTACTS, c);
 		return c;
 	}
 }

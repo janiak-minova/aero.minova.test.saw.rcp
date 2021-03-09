@@ -99,45 +99,46 @@ public class Database {
 		Contact c = addContact();
 
 		c.setProperty(VCardOptions.NAME, new NameValue("Fischer;Erik;;;"));
-		c.setProperty(VCardOptions.ORG, "Minova");
-		c.setProperty(VCardOptions.TEL, VCardOptions.WORK, "123345346");
-		c.setProperty(VCardOptions.TEL, VCardOptions.HOME, "9876543");
+		c.setProperty(VCardOptions.ORG, new TextValue("Minova"));
+		c.setProperty(VCardOptions.TEL, VCardOptions.WORK, new TextValue("123345346"));
+		c.setProperty(VCardOptions.TEL, VCardOptions.HOME, new TextValue("9876543"));
 		c.setProperty(VCardOptions.BDAY, new DateValue("01.01.1990"));
 		c.setProperty(VCardOptions.ADR, VCardOptions.HOME, new AddressValue(";;Straße 123;Würzburg;;97070;Deutschland"));
+		c.setProperty(VCardOptions.PHOTO, new PhotoValue("icons/user2.png"));
 
 		c = addContact();
 		c.setProperty(VCardOptions.NAME, new NameValue("Mustermann;Max;;;"));
-		c.setProperty(VCardOptions.ORG, "Minova");
-		c.setProperty(VCardOptions.TEL, VCardOptions.HOME, "9876543");
+		c.setProperty(VCardOptions.ORG, new TextValue("Minova"));
+		c.setProperty(VCardOptions.TEL, VCardOptions.HOME, new TextValue("9876543"));
 
 		c = addContact();
 		c.setProperty(VCardOptions.NAME, new NameValue("Vogel;Dieter;;;"));
-		c.setProperty(VCardOptions.ORG, "Company");
+		c.setProperty(VCardOptions.ORG, new TextValue("Company"));
 
 		c = addContact();
 		c.setProperty(VCardOptions.NAME, new NameValue("Schuster;Thorsten;;;"));
-		c.setProperty(VCardOptions.ORG, "Company");
+		c.setProperty(VCardOptions.ORG, new TextValue("Company"));
 
 		c = addContact();
 		c.setProperty(VCardOptions.NAME, new NameValue("Fischer;Ursula;;;"));
-		c.setProperty(VCardOptions.ORG, "Company");
+		c.setProperty(VCardOptions.ORG, new TextValue("Company"));
 
 		c = addContact();
 		c.setProperty(VCardOptions.NAME, new NameValue("Biermann;Tim;;;"));
-		c.setProperty(VCardOptions.ORG, "Testfirma");
-		c.setProperty(VCardOptions.TEL, VCardOptions.WORK, "5647");
-		c.setProperty(VCardOptions.EMAIL, VCardOptions.HOME, "tim.biermann@gmail.com");
+		c.setProperty(VCardOptions.ORG, new TextValue("Testfirma"));
+		c.setProperty(VCardOptions.TEL, VCardOptions.WORK, new TextValue("5647"));
+		c.setProperty(VCardOptions.EMAIL, VCardOptions.HOME, new TextValue("tim.biermann@gmail.com"));
 		c.setProperty(VCardOptions.ADR, VCardOptions.HOME, new AddressValue(";;Straße 123;Würzburg;;97070;Deutschland"));
-		c.setProperty(VCardOptions.NOTE, "some notes");
+		c.setProperty(VCardOptions.NOTE, new TextValue("some notes"));
 
 		c = addContact();
 		c.setProperty(VCardOptions.NAME, new NameValue("Zimmer;Andrea;;Dr.;"));
-		c.setProperty(VCardOptions.ORG, "Testfirma");
-		c.setProperty(VCardOptions.TEL, VCardOptions.WORK, "42424242");
-		c.setProperty(VCardOptions.EMAIL, VCardOptions.HOME, "mail@gmail.com");
+		c.setProperty(VCardOptions.ORG, new TextValue("Testfirma"));
+		c.setProperty(VCardOptions.TEL, VCardOptions.WORK, new TextValue("42424242"));
+		c.setProperty(VCardOptions.EMAIL, VCardOptions.HOME, new TextValue("mail@gmail.com"));
 		c.setProperty(VCardOptions.ADR, VCardOptions.HOME, new AddressValue(";;Gasse 42;Würzburg;;97080;Deutschland"));
 		c.setProperty(VCardOptions.ADR, VCardOptions.WORK, new AddressValue(";;Straße 123;Würzburg;;97070;Deutschland"));
-		c.setProperty(VCardOptions.NOTE, "mehr Notizen");
+		c.setProperty(VCardOptions.NOTE, new TextValue("mehr Notizen"));
 
 		addGroup(List.of(getContactById(0), getContactById(1)), "Freunde");
 		addGroup(List.of(getContactById(3), getContactById(4), getContactById(5), getContactById(6)), "Arbeit");

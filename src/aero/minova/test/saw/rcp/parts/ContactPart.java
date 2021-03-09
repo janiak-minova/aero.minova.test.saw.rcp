@@ -4,7 +4,6 @@ package aero.minova.test.saw.rcp.parts;
 import static org.eclipse.jface.widgets.ButtonFactory.newButton;
 
 import java.io.Serializable;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,8 +13,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.di.UIEventTopic;
 import org.eclipse.e4.ui.model.application.ui.MUILabel;
@@ -26,7 +23,6 @@ import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.nebula.widgets.nattable.NatTable;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
 import org.eclipse.nebula.widgets.nattable.data.IColumnPropertyAccessor;
@@ -49,26 +45,19 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 
 import aero.minova.test.saw.rcp.constants.EventConstants;
 import aero.minova.test.saw.rcp.entries.DefaultPropertyEntry;
 import aero.minova.test.saw.rcp.entries.NotesPropertyEntry;
+import aero.minova.test.saw.rcp.entries.PhotoPropertyEntry;
 import aero.minova.test.saw.rcp.entries.PropertyEntry;
 import aero.minova.test.saw.rcp.handlers.ContactColumnPropertyAccessor;
 import aero.minova.test.saw.rcp.handlers.DragAndDropSupportContacts;
@@ -105,8 +94,6 @@ public class ContactPart implements GroupListViewer {
 	private List<Contact> contacts;
 	private List<Contact> selectedContacts;
 
-	private String defaultPic = "icons/user.png";
-	private Label profileLable;
 	private boolean editable = false;
 	private Map<String, PropertyEntry> entries;
 
@@ -296,17 +283,7 @@ public class ContactPart implements GroupListViewer {
 		body.setLayout(new GridLayout(3, false));
 
 		// Profilbild
-		profileLable = new Label(body, SWT.RIGHT);
-		GridData gd = new GridData(SWT.LEFT, SWT.TOP, false, false);
-		gd.horizontalSpan = 3;
-		profileLable.setLayoutData(gd);
-		addProfilePic(defaultPic);
-		profileLable.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent event) {
-				editProfilePic();
-			}
-		});
+		entries.put(VCardOptions.PHOTO, new PhotoPropertyEntry(body));
 
 		// Normale input Felder
 		entries.put(VCardOptions.NAME, new DefaultPropertyEntry(body, VCardOptions.NAME));
@@ -316,64 +293,8 @@ public class ContactPart implements GroupListViewer {
 		entries.put(VCardOptions.BDAY, new DefaultPropertyEntry(body, VCardOptions.BDAY));
 		entries.put(VCardOptions.ADR, new DefaultPropertyEntry(body, VCardOptions.ADR));
 
-		entries.put(VCardOptions.NOTE, new NotesPropertyEntry(body));
-
 		// Notizen
-//		new Label(body, SWT.NONE); // Leeres Label um Platz zu lassen
-//		notesLabel = new Label(body, SWT.RIGHT | SWT.TOP);
-//		gd = new GridData(SWT.RIGHT, SWT.TOP, true, false);
-//		notesLabel.setLayoutData(gd);
-//		notesLabel.setText("Notizen");
-//		notesText = new Text(body, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-//		notesText.setLayoutData(new GridData(GridData.FILL_BOTH));
-//		ModifyListener listener = new ModifyListener() {
-//			@Override
-//			public void modifyText(ModifyEvent e) {
-//				String newNotes = ((Text) e.widget).getText();
-//				if (currentContact != null)
-//					currentContact.setProperty(VCardOptions.NOTE, newNotes);
-//			}
-//		};
-//		notesText.addModifyListener(listener);
-
-	}
-
-	private void addProfilePic(String path) {
-		if (path == null || path.equals(""))
-			path = defaultPic;
-
-		// Hole Bild (aus lokalem Ordner oder durch globalen Pfad)
-		Image image;
-		if (path.contains("icons")) {
-			Bundle bundle = FrameworkUtil.getBundle(getClass());
-			URL url = FileLocator.find(bundle, new Path(path), null);
-			ImageDescriptor imageDesc = ImageDescriptor.createFromURL(url);
-			image = imageDesc.createImage();
-		} else {
-			image = new Image(null, path);
-		}
-
-		// Scaliere Bild auf 50x50px
-		Image scaled = new Image(Display.getDefault(), 50, 50);
-		GC gc = new GC(scaled);
-		gc.setAntialias(SWT.ON);
-		gc.setInterpolation(SWT.HIGH);
-		gc.drawImage(image, 0, 0, image.getBounds().width, image.getBounds().height, 0, 0, 50, 50);
-		gc.dispose();
-		image.dispose();
-
-		profileLable.setImage(scaled);
-		profileLable.setSize(50, 50);
-	}
-
-	private void editProfilePic() {
-		if (editable) {
-			FileDialog dialog = new FileDialog(new Shell(), SWT.OPEN);
-			dialog.setFilterExtensions(new String[] { "*.png", "*.gif", "*.bmp", "*.jpg", "*.tiff" });
-			String path = dialog.open();
-			currentContact.setProperty(VCardOptions.PHOTO, path);
-			addProfilePic(path);
-		}
+		entries.put(VCardOptions.NOTE, new NotesPropertyEntry(body));
 	}
 
 	@Inject
@@ -424,7 +345,6 @@ public class ContactPart implements GroupListViewer {
 	}
 
 	private void updateContactDetail(Contact c) {
-		addProfilePic(c.getValueString(VCardOptions.PHOTO));
 
 		for (String s : entries.keySet()) {
 			entries.get(s).setInput(c);
@@ -461,6 +381,20 @@ public class ContactPart implements GroupListViewer {
 	private void subscribeTopicExistingContact(@UIEventTopic(EventConstants.CONTACT_EXISTS) Contact c) {
 		MessageDialog.openInformation(shell, null, "Dieser Kontakt existiert bereits und wird aktualisiert");
 		updateContactDetail(c);
+	}
+
+	@Inject
+	@Optional
+	private void subscribeTopicRefreshContacts(@UIEventTopic(EventConstants.REFRESH_CONTACTS) Contact c) {
+		saveChanges();
+
+		currentContact = c;
+		selectedGroups.get(0).addMember(c);
+		updateContactDetail(c);
+		showContacts(selectedGroups.get(0).getMembers());
+
+		selectionLayerGroup.selectRow(0, db.getPositionOfGroup(selectedGroups.get(0)), false, false);
+		selectionLayerContact.selectRow(0, selectedGroups.get(0).getPositionInList(c), false, false);
 	}
 
 	@Inject
@@ -561,7 +495,6 @@ public class ContactPart implements GroupListViewer {
 			saveChanges();
 		}
 		contactDetail.requestLayout();
-
 	}
 
 	private void saveChanges() {

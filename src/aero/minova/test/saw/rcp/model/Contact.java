@@ -52,32 +52,6 @@ public class Contact {
 		}
 	}
 
-	public void setProperty(String prop, String val) {
-		switch (prop) {
-		case (VCardOptions.NAME):
-			setProperty(prop, new NameValue(val));
-			break;
-		case (VCardOptions.ADR):
-			setProperty(prop, new AddressValue(val));
-			break;
-		default:
-			setProperty(prop, new TextValue(val));
-		}
-	}
-
-	public void setProperty(String prop, String type, String val) {
-		switch (prop) {
-		case (VCardOptions.NAME):
-			setProperty(prop, type, new NameValue(val));
-			break;
-		case (VCardOptions.ADR):
-			setProperty(prop, type, new AddressValue(val));
-			break;
-		default:
-			setProperty(prop, type, new TextValue(val));
-		}
-	}
-
 	public String getValueString(String prop) {
 		String val = "";
 		if (properties.get(prop) != null && properties.get(prop).size() > 0) {
@@ -118,6 +92,11 @@ public class Contact {
 
 	public Set<String> getProperties() {
 		return properties.keySet();
+	}
+
+	public void removeProperty(String prop) {
+		if (properties.containsKey(prop))
+			properties.remove(prop);
 	}
 
 }
