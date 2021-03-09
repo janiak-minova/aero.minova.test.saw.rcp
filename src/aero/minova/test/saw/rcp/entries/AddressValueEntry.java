@@ -30,7 +30,7 @@ public class AddressValueEntry extends ValueEntry {
 
 	private ModifyListener inputModifyListener;
 
-	public AddressValueEntry(Composite body, PropertyEntry contactPropertyEntry, Boolean editable) {
+	public AddressValueEntry(Composite body, DefaultPropertyEntry contactPropertyEntry, Boolean editable) {
 		addrComp = new Composite(body, SWT.None);
 		addrComp.setLayout(new GridLayout(2, false));
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);

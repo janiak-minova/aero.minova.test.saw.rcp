@@ -24,7 +24,7 @@ import aero.minova.test.saw.rcp.vCard.VCardOptions;
 
 public class TypeEntry {
 
-	private PropertyEntry parent;
+	private DefaultPropertyEntry parent;
 	private final String property;
 	private String type;
 
@@ -38,7 +38,7 @@ public class TypeEntry {
 
 	Composite body;
 
-	public TypeEntry(Composite body, PropertyEntry contactPropertyEntry, String property, String type, Boolean editable) {
+	public TypeEntry(Composite body, DefaultPropertyEntry contactPropertyEntry, String property, String type, Boolean editable) {
 
 		this.parent = contactPropertyEntry;
 		this.property = property;

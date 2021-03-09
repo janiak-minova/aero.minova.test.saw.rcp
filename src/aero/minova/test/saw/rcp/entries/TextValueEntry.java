@@ -18,7 +18,7 @@ public class TextValueEntry extends ValueEntry {
 	private Text input;
 	private ModifyListener inputModifyListener;
 
-	public TextValueEntry(Composite body, PropertyEntry contactPropertyEntry, String property, boolean editable) {
+	public TextValueEntry(Composite body, DefaultPropertyEntry contactPropertyEntry, String property, boolean editable) {
 
 		inputComp = new Composite(body, SWT.None);
 		inputComp.setLayout(new GridLayout(5, false));

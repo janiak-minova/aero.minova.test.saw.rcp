@@ -67,6 +67,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
 import aero.minova.test.saw.rcp.constants.EventConstants;
+import aero.minova.test.saw.rcp.entries.DefaultPropertyEntry;
+import aero.minova.test.saw.rcp.entries.NotesPropertyEntry;
 import aero.minova.test.saw.rcp.entries.PropertyEntry;
 import aero.minova.test.saw.rcp.handlers.ContactColumnPropertyAccessor;
 import aero.minova.test.saw.rcp.handlers.DragAndDropSupportContacts;
@@ -105,8 +107,6 @@ public class ContactPart implements GroupListViewer {
 
 	private String defaultPic = "icons/user.png";
 	private Label profileLable;
-	private Label notesLabel;
-	private Text notesText;
 	private boolean editable = false;
 	private Map<String, PropertyEntry> entries;
 
@@ -309,30 +309,32 @@ public class ContactPart implements GroupListViewer {
 		});
 
 		// Normale input Felder
-		entries.put(VCardOptions.NAME, new PropertyEntry(body, VCardOptions.NAME));
-		entries.put(VCardOptions.ORG, new PropertyEntry(body, VCardOptions.ORG));
-		entries.put(VCardOptions.TEL, new PropertyEntry(body, VCardOptions.TEL));
-		entries.put(VCardOptions.EMAIL, new PropertyEntry(body, VCardOptions.EMAIL));
-		entries.put(VCardOptions.BDAY, new PropertyEntry(body, VCardOptions.BDAY));
-		entries.put(VCardOptions.ADR, new PropertyEntry(body, VCardOptions.ADR));
+		entries.put(VCardOptions.NAME, new DefaultPropertyEntry(body, VCardOptions.NAME));
+		entries.put(VCardOptions.ORG, new DefaultPropertyEntry(body, VCardOptions.ORG));
+		entries.put(VCardOptions.TEL, new DefaultPropertyEntry(body, VCardOptions.TEL));
+		entries.put(VCardOptions.EMAIL, new DefaultPropertyEntry(body, VCardOptions.EMAIL));
+		entries.put(VCardOptions.BDAY, new DefaultPropertyEntry(body, VCardOptions.BDAY));
+		entries.put(VCardOptions.ADR, new DefaultPropertyEntry(body, VCardOptions.ADR));
+
+		entries.put(VCardOptions.NOTE, new NotesPropertyEntry(body));
 
 		// Notizen
-		new Label(body, SWT.NONE); // Leeres Label um Platz zu lassen
-		notesLabel = new Label(body, SWT.RIGHT | SWT.TOP);
-		gd = new GridData(SWT.RIGHT, SWT.TOP, true, false);
-		notesLabel.setLayoutData(gd);
-		notesLabel.setText("Notizen");
-		notesText = new Text(body, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-		notesText.setLayoutData(new GridData(GridData.FILL_BOTH));
-		ModifyListener listener = new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				String newNotes = ((Text) e.widget).getText();
-				if (currentContact != null)
-					currentContact.setProperty(VCardOptions.NOTE, newNotes);
-			}
-		};
-		notesText.addModifyListener(listener);
+//		new Label(body, SWT.NONE); // Leeres Label um Platz zu lassen
+//		notesLabel = new Label(body, SWT.RIGHT | SWT.TOP);
+//		gd = new GridData(SWT.RIGHT, SWT.TOP, true, false);
+//		notesLabel.setLayoutData(gd);
+//		notesLabel.setText("Notizen");
+//		notesText = new Text(body, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+//		notesText.setLayoutData(new GridData(GridData.FILL_BOTH));
+//		ModifyListener listener = new ModifyListener() {
+//			@Override
+//			public void modifyText(ModifyEvent e) {
+//				String newNotes = ((Text) e.widget).getText();
+//				if (currentContact != null)
+//					currentContact.setProperty(VCardOptions.NOTE, newNotes);
+//			}
+//		};
+//		notesText.addModifyListener(listener);
 
 	}
 
@@ -423,7 +425,6 @@ public class ContactPart implements GroupListViewer {
 
 	private void updateContactDetail(Contact c) {
 		addProfilePic(c.getValueString(VCardOptions.PHOTO));
-		notesText.setText(c.getValueString(VCardOptions.NOTE));
 
 		for (String s : entries.keySet()) {
 			entries.get(s).setInput(c);
