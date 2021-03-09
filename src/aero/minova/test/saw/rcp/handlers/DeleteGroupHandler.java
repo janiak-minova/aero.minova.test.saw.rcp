@@ -22,7 +22,6 @@ public class DeleteGroupHandler {
 
 	@CanExecute
 	public boolean canExecute() {
-		// System.out.println("canExecute Hallo");
 		return true;
 	}
 

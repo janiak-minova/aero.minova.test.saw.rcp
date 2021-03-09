@@ -55,6 +55,7 @@ public class VCardImportHandler {
 			contacts.add(c);
 		}
 
+		broker.send(EventConstants.SELECT_CONTACTS, contacts);
 		return contacts;
 	}
 
@@ -72,12 +73,10 @@ public class VCardImportHandler {
 	}
 
 	public static Contact createContact(VCard vcard) {
-
-		System.out.println(vcard.getStructuredName());
-
 		Contact c;
 		if (vcard.getStructuredName() != null && db.getContactByName(VCardMapping.getValue(vcard.getStructuredName())) != null) {
 			c = db.getContactByName(VCardMapping.getValue(vcard.getStructuredName()));
+			broker.send(EventConstants.CONTACT_EXISTS, c);
 		} else {
 			c = db.addContact();
 		}
@@ -95,7 +94,6 @@ public class VCardImportHandler {
 			}
 		}
 
-		broker.send(EventConstants.NEW_CONTACT, c);
 		return c;
 	}
 }

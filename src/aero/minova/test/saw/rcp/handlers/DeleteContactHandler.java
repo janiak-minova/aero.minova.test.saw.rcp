@@ -9,21 +9,19 @@ import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.workbench.modeling.EModelService;
 
 import aero.minova.test.saw.rcp.events.EventConstants;
-import aero.minova.test.saw.rcp.model.Contact;
-import aero.minova.test.saw.rcp.model.Database;
 
 public class DeleteContactHandler {
-	
-@Inject IEventBroker broker;	
-	
+
+	@Inject
+	IEventBroker broker;
+
 	@Execute
 	public void execute(MApplication application, EModelService service) {
 		broker.send(EventConstants.DELETE_CONTACT, "");
 	}
-	
+
 	@CanExecute
 	public boolean canExecute() {
-		//System.out.println("canExecute Hallo");
 		return true;
 	}
 

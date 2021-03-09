@@ -102,9 +102,6 @@ public class DragAndDropSupportContacts implements DragSourceListener, DropTarge
 
 	@Override
 	public void drop(DropTargetEvent event) {
-
-		// System.out.println(((String[]) event.data)[0]);
-
 		if (event.data.getClass().equals(String[].class)) {
 			String[] data = (String[]) event.data;
 			for (String path : data) {

@@ -1,14 +1,23 @@
 package aero.minova.test.saw.rcp.entries;
 
+import java.net.URL;
 import java.util.List;
 
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 import aero.minova.test.saw.rcp.model.Value;
 import aero.minova.test.saw.rcp.vCard.VCardOptions;
@@ -18,6 +27,8 @@ public class TypeEntry {
 	private PropertyEntry parent;
 	private final String property;
 	private String type;
+
+	private Label deleteIcon;
 
 	private Label typeLabel;
 
@@ -33,17 +44,41 @@ public class TypeEntry {
 		this.property = property;
 		this.body = body;
 
+		// Eintrag löschen icon
+		deleteIcon = new Label(body, SWT.RIGHT);
+		GridData gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+		gd.widthHint = 15;
+		deleteIcon.setLayoutData(gd);
+		Bundle bundle = FrameworkUtil.getBundle(getClass());
+		URL url = FileLocator.find(bundle, new Path("icons/delete.png"), null);
+		ImageDescriptor imageDesc = ImageDescriptor.createFromURL(url);
+		Image image = imageDesc.createImage();
+		deleteIcon.setImage(image);
+		deleteIcon.setSize(5, 5);
+		deleteIcon.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {}
+
+			@Override
+			public void mouseUp(MouseEvent e) {}
+
+			@Override
+			public void mouseDown(MouseEvent e) {
+				deleteEntry();
+			}
+		});
+
 		// Feldname Label
 		typeLabel = new Label(body, SWT.RIGHT);
-		GridData gd = new GridData(SWT.RIGHT, SWT.CENTER, true, false);
-		gd.widthHint = 50;
+		gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+		gd.widthHint = 60;
 		typeLabel.setLayoutData(gd);
 
 		// Combo für "bearbeiten" Ansicht
 		typeCombo = new Combo(body, SWT.RIGHT);
-		gd = new GridData(SWT.RIGHT, SWT.CENTER, true, false);
-		gd.widthHint = 50;
+		gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
 		gd.exclude = true;
+		gd.widthHint = 60;
 		typeCombo.setLayoutData(gd);
 		typeCombo.setVisible(false);
 		typeCombo.addSelectionListener(new SelectionListener() {
@@ -71,6 +106,10 @@ public class TypeEntry {
 		setType(type);
 	}
 
+	protected void deleteEntry() {
+		parent.deleteEntry(type, this);
+	}
+
 	public String getType() {
 		return this.type;
 	}
@@ -94,11 +133,6 @@ public class TypeEntry {
 		setEditable(input.getEditable());
 	}
 
-//	public String getInput() {
-//		input.removeModifyListener();
-//		return input.getText();
-//	}
-
 	public void setInput(Value value) {
 		input.setText(value);
 	}
@@ -108,9 +142,12 @@ public class TypeEntry {
 		input.setEditable(editable);
 
 		boolean multipleTypesAvailable = typeCombo.getItemCount() > 1;
+		boolean showDelete = editable && hasContent() && !type.equals("");
 		boolean showLabel = (!editable && hasContent()) || !multipleTypesAvailable;
 		boolean showCombo = editable && multipleTypesAvailable;
 		boolean showInput = editable || hasContent();
+
+		deleteIcon.setVisible(showDelete);
 
 		GridData gd = (GridData) typeLabel.getLayoutData();
 		gd.exclude = !showLabel;
@@ -130,6 +167,7 @@ public class TypeEntry {
 	}
 
 	public void moveAbove(Label seperator) {
+		deleteIcon.moveAbove(seperator);
 		typeLabel.moveAbove(seperator);
 		typeCombo.moveAbove(seperator);
 		input.moveAbove(seperator);
@@ -150,6 +188,7 @@ public class TypeEntry {
 	}
 
 	public void dispose() {
+		deleteIcon.dispose();
 		typeLabel.dispose();
 		typeCombo.dispose();
 		input.dispose();

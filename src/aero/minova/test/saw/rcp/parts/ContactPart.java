@@ -293,12 +293,12 @@ public class ContactPart implements GroupListViewer {
 		entries = new LinkedHashMap<String, PropertyEntry>();
 
 		// Layout für Body definieren
-		body.setLayout(new GridLayout(2, false));
+		body.setLayout(new GridLayout(3, false));
 
 		// Profilbild
 		profileLable = new Label(body, SWT.RIGHT);
 		GridData gd = new GridData(SWT.LEFT, SWT.TOP, false, false);
-		gd.horizontalSpan = 2;
+		gd.horizontalSpan = 3;
 		profileLable.setLayoutData(gd);
 		addProfilePic(defaultPic);
 		profileLable.addMouseListener(new MouseAdapter() {
@@ -316,6 +316,7 @@ public class ContactPart implements GroupListViewer {
 		entries.put(VCardOptions.ADR, new PropertyEntry(body, VCardOptions.ADR));
 
 		// Notizen
+		new Label(body, SWT.NONE); // Leeres Label um Platz zu lassen
 		notesLabel = new Label(body, SWT.RIGHT | SWT.TOP);
 		gd = new GridData(SWT.RIGHT, SWT.TOP, true, false);
 		notesLabel.setLayoutData(gd);
@@ -369,7 +370,6 @@ public class ContactPart implements GroupListViewer {
 			String path = dialog.open();
 			currentContact.setProperty(VCardOptions.PHOTO, path);
 			addProfilePic(path);
-			System.out.println(path);
 		}
 	}
 
@@ -428,7 +428,7 @@ public class ContactPart implements GroupListViewer {
 			entries.get(s).setInput(c);
 		}
 
-		updateVisibility(editable);
+		contactDetail.requestLayout();
 	}
 
 	@Inject
@@ -439,18 +439,26 @@ public class ContactPart implements GroupListViewer {
 		currentContact = c;
 		selectedGroups.get(0).addMember(c);
 		updateContactDetail(c);
-		editable = true;
-		switchEditable(editable);
 		showContacts(selectedGroups.get(0).getMembers());
 
 		selectionLayerGroup.selectRow(0, db.getPositionOfGroup(selectedGroups.get(0)), false, false);
 		selectionLayerContact.selectRow(0, selectedGroups.get(0).getPositionInList(c), false, false);
+
+		switchEditable(true);
+	}
+
+	@Inject
+	@Optional
+	private void subscribeTopicNewContact(@UIEventTopic(EventConstants.SELECT_CONTACTS) List<Contact> contacts) {
+		saveChanges();
+		selectionLayerContact.selectRow(0, selectedGroups.get(0).getPositionInList(contacts.get(0)), false, false);
 	}
 
 	@Inject
 	@Optional
 	private void subscribeTopicExistingContact(@UIEventTopic(EventConstants.CONTACT_EXISTS) Contact c) {
-		MessageDialog.openInformation(shell, null, "Dieser Kontakt existiert bereits");
+		MessageDialog.openInformation(shell, null, "Dieser Kontakt existiert bereits und wird aktualisiert");
+		updateContactDetail(c);
 	}
 
 	@Inject
@@ -542,14 +550,15 @@ public class ContactPart implements GroupListViewer {
 		for (String s : entries.keySet()) {
 			entries.get(s).setEditable(editable);
 		}
-		if (!editable)
+		if (!editable && entries.get(VCardOptions.NAME).getTypeEntryByType("") != null)
 			entries.get(VCardOptions.NAME).getTypeEntryByType("").getTypeLabel().setFocus();
-		updateVisibility(editable);
+		contactDetail.requestLayout();
 
 		// Update Contact
 		if (!editable) {
 			saveChanges();
 		}
+		contactDetail.requestLayout();
 
 	}
 
@@ -559,26 +568,6 @@ public class ContactPart implements GroupListViewer {
 				entries.get(s).updateContact();
 			}
 		}
-	}
-
-	public void updateVisibility(boolean allVisible) {
-//		for (String name : entries.keySet()) {
-//			ContactPropertyEntry entry = entries.get(name);
-//			boolean vis = allVisible || !entry.getInput().getText().strip().equals("");
-//
-//			GridData gd = (GridData) entry.getName().getLayoutData();
-//			gd.exclude = !vis;
-//			entry.getName().setVisible(vis);
-//
-//			gd = (GridData) entry.getInput().getLayoutData();
-//			gd.exclude = !vis;
-//			entry.getInput().setVisible(vis);
-//
-//			gd = (GridData) entry.getSeperator().getLayoutData();
-//			gd.exclude = !vis;
-//			entry.getSeperator().setVisible(vis);
-//		}
-		contactDetail.requestLayout();
 	}
 
 	public void newGroup() {
@@ -596,7 +585,7 @@ public class ContactPart implements GroupListViewer {
 			if (result == 0) {
 				db.removeGroup(g);
 				groupTable.refresh();
-				selectionLayerGroup.selectRow(0, 0, true, true);
+				selectionLayerGroup.selectRow(0, 0, false, false);
 			}
 		} else {
 			MessageDialog.openInformation(shell, null, "Es ist keine Gruppe ausgewählt");

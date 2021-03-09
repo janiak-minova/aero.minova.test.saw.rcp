@@ -33,6 +33,8 @@ public class AddressValueEntry extends ValueEntry {
 	public AddressValueEntry(Composite body, PropertyEntry contactPropertyEntry, Boolean editable) {
 		addrComp = new Composite(body, SWT.None);
 		addrComp.setLayout(new GridLayout(2, false));
+		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		addrComp.setLayoutData(gd);
 
 		address = new Address(";;;;;;");
 
@@ -65,15 +67,23 @@ public class AddressValueEntry extends ValueEntry {
 		};
 
 		for (Text t : inputs) {
-			GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 			t.setEditable(editable);
-			t.setLayoutData(gd);
 			t.addModifyListener(inputModifyListener);
 		}
-		GridData gd = (GridData) street.getLayoutData();
+
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		gd.horizontalSpan = 2;
-		gd = (GridData) country.getLayoutData();
+		street.setLayoutData(gd);
+
+		gd = new GridData(SWT.FILL, SWT.FILL, false, false);
+		postCode.setLayoutData(gd);
+
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		city.setLayoutData(gd);
+
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		gd.horizontalSpan = 2;
+		country.setLayoutData(gd);
 	}
 
 	@Override

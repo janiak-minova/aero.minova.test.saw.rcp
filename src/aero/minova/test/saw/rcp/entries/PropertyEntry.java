@@ -44,7 +44,7 @@ public class PropertyEntry {
 		// Separator
 		seperator = new Label(body, SWT.SEPARATOR | SWT.HORIZONTAL);
 		GridData gd = new GridData(SWT.LEFT, SWT.CENTER, true, false);
-		gd.horizontalSpan = 2; // Beide Spalten verwenden
+		gd.horizontalSpan = 3; // Beide Spalten verwenden
 		gd.widthHint = 1000;
 		seperator.setLayoutData(gd);
 		seperator.setData("org.eclipse.e4.ui.css.CssClassName", "hrule");
@@ -60,8 +60,9 @@ public class PropertyEntry {
 	}
 
 	public void addCTE() {
-		if (getUnusedTypes().size() > 0)
+		if (getUnusedTypes().size() > 0) {
 			addCTE(getUnusedTypes().get(0));
+		}
 	}
 
 	public void setInput(Contact c) {
@@ -172,6 +173,11 @@ public class PropertyEntry {
 	public void removeEntry(TypeEntry cte) {
 		cte.dispose();
 		typeEntries.remove(cte);
+	}
+
+	public void deleteEntry(String type, TypeEntry cte) {
+		removeEntry(cte);
+		typeChanged(type);
 	}
 
 }

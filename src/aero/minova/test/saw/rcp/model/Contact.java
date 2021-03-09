@@ -80,7 +80,7 @@ public class Contact {
 
 	public String getValueString(String prop) {
 		String val = "";
-		if (properties.get(prop) != null) {
+		if (properties.get(prop) != null && properties.get(prop).size() > 0) {
 			val = properties.get(prop).entrySet().iterator().next().getValue().getStringRepresentation();
 		}
 		return val;
@@ -95,7 +95,7 @@ public class Contact {
 	}
 
 	public Value getValue(String prop) {
-		if (properties.get(prop) != null) {
+		if (properties.get(prop) != null && properties.get(prop).size() > 0) {
 			return properties.get(prop).entrySet().iterator().next().getValue();
 		}
 		return null;

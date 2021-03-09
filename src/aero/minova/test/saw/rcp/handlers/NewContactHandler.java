@@ -13,18 +13,18 @@ import aero.minova.test.saw.rcp.model.Contact;
 import aero.minova.test.saw.rcp.model.Database;
 
 public class NewContactHandler {
-	
-	@Inject IEventBroker broker;	
-	
+
+	@Inject
+	IEventBroker broker;
+
 	@Execute
 	public void execute(MApplication application, EModelService service) {
 		Contact c = Database.getInstance().addContact();
 		broker.send(EventConstants.NEW_CONTACT, c);
 	}
-	
+
 	@CanExecute
 	public boolean canExecute() {
-		//System.out.println("canExecute Hallo");
 		return true;
 	}
 

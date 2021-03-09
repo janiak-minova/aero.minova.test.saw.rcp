@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -17,6 +18,7 @@ public class NameValueEntry extends ValueEntry {
 
 	private StructuredName sName;
 
+	private Text completeName;
 	private Text prefixText;
 	private Text fnText;
 	private Text snText;
@@ -30,8 +32,15 @@ public class NameValueEntry extends ValueEntry {
 	public NameValueEntry(Composite body) {
 		nameComp = new Composite(body, SWT.None);
 		nameComp.setLayout(new GridLayout(5, false));
+		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		nameComp.setLayoutData(gd);
 
 		sName = new StructuredName(";;;;");
+
+		completeName = new Text(nameComp, SWT.None);
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		completeName.setEditable(false);
+		completeName.setLayoutData(gd);
 
 		prefixText = new Text(nameComp, SWT.None);
 		fnText = new Text(nameComp, SWT.None);
@@ -53,7 +62,7 @@ public class NameValueEntry extends ValueEntry {
 		inputs.add(suffixText);
 
 		for (Text t : inputs) {
-			GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+			gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 			t.setEditable(false);
 			t.setLayoutData(gd);
 		}
@@ -70,6 +79,7 @@ public class NameValueEntry extends ValueEntry {
 	@Override
 	protected void setText(Value val) {
 		this.sName = (StructuredName) val;
+		completeName.setText(sName.getStringRepresentation());
 		prefixText.setText(sName.getPrefix());
 		fnText.setText(sName.getFirstName());
 		snText.setText(sName.getSecondName());
@@ -81,15 +91,31 @@ public class NameValueEntry extends ValueEntry {
 	protected void setEditable(boolean editable) {
 		for (Text t : inputs) {
 			t.setEditable(editable);
+
+			GridData gd = (GridData) t.getLayoutData();
+			if (editable) {
+				gd.grabExcessHorizontalSpace = true;
+				gd.horizontalAlignment = SWT.FILL;
+			} else {
+				gd.grabExcessHorizontalSpace = false;
+				gd.horizontalAlignment = SWT.LEFT;
+				Point size = t.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+				gd.widthHint = size.x;
+			}
 		}
+		nameComp.requestLayout();
 	}
 
 	@Override
 	protected void setVisible(boolean disregard) {
-		for (Text t : inputs) {
-			boolean vis = t.getEditable() || !t.getText().strip().equals("");
+		boolean vis = fnText.getEditable();
 
-			GridData gd = (GridData) t.getLayoutData();
+		GridData gd = (GridData) completeName.getLayoutData();
+		gd.exclude = vis;
+		completeName.setVisible(!vis);
+
+		for (Text t : inputs) {
+			gd = (GridData) t.getLayoutData();
 			gd.exclude = !vis;
 			t.setVisible(vis);
 		}
@@ -121,6 +147,7 @@ public class NameValueEntry extends ValueEntry {
 		sName.setSecondName(snText.getText());
 		sName.setLastName(lnText.getText());
 		sName.setSuffix(suffixText.getText());
+		completeName.setText(sName.getStringRepresentation());
 		return sName;
 	}
 }
