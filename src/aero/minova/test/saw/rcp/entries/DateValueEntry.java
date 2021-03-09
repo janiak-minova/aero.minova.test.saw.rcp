@@ -44,7 +44,9 @@ public class DateValueEntry extends ValueEntry {
 
 	@Override
 	protected String getText() {
-		return input.getText();
+		if (getValue().getDate() != null)
+			return input.getText();
+		return "";
 	}
 
 	@Override
@@ -85,7 +87,7 @@ public class DateValueEntry extends ValueEntry {
 	}
 
 	@Override
-	protected Value getValue() {
+	protected DateValue getValue() {
 		dateValue = new DateValue(input.getText());
 		if (dateValue.getDate() == null)
 			input.setText("");
