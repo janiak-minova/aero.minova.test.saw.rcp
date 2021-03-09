@@ -84,6 +84,9 @@ public class VCardExportHandler {
 				if (!type.equals("")) {
 					raw.setParameter("TYPE", type);
 				}
+
+				if (property.equals(VCardOptions.PHOTO))
+					raw.addParameter("Encoding", "b");
 			}
 		}
 

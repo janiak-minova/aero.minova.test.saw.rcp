@@ -18,6 +18,8 @@ public class VCardOptions {
 	public static final String WORK = "WORK";
 	public static final String CELL = "CELL";
 
+	public static final String PNG = "PNG";
+
 	/**
 	 * Die unterstützten vCard properties
 	 * <ul>
@@ -36,6 +38,8 @@ public class VCardOptions {
 	private static final String[] EMAILTYPES = { "HOME", "WORK" };
 	private static final String[] ADRTYPES = { "HOME", "WORK" };
 
+	private static final String[] PHOTOTYPES = { "PNG" };
+
 	/**
 	 * Die unterstützen Typen der verschiedenen Properties <br>
 	 * Ist kein Eintrag vorhanden wird nur ein Eintrag unterstüzt <br>
@@ -47,6 +51,7 @@ public class VCardOptions {
 	 * </ul>
 	 **/
 	public static final Map<String, String[]> TYPES = Map.ofEntries(new AbstractMap.SimpleEntry<String, String[]>("TEL", TELTYPES),
-			new AbstractMap.SimpleEntry<String, String[]>("EMAIL", EMAILTYPES), new AbstractMap.SimpleEntry<String, String[]>("ADR", ADRTYPES));
+			new AbstractMap.SimpleEntry<String, String[]>("EMAIL", EMAILTYPES), new AbstractMap.SimpleEntry<String, String[]>("ADR", ADRTYPES),
+			new AbstractMap.SimpleEntry<String, String[]>("PHOTO", PHOTOTYPES));
 
 }

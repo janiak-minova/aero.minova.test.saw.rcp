@@ -104,7 +104,7 @@ public class Database {
 		c.setProperty(VCardOptions.TEL, VCardOptions.HOME, new TextValue("9876543"));
 		c.setProperty(VCardOptions.BDAY, new DateValue("01.01.1990"));
 		c.setProperty(VCardOptions.ADR, VCardOptions.HOME, new AddressValue(";;Straße 123;Würzburg;;97070;Deutschland"));
-		c.setProperty(VCardOptions.PHOTO, new PhotoValue("icons/user2.png"));
+		c.setProperty(VCardOptions.PHOTO, VCardOptions.PNG, new PhotoValue("icons/user2.png"));
 
 		c = addContact();
 		c.setProperty(VCardOptions.NAME, new NameValue("Mustermann;Max;;;"));

@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
+import aero.minova.test.saw.rcp.constants.Constants;
 import aero.minova.test.saw.rcp.model.Contact;
 import aero.minova.test.saw.rcp.model.PhotoValue;
 import aero.minova.test.saw.rcp.vCard.VCardOptions;
@@ -31,7 +32,7 @@ public class PhotoPropertyEntry extends PropertyEntry {
 
 	private boolean editable;
 
-	private String defaultPath = "icons/user.png";
+	private String defaultPath = Constants.DEFAULTPIC;
 
 	private String path;
 
@@ -109,6 +110,6 @@ public class PhotoPropertyEntry extends PropertyEntry {
 
 	@Override
 	public void updateContact() {
-		currentContact.setProperty(VCardOptions.PHOTO, new PhotoValue(path));
+		currentContact.setProperty(VCardOptions.PHOTO, VCardOptions.PNG, new PhotoValue(path));
 	}
 }

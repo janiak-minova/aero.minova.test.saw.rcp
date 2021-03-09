@@ -21,10 +21,6 @@ public class Contact {
 	public Contact(int id) {
 		this.id = id;
 		properties = new LinkedHashMap<String, Map<String, Value>>();
-
-//		for (String prop : VCardOptions.PROPERTIES) {
-//			properties.put(prop, new LinkedHashMap<String, String>());
-//		}
 	}
 
 	public void setProperty(String prop, String type, Value val) {
