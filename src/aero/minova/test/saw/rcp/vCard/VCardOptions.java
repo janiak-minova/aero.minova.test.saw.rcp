@@ -12,6 +12,7 @@ public class VCardOptions {
 	public static final String EMAIL = "EMAIL";
 	public static final String ADR = "ADR";
 	public static final String NOTE = "NOTE";
+	public static final String BDAY = "BDAY";
 
 	public static final String HOME = "HOME";
 	public static final String WORK = "WORK";
@@ -29,7 +30,7 @@ public class VCardOptions {
 	 * <li>Note: Notizen</li>
 	 * </ul>
 	 **/
-	public static final String[] PROPERTIES = { "PHOTO", "N", "ORG", "TEL", "EMAIL", "ADR", "NOTE" };
+	public static final String[] PROPERTIES = { "PHOTO", "N", "ORG", "TEL", "EMAIL", "ADR", "NOTE", "BDAY" };
 
 	private static final String[] TELTYPES = { "HOME", "WORK", "CELL" };
 	private static final String[] EMAILTYPES = { "HOME", "WORK" };

@@ -17,7 +17,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
-import aero.minova.test.saw.rcp.events.EventConstants;
+import aero.minova.test.saw.rcp.constants.EventConstants;
 import aero.minova.test.saw.rcp.model.Contact;
 import aero.minova.test.saw.rcp.model.Database;
 import aero.minova.test.saw.rcp.model.Value;

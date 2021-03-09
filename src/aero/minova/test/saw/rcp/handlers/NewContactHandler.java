@@ -8,7 +8,7 @@ import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.workbench.modeling.EModelService;
 
-import aero.minova.test.saw.rcp.events.EventConstants;
+import aero.minova.test.saw.rcp.constants.EventConstants;
 import aero.minova.test.saw.rcp.model.Contact;
 import aero.minova.test.saw.rcp.model.Database;
 

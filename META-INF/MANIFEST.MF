@@ -38,11 +38,11 @@ Import-Package: javax.annotation;version="1.0.0";resolution:=optional,
  javax.inject;version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: aero.minova.test.saw.rcp;uses:="org.osgi.framework,org.eclipse.e4.core.contexts",
+ aero.minova.test.saw.rcp.constants,
  aero.minova.test.saw.rcp.dataset,
  aero.minova.test.saw.rcp.dataset.car,
  aero.minova.test.saw.rcp.dataset.fixture.data,
  aero.minova.test.saw.rcp.dataset.person,
- aero.minova.test.saw.rcp.events,
  aero.minova.test.saw.rcp.handlers;
   uses:="org.eclipse.swt.events,
    org.eclipse.e4.ui.model.application,

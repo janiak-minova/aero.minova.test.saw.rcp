@@ -1,4 +1,4 @@
-package aero.minova.test.saw.rcp.events;
+package aero.minova.test.saw.rcp.constants;
 
 public interface EventConstants {
 

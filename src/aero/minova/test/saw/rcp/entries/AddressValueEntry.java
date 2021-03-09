@@ -12,12 +12,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import aero.minova.test.saw.rcp.model.Address;
+import aero.minova.test.saw.rcp.model.AddressValue;
 import aero.minova.test.saw.rcp.model.Value;
 
 public class AddressValueEntry extends ValueEntry {
 
-	private Address address;
+	private AddressValue address;
 
 	private Text street;
 	private Text postCode;
@@ -36,7 +36,7 @@ public class AddressValueEntry extends ValueEntry {
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		addrComp.setLayoutData(gd);
 
-		address = new Address(";;;;;;");
+		address = new AddressValue(";;;;;;");
 
 		street = new Text(addrComp, SWT.None);
 		postCode = new Text(addrComp, SWT.None);
@@ -100,7 +100,7 @@ public class AddressValueEntry extends ValueEntry {
 
 	@Override
 	protected void setText(Value value) {
-		this.address = (Address) value;
+		this.address = (AddressValue) value;
 		street.setText(address.getStreet());
 		postCode.setText(address.getPostCode());
 		city.setText(address.getCity());

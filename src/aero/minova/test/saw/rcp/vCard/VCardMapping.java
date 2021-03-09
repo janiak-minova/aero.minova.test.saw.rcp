@@ -1,10 +1,15 @@
 package aero.minova.test.saw.rcp.vCard;
 
+import java.util.Date;
 import java.util.List;
 
+import aero.minova.test.saw.rcp.model.AddressValue;
+import aero.minova.test.saw.rcp.model.DateValue;
+import aero.minova.test.saw.rcp.model.NameValue;
 import aero.minova.test.saw.rcp.model.TextValue;
 import aero.minova.test.saw.rcp.model.Value;
 import ezvcard.property.Address;
+import ezvcard.property.DateOrTimeProperty;
 import ezvcard.property.ImageProperty;
 import ezvcard.property.StructuredName;
 import ezvcard.property.Telephone;
@@ -30,6 +35,8 @@ public class VCardMapping {
 			return VCardOptions.ADR;
 		case ("ezvcard.property.Note"):
 			return VCardOptions.NOTE;
+		case ("ezvcard.property.Birthday"):
+			return VCardOptions.BDAY;
 		case ("ezvcard.property.ProductId"):
 			return null;
 		default:
@@ -46,6 +53,9 @@ public class VCardMapping {
 			return new TextValue(((TextProperty) prop).getValue());
 		} else if (prop instanceof ImageProperty) { // Photo, Logo
 			return new TextValue(((ImageProperty) prop).getUrl());
+		} else if (prop instanceof DateOrTimeProperty) { // Birthday, Deathday, Anniversary
+			Date date = ((DateOrTimeProperty) prop).getDate();
+			return new DateValue(date);
 		} else if (prop instanceof StructuredName) {
 			StructuredName sName = (StructuredName) prop;
 			String val = "";
@@ -54,7 +64,7 @@ public class VCardMapping {
 			val += getListAsString(sName.getAdditionalNames()) + ";";
 			val += getListAsString(sName.getPrefixes()) + ";";
 			val += getListAsString(sName.getSuffixes());
-			return new aero.minova.test.saw.rcp.model.StructuredName(val);
+			return new NameValue(val);
 		} else if (prop instanceof Telephone) {
 			return new TextValue(((Telephone) prop).getText());
 		} else if (prop instanceof Address) {
@@ -68,7 +78,7 @@ public class VCardMapping {
 			val += ((addr.getPostalCode() == null) ? "" : addr.getPostalCode()) + ";";
 			val += ((addr.getCountry() == null) ? "" : addr.getCountry());
 
-			return new aero.minova.test.saw.rcp.model.Address(val);
+			return new AddressValue(val);
 		}
 
 		return null;

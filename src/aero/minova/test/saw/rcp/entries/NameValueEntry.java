@@ -11,12 +11,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import aero.minova.test.saw.rcp.model.StructuredName;
+import aero.minova.test.saw.rcp.model.NameValue;
 import aero.minova.test.saw.rcp.model.Value;
 
 public class NameValueEntry extends ValueEntry {
 
-	private StructuredName sName;
+	private NameValue sName;
 
 	private Text completeName;
 	private Text prefixText;
@@ -35,7 +35,7 @@ public class NameValueEntry extends ValueEntry {
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 		nameComp.setLayoutData(gd);
 
-		sName = new StructuredName(";;;;");
+		sName = new NameValue(";;;;");
 
 		completeName = new Text(nameComp, SWT.None);
 		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
@@ -78,7 +78,7 @@ public class NameValueEntry extends ValueEntry {
 
 	@Override
 	protected void setText(Value val) {
-		this.sName = (StructuredName) val;
+		this.sName = (NameValue) val;
 		completeName.setText(sName.getStringRepresentation());
 		prefixText.setText(sName.getPrefix());
 		fnText.setText(sName.getFirstName());

@@ -66,8 +66,8 @@ import org.eclipse.swt.widgets.Text;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
+import aero.minova.test.saw.rcp.constants.EventConstants;
 import aero.minova.test.saw.rcp.entries.PropertyEntry;
-import aero.minova.test.saw.rcp.events.EventConstants;
 import aero.minova.test.saw.rcp.handlers.ContactColumnPropertyAccessor;
 import aero.minova.test.saw.rcp.handlers.DragAndDropSupportContacts;
 import aero.minova.test.saw.rcp.handlers.DragAndDropSupportGroups;
@@ -313,6 +313,7 @@ public class ContactPart implements GroupListViewer {
 		entries.put(VCardOptions.ORG, new PropertyEntry(body, VCardOptions.ORG));
 		entries.put(VCardOptions.TEL, new PropertyEntry(body, VCardOptions.TEL));
 		entries.put(VCardOptions.EMAIL, new PropertyEntry(body, VCardOptions.EMAIL));
+		entries.put(VCardOptions.BDAY, new PropertyEntry(body, VCardOptions.BDAY));
 		entries.put(VCardOptions.ADR, new PropertyEntry(body, VCardOptions.ADR));
 
 		// Notizen

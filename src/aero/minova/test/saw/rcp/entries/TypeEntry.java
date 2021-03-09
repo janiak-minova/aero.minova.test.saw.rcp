@@ -99,6 +99,9 @@ public class TypeEntry {
 		case (VCardOptions.ADR):
 			input = new AddressValueEntry(body, contactPropertyEntry, editable);
 			break;
+		case (VCardOptions.BDAY):
+			input = new DateValueEntry(body);
+			break;
 		default:
 			input = new TextValueEntry(body, contactPropertyEntry, property, editable);
 		}

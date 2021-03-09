@@ -1,6 +1,6 @@
 package aero.minova.test.saw.rcp.model;
 
-public class StructuredName extends Value {
+public class NameValue extends Value {
 
 	private String lastName;
 	private String firstName;
@@ -8,7 +8,7 @@ public class StructuredName extends Value {
 	private String prefix;
 	private String suffix;
 
-	public StructuredName(String name) {
+	public NameValue(String name) {
 		String[] splitted = name.split(";", -1);
 		lastName = splitted[0];
 		firstName = splitted[1];
@@ -88,7 +88,7 @@ public class StructuredName extends Value {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		StructuredName other = (StructuredName) obj;
+		NameValue other = (NameValue) obj;
 		if (firstName == null) {
 			if (other.firstName != null)
 				return false;

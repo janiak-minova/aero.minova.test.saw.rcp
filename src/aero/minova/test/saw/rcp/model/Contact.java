@@ -55,10 +55,10 @@ public class Contact {
 	public void setProperty(String prop, String val) {
 		switch (prop) {
 		case (VCardOptions.NAME):
-			setProperty(prop, new StructuredName(val));
+			setProperty(prop, new NameValue(val));
 			break;
 		case (VCardOptions.ADR):
-			setProperty(prop, new Address(val));
+			setProperty(prop, new AddressValue(val));
 			break;
 		default:
 			setProperty(prop, new TextValue(val));
@@ -68,10 +68,10 @@ public class Contact {
 	public void setProperty(String prop, String type, String val) {
 		switch (prop) {
 		case (VCardOptions.NAME):
-			setProperty(prop, type, new StructuredName(val));
+			setProperty(prop, type, new NameValue(val));
 			break;
 		case (VCardOptions.ADR):
-			setProperty(prop, type, new Address(val));
+			setProperty(prop, type, new AddressValue(val));
 			break;
 		default:
 			setProperty(prop, type, new TextValue(val));

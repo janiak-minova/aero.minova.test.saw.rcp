@@ -1,6 +1,6 @@
 package aero.minova.test.saw.rcp.model;
 
-public class Address extends Value {
+public class AddressValue extends Value {
 	private String poBox;
 	private String extended;
 	private String street;
@@ -9,7 +9,7 @@ public class Address extends Value {
 	private String postCode;
 	private String country;
 
-	public Address(String structuredAddress) {
+	public AddressValue(String structuredAddress) {
 		String[] splitted = structuredAddress.split(";", -1);
 
 		poBox = splitted[0];
