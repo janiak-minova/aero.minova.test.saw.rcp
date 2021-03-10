@@ -17,13 +17,11 @@ public class VCardOptions {
 	public static final String HOME = "HOME";
 	public static final String WORK = "WORK";
 	public static final String CELL = "CELL";
+	public static final String INTERNET = "INTERNET";
 
 	public static final String PNG = "PNG";
-	public static final String JPEG = "JPEG";
 	public static final String JPG = "JPG";
 	public static final String GIF = "GIF";
-	public static final String BMP = "BMP";
-	public static final String TIFF = "TIFF";
 
 	/**
 	 * Die unterstützten vCard properties
@@ -40,9 +38,9 @@ public class VCardOptions {
 	public static final String[] PROPERTIES = { "PHOTO", "N", "ORG", "TEL", "EMAIL", "ADR", "NOTE", "BDAY" };
 
 	public static final String[] TELTYPES = { "HOME", "WORK", "CELL" };
-	public static final String[] EMAILTYPES = { "HOME", "WORK" };
+	public static final String[] EMAILTYPES = { "HOME", "WORK", "INTERNET" };
 	public static final String[] ADRTYPES = { "HOME", "WORK" };
-	public static final String[] PHOTOTYPES = { "JPEG", "PNG", "JPG", "GIF", "BMP", "TIFF" };
+	public static final String[] PHOTOTYPES = { "JPG", "PNG", "GIF" };
 
 	/**
 	 * Die unterstützen Typen der verschiedenen Properties <br>

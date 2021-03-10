@@ -18,7 +18,10 @@ import org.eclipse.swt.widgets.Shell;
 import aero.minova.test.saw.rcp.constants.EventConstants;
 import aero.minova.test.saw.rcp.model.Contact;
 import aero.minova.test.saw.rcp.model.Group;
+import ezvcard.Ezvcard;
 import ezvcard.VCard;
+import ezvcard.VCardVersion;
+import ezvcard.ValidationWarnings;
 import ezvcard.property.RawProperty;
 
 public class VCardExportHandler {
@@ -93,7 +96,13 @@ public class VCardExportHandler {
 			}
 		}
 
-		return vcard.write();
+		// Validate
+		String vCardString = vcard.write();
+		vcard = Ezvcard.parse(vCardString).first();
+		ValidationWarnings warnings = vcard.validate(VCardVersion.V4_0);
+		System.out.println(warnings.toString());
+
+		return vCardString;
 	}
 
 }

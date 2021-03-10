@@ -33,6 +33,8 @@ public class VCardImportHandler {
 
 	static boolean intern;
 
+	static int existingContacts;
+
 	@Execute
 	public void execute(MPart part) {
 		FileDialog dialog = new FileDialog(new Shell(), SWT.OPEN);
@@ -50,6 +52,7 @@ public class VCardImportHandler {
 
 	public static List<Contact> createContactsFromString(String contactString, boolean intern2) {
 		intern = intern2;
+		existingContacts = 0;
 
 		List<VCard> vCardList = readVCard(contactString);
 		List<Contact> contacts = new ArrayList<Contact>();
@@ -57,6 +60,9 @@ public class VCardImportHandler {
 			Contact c = createContact(vCard);
 			contacts.add(c);
 		}
+
+		if (existingContacts > 0 && !intern)
+			broker.send(EventConstants.CONTACT_EXISTS, existingContacts);
 
 		broker.send(EventConstants.SELECT_CONTACTS, contacts);
 		return contacts;
@@ -76,11 +82,10 @@ public class VCardImportHandler {
 	}
 
 	public static Contact createContact(VCard vcard) {
-		boolean contactExists = false;
 		Contact c;
 		if (vcard.getStructuredName() != null && db.getContactByName(VCardMapping.getValue(vcard.getStructuredName())) != null) {
 			c = db.getContactByName(VCardMapping.getValue(vcard.getStructuredName()));
-			contactExists = true;
+			existingContacts += 1;
 
 		} else {
 			c = db.addContact();
@@ -98,8 +103,7 @@ public class VCardImportHandler {
 				}
 			}
 		}
-		if (contactExists && !intern)
-			broker.send(EventConstants.CONTACT_EXISTS, c);
+
 		broker.send(EventConstants.REFRESH_CONTACTS, c);
 		return c;
 	}

@@ -65,6 +65,7 @@ public class DefaultPropertyEntry extends PropertyEntry {
 		}
 	}
 
+	@Override
 	public void setInput(Contact c) {
 		currentContact = c;
 		List<String> usedTypes = getUsedTypes();
@@ -88,6 +89,7 @@ public class DefaultPropertyEntry extends PropertyEntry {
 		setEditable(false);
 	}
 
+	@Override
 	public TypeEntry getTypeEntryByType(String type) {
 		for (TypeEntry cte : typeEntries) {
 			if (cte.getType().equals(type)) {
@@ -97,6 +99,7 @@ public class DefaultPropertyEntry extends PropertyEntry {
 		return null;
 	}
 
+	@Override
 	public void updateContact() {
 		for (TypeEntry cte : typeEntries) {
 			if (cte.hasContent())
@@ -104,6 +107,7 @@ public class DefaultPropertyEntry extends PropertyEntry {
 		}
 	}
 
+	@Override
 	public void setEditable(boolean editable) {
 		this.editable = editable;
 
@@ -173,6 +177,9 @@ public class DefaultPropertyEntry extends PropertyEntry {
 	public void removeEntry(TypeEntry cte) {
 		cte.dispose();
 		typeEntries.remove(cte);
+
+		if (typeEntries.size() == 0 && editable)
+			addCTE();
 	}
 
 	public void deleteEntry(String type, TypeEntry cte) {

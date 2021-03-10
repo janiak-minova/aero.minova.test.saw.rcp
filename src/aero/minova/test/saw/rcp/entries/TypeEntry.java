@@ -38,6 +38,8 @@ public class TypeEntry {
 
 	Composite body;
 
+	private int width = 80;
+
 	public TypeEntry(Composite body, DefaultPropertyEntry contactPropertyEntry, String property, String type, Boolean editable) {
 
 		this.parent = contactPropertyEntry;
@@ -71,14 +73,14 @@ public class TypeEntry {
 		// Feldname Label
 		typeLabel = new Label(body, SWT.RIGHT);
 		gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
-		gd.widthHint = 60;
+		gd.widthHint = width;
 		typeLabel.setLayoutData(gd);
 
 		// Combo für "bearbeiten" Ansicht
 		typeCombo = new Combo(body, SWT.RIGHT);
 		gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
 		gd.exclude = true;
-		gd.widthHint = 60;
+		gd.widthHint = width;
 		typeCombo.setLayoutData(gd);
 		typeCombo.setVisible(false);
 		typeCombo.addSelectionListener(new SelectionListener() {

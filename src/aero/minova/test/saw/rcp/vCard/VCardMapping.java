@@ -52,15 +52,18 @@ public class VCardMapping {
 		} else if (prop instanceof TextProperty) { // Classification, Email, Expertise, FormattedName, Hobby, Interest, Kind, Label, Language, Mailer, Note,
 													// ProductId, Profile, RawPropertie, Role, SortString, SourceDisplayText, Title, UriProperty
 			return new TextValue(((TextProperty) prop).getValue());
+
 		} else if (prop instanceof ImageProperty) { // Photo, Logo
 			ImageProperty img = (ImageProperty) prop;
 			String filetype = VCardOptions.PHOTOTYPES[0];
 			if (img.getType() != null)
 				filetype = img.getType();
 			return new PhotoValue(img.getData(), filetype);
+
 		} else if (prop instanceof DateOrTimeProperty) { // Birthday, Deathday, Anniversary
 			Date date = ((DateOrTimeProperty) prop).getDate();
 			return new DateValue(date);
+
 		} else if (prop instanceof StructuredName) {
 			StructuredName sName = (StructuredName) prop;
 			String val = "";
@@ -70,8 +73,10 @@ public class VCardMapping {
 			val += getListAsString(sName.getPrefixes()) + ";";
 			val += getListAsString(sName.getSuffixes());
 			return new NameValue(val);
+
 		} else if (prop instanceof Telephone) {
 			return new TextValue(((Telephone) prop).getText());
+
 		} else if (prop instanceof Address) {
 			Address addr = (Address) prop;
 			String val = "";

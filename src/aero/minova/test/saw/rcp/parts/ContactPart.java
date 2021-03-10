@@ -373,14 +373,18 @@ public class ContactPart implements GroupListViewer {
 	@Optional
 	private void subscribeTopicNewContact(@UIEventTopic(EventConstants.SELECT_CONTACTS) List<Contact> contacts) {
 		saveChanges();
-		selectionLayerContact.selectRow(0, selectedGroups.get(0).getPositionInList(contacts.get(0)), false, false);
+		for (Contact c : contacts) {
+			selectionLayerContact.selectRow(0, selectedGroups.get(0).getPositionInList(c), true, false);
+		}
 	}
 
 	@Inject
 	@Optional
-	private void subscribeTopicExistingContact(@UIEventTopic(EventConstants.CONTACT_EXISTS) Contact c) {
-		MessageDialog.openInformation(shell, null, "Dieser Kontakt existiert bereits und wird aktualisiert");
-		updateContactDetail(c);
+	private void subscribeTopicExistingContact(@UIEventTopic(EventConstants.CONTACT_EXISTS) int amount) {
+		if (amount > 1)
+			MessageDialog.openInformation(shell, null, amount + " dieser Kontakte existieren bereits und werden aktualisiert.");
+		else
+			MessageDialog.openInformation(shell, null, "Dieser Kontakte existiert bereits und wird aktualisiert.");
 	}
 
 	@Inject

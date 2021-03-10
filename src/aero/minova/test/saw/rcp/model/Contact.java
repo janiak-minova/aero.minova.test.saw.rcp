@@ -46,6 +46,8 @@ public class Contact {
 
 			if (VCardOptions.TYPES.get(prop) != null) {
 				setProperty(prop, VCardOptions.TYPES.get(prop)[0], val);
+				if (val.getStringRepresentation().equals("autotelefon"))
+					System.out.println("found it");
 			} else {
 				if (properties.get(prop) == null) {
 					properties.put(prop, new LinkedHashMap<String, Value>());
