@@ -73,10 +73,12 @@ public class VCardImportHandler {
 	}
 
 	public static Contact createContact(VCard vcard) {
+		boolean contactExists = false;
 		Contact c;
 		if (vcard.getStructuredName() != null && db.getContactByName(VCardMapping.getValue(vcard.getStructuredName())) != null) {
 			c = db.getContactByName(VCardMapping.getValue(vcard.getStructuredName()));
-			broker.send(EventConstants.CONTACT_EXISTS, c);
+			contactExists = true;
+
 		} else {
 			c = db.addContact();
 		}
@@ -93,7 +95,8 @@ public class VCardImportHandler {
 				}
 			}
 		}
-
+		if (contactExists)
+			broker.send(EventConstants.CONTACT_EXISTS, c);
 		broker.send(EventConstants.REFRESH_CONTACTS, c);
 		return c;
 	}

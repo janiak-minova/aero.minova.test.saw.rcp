@@ -24,6 +24,8 @@ public class Contact {
 	}
 
 	public void setProperty(String prop, String type, Value val) {
+		prop = prop.toUpperCase();
+		type = type.toUpperCase();
 		if (Arrays.asList(VCardOptions.PROPERTIES).contains(prop)
 				&& (VCardOptions.TYPES.get(prop) != null && Arrays.asList(VCardOptions.TYPES.get(prop)).contains(type) || type.equals(""))) {
 			if (properties.get(prop) == null) {
@@ -37,14 +39,20 @@ public class Contact {
 	}
 
 	public void setProperty(String prop, Value val) {
-		if (Arrays.asList(VCardOptions.PROPERTIES).contains(prop) && VCardOptions.TYPES.get(prop) == null) {
-			if (properties.get(prop) == null) {
-				properties.put(prop, new LinkedHashMap<String, Value>());
-			}
+		prop = prop.toUpperCase();
+		if (Arrays.asList(VCardOptions.PROPERTIES).contains(prop)) {
 
-			properties.get(prop).put("", val);
+			if (VCardOptions.TYPES.get(prop) != null) {
+				setProperty(prop, VCardOptions.TYPES.get(prop)[0], val);
+			} else {
+				if (properties.get(prop) == null) {
+					properties.put(prop, new LinkedHashMap<String, Value>());
+				}
+
+				properties.get(prop).put("", val);
+			}
 		} else {
-			System.err.println("Property " + prop + " nicht unterstüzt oder muss einen Typ haben");
+			System.err.println("Property " + prop + " nicht unterstüzt");
 		}
 	}
 

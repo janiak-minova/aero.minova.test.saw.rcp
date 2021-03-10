@@ -6,6 +6,7 @@ import java.util.List;
 import aero.minova.test.saw.rcp.model.AddressValue;
 import aero.minova.test.saw.rcp.model.DateValue;
 import aero.minova.test.saw.rcp.model.NameValue;
+import aero.minova.test.saw.rcp.model.PhotoValue;
 import aero.minova.test.saw.rcp.model.TextValue;
 import aero.minova.test.saw.rcp.model.Value;
 import ezvcard.property.Address;
@@ -52,7 +53,11 @@ public class VCardMapping {
 													// ProductId, Profile, RawPropertie, Role, SortString, SourceDisplayText, Title, UriProperty
 			return new TextValue(((TextProperty) prop).getValue());
 		} else if (prop instanceof ImageProperty) { // Photo, Logo
-			return new TextValue(((ImageProperty) prop).getUrl());
+			ImageProperty img = (ImageProperty) prop;
+			String filetype = VCardOptions.PHOTOTYPES[0];
+			if (img.getType() != null)
+				filetype = img.getType();
+			return new PhotoValue(img.getData(), filetype);
 		} else if (prop instanceof DateOrTimeProperty) { // Birthday, Deathday, Anniversary
 			Date date = ((DateOrTimeProperty) prop).getDate();
 			return new DateValue(date);
