@@ -415,23 +415,39 @@ public class ContactPart implements GroupListViewer {
 	private void subscribeTopicDeleteContact(@UIEventTopic(EventConstants.DELETE_CONTACT) String e) {
 		if (selectedContacts != null) {
 			if (selectedGroups == null || selectedGroups.get(0).getGroupID() == 0) {
-				Contact c = selectedContacts.get(0);
-				MessageDialog dia = new MessageDialog(shell, "Löschen", null,
-						"Wollen Sie den Kontakt \"" + c.getValueString(VCardOptions.NAME) + "\" endgültig löschen?", MessageDialog.CONFIRM,
-						new String[] { "Löschen", "Abbrechen" }, 0);
+				MessageDialog dia;
+				if (selectedContacts.size() == 1) {
+					Contact c = selectedContacts.get(0);
+					dia = new MessageDialog(shell, "Löschen", null, "Wollen Sie den Kontakt \"" + c.getValueString(VCardOptions.NAME) + "\" endgültig löschen?",
+							MessageDialog.CONFIRM, new String[] { "Löschen", "Abbrechen" }, 0);
+				} else {
+					dia = new MessageDialog(shell, "Löschen", null, "Wollen Sie " + selectedContacts.size() + " Kontakte endgültig löschen?",
+							MessageDialog.CONFIRM, new String[] { "Löschen", "Abbrechen" }, 0);
+				}
 				int result = dia.open();
 				if (result == 0) {
-					db.removeContact(c);
+					for (Contact c : selectedContacts) {
+						db.removeContact(c);
+					}
 				}
 			} else {
 				Group g = db.getGroupById(selectedGroups.get(0).getGroupID());
-				Contact c = selectedContacts.get(0);
-				MessageDialog dia = new MessageDialog(shell, "Entfernen", null,
-						"Wollen Sie den Kontakt \"" + c.getValueString(VCardOptions.NAME) + "\" aus der Gruppe \"" + g.getName() + "\" entfernen?",
-						MessageDialog.CONFIRM, new String[] { "Entfernen", "Abbrechen" }, 0);
+				MessageDialog dia;
+				if (selectedContacts.size() == 1) {
+					Contact c = selectedContacts.get(0);
+					dia = new MessageDialog(shell, "Entfernen", null,
+							"Wollen Sie den Kontakt \"" + c.getValueString(VCardOptions.NAME) + "\" aus der Gruppe \"" + g.getName() + "\" entfernen?",
+							MessageDialog.CONFIRM, new String[] { "Entfernen", "Abbrechen" }, 0);
+				} else {
+					dia = new MessageDialog(shell, "Entfernen", null,
+							"Wollen Sie " + selectedContacts.size() + " Kontakte aus der Gruppe \"" + g.getName() + "\" entfernen?", MessageDialog.CONFIRM,
+							new String[] { "Entfernen", "Abbrechen" }, 0);
+				}
 				int result = dia.open();
 				if (result == 0) {
-					g.removeMember(c);
+					for (Contact c : selectedContacts) {
+						g.removeMember(c);
+					}
 				}
 			}
 
