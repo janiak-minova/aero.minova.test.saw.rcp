@@ -1,5 +1,7 @@
 package aero.minova.test.saw.rcp.entries;
 
+import static org.eclipse.jface.widgets.ButtonFactory.newButton;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -12,6 +14,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -38,6 +41,7 @@ public class PhotoPropertyEntry extends PropertyEntry {
 	private boolean editable;
 
 	private String defaultPath = Constants.DEFAULTPIC;
+	int scalePx = 70;
 
 	private byte[] data;
 
@@ -46,6 +50,7 @@ public class PhotoPropertyEntry extends PropertyEntry {
 	private boolean usingDefault;
 
 	public PhotoPropertyEntry(Composite body) {
+		// Label für Bild
 		label = new Label(body, SWT.RIGHT);
 		GridData gd = new GridData(SWT.LEFT, SWT.TOP, false, false);
 		gd.horizontalSpan = 2;
@@ -57,6 +62,17 @@ public class PhotoPropertyEntry extends PropertyEntry {
 				editProfilePic();
 			}
 		});
+
+		// Buttons
+		Composite comp = new Composite(body, SWT.None);
+		comp.setLayout(new GridLayout(1, false));
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		comp.setLayoutData(gd);
+
+		editButton = newButton(SWT.PUSH).text("Bild bearbeiten").onSelect(e -> editProfilePic()).create(comp);
+		editButton.setVisible(false);
+		deleteButton = newButton(SWT.PUSH).text("Bild löschen").onSelect(e -> deleteProfilePic()).create(comp);
+		deleteButton.setVisible(false);
 	}
 
 	private void addProfilePic() {
@@ -66,12 +82,12 @@ public class PhotoPropertyEntry extends PropertyEntry {
 		try {
 			Image image = new Image(null, new ByteArrayInputStream(data));
 
-			// Scaliere Bild auf 50x50px
-			Image scaled = new Image(Display.getDefault(), 50, 50);
+			// Scaliere Bild
+			Image scaled = new Image(Display.getDefault(), scalePx, scalePx);
 			GC gc = new GC(scaled);
 			gc.setAntialias(SWT.ON);
 			gc.setInterpolation(SWT.HIGH);
-			gc.drawImage(image, 0, 0, image.getBounds().width, image.getBounds().height, 0, 0, 50, 50);
+			gc.drawImage(image, 0, 0, image.getBounds().width, image.getBounds().height, 0, 0, scalePx, scalePx);
 			gc.dispose();
 			image.dispose();
 
@@ -82,7 +98,6 @@ public class PhotoPropertyEntry extends PropertyEntry {
 	private void editProfilePic() {
 		if (editable) {
 			FileDialog dialog = new FileDialog(new Shell(), SWT.OPEN);
-			// Weitere Möglichkeiten: { "*.gif", "*.bmp", "*.jpg", "*.tiff" });
 			String filterExtensionsString = "";
 			for (String s : VCardOptions.PHOTOTYPES) {
 				filterExtensionsString += "*." + s + ";";
@@ -94,6 +109,11 @@ public class PhotoPropertyEntry extends PropertyEntry {
 				addProfilePic();
 			}
 		}
+	}
+
+	private void deleteProfilePic() {
+		setDefaultPicData();
+		addProfilePic();
 	}
 
 	private void setData(String path) {
@@ -133,6 +153,8 @@ public class PhotoPropertyEntry extends PropertyEntry {
 	@Override
 	public void setEditable(boolean editable) {
 		this.editable = editable;
+		editButton.setVisible(editable);
+		deleteButton.setVisible(editable);
 	}
 
 	@Override

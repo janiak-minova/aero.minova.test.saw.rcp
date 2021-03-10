@@ -34,7 +34,7 @@ public class DragAndDropSupportContacts implements DragSourceListener, DropTarge
 	private final NatTable natTable;
 	private final SelectionLayer selectionLayer;
 
-	private Contact draggedContact;
+	public static Contact draggedContact;
 
 	public DragAndDropSupportContacts(NatTable natTable, SelectionLayer selectionLayer) {
 		this.natTable = natTable;
@@ -112,7 +112,8 @@ public class DragAndDropSupportContacts implements DragSourceListener, DropTarge
 				if (path.contains(".vcf")) {
 					try {
 						String content = new String(Files.readAllBytes(Paths.get(path)));
-						VCardImportHandler.createContactsFromString(content);
+						boolean intern = draggedContact != null || DragAndDropSupportGroups.draggedGroup != null;
+						VCardImportHandler.createContactsFromString(content, intern);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

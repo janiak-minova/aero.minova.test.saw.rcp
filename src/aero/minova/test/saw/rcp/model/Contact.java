@@ -26,6 +26,8 @@ public class Contact {
 	public void setProperty(String prop, String type, Value val) {
 		prop = prop.toUpperCase();
 		type = type.toUpperCase();
+		if (val.getStringRepresentation().equals("autotelefon"))
+			System.out.println("found it");
 		if (Arrays.asList(VCardOptions.PROPERTIES).contains(prop)
 				&& (VCardOptions.TYPES.get(prop) != null && Arrays.asList(VCardOptions.TYPES.get(prop)).contains(type) || type.equals(""))) {
 			if (properties.get(prop) == null) {

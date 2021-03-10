@@ -29,7 +29,7 @@ public class DragAndDropSupportGroups implements DragSourceListener, DropTargetL
 
 	private final NatTable natTable;
 	private final SelectionLayer selectionLayer;
-	private Group draggedGroup;
+	public static Group draggedGroup;
 
 	private final Database db = Database.getInstance();
 
@@ -59,8 +59,9 @@ public class DragAndDropSupportGroups implements DragSourceListener, DropTargetL
 			for (String path : data) {
 				String content;
 				try {
+					boolean intern = DragAndDropSupportContacts.draggedContact != null || draggedGroup != null;
 					content = new String(Files.readAllBytes(Paths.get(path)));
-					Contact c = VCardImportHandler.createContactsFromString(content).get(0);
+					Contact c = VCardImportHandler.createContactsFromString(content, intern).get(0);
 					Group g = db.getGroupByPosition(getRowPosition(event));
 					g.addMember(c);
 					this.natTable.refresh();

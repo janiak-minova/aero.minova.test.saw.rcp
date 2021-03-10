@@ -31,6 +31,8 @@ public class VCardImportHandler {
 	static IEventBroker broker;
 	static Database db = Database.getInstance();
 
+	static boolean intern;
+
 	@Execute
 	public void execute(MPart part) {
 		FileDialog dialog = new FileDialog(new Shell(), SWT.OPEN);
@@ -42,11 +44,12 @@ public class VCardImportHandler {
 			try {
 				content = new String(Files.readAllBytes(Paths.get(path)));
 			} catch (IOException e) {}
-			createContactsFromString(content);
+			createContactsFromString(content, true);
 		}
 	}
 
-	public static List<Contact> createContactsFromString(String contactString) {
+	public static List<Contact> createContactsFromString(String contactString, boolean intern2) {
+		intern = intern2;
 
 		List<VCard> vCardList = readVCard(contactString);
 		List<Contact> contacts = new ArrayList<Contact>();
@@ -95,7 +98,7 @@ public class VCardImportHandler {
 				}
 			}
 		}
-		if (contactExists)
+		if (contactExists && !intern)
 			broker.send(EventConstants.CONTACT_EXISTS, c);
 		broker.send(EventConstants.REFRESH_CONTACTS, c);
 		return c;
