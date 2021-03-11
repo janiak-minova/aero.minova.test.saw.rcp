@@ -109,7 +109,7 @@ public class Database {
 		c = addContact();
 		c.setProperty(VCardOptions.NAME, new NameValue("Mustermann;Max;;;"));
 		c.setProperty(VCardOptions.ORG, new TextValue("Minova"));
-		c.setProperty(VCardOptions.TEL, VCardOptions.HOME, new TextValue("9876 543"));
+		c.setProperty(VCardOptions.TEL, VCardOptions.HOME, new TextValue("1231 12412"));
 
 		c = addContact();
 		c.setProperty(VCardOptions.NAME, new NameValue("Vogel;Dieter;;;"));

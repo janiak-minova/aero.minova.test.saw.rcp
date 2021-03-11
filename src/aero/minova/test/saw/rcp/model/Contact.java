@@ -26,8 +26,6 @@ public class Contact {
 	public void setProperty(String prop, String type, Value val) {
 		prop = prop.toUpperCase();
 		type = type.toUpperCase();
-		if (val.getStringRepresentation().equals("autotelefon"))
-			System.out.println("found it");
 		if (Arrays.asList(VCardOptions.PROPERTIES).contains(prop)
 				&& (VCardOptions.TYPES.get(prop) != null && Arrays.asList(VCardOptions.TYPES.get(prop)).contains(type) || type.equals(""))) {
 			if (properties.get(prop) == null) {
@@ -38,25 +36,24 @@ public class Contact {
 		} else {
 			System.err.println("Property " + prop + " nicht unterstüzt oder Typ " + type + " nicht unterstüzt für Property " + prop);
 		}
+
+		// Set formatted Name
+		if (prop.equals(VCardOptions.NAME)) {
+			if (properties.get(VCardOptions.FNAME) == null) {
+				properties.put(VCardOptions.FNAME, new LinkedHashMap<String, Value>());
+			}
+			properties.get(VCardOptions.FNAME).put("", new TextValue(val.getStringRepresentation()));
+		}
 	}
 
 	public void setProperty(String prop, Value val) {
 		prop = prop.toUpperCase();
 		if (Arrays.asList(VCardOptions.PROPERTIES).contains(prop)) {
-
 			if (VCardOptions.TYPES.get(prop) != null) {
 				setProperty(prop, VCardOptions.TYPES.get(prop)[0], val);
-				if (val.getStringRepresentation().equals("autotelefon"))
-					System.out.println("found it");
 			} else {
-				if (properties.get(prop) == null) {
-					properties.put(prop, new LinkedHashMap<String, Value>());
-				}
-
-				properties.get(prop).put("", val);
+				setProperty(prop, "", val);
 			}
-		} else {
-			System.err.println("Property " + prop + " nicht unterstüzt");
 		}
 	}
 
@@ -107,4 +104,8 @@ public class Contact {
 			properties.remove(prop);
 	}
 
+	public void removeProperty(String prop, String type) {
+		if (properties.containsKey(prop) && properties.get(prop).containsKey(type))
+			properties.get(prop).remove(type);
+	}
 }

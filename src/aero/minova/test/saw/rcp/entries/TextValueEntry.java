@@ -90,4 +90,5 @@ public class TextValueEntry extends ValueEntry {
 	protected void setText(Value value) {
 		input.setText(value.getStringRepresentation());
 	}
+
 }

@@ -26,6 +26,8 @@ public class VCardMapping {
 			return VCardOptions.PHOTO;
 		case ("ezvcard.property.StructuredName"):
 			return VCardOptions.NAME;
+		case ("ezvcard.property.FormattedName"):
+			return VCardOptions.FNAME;
 		case ("ezvcard.property.Organization"):
 			return VCardOptions.ORG;
 		case ("ezvcard.property.Telephone"):

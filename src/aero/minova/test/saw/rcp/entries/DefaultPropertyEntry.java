@@ -102,9 +102,14 @@ public class DefaultPropertyEntry extends PropertyEntry {
 	@Override
 	public void updateContact() {
 		for (TypeEntry cte : typeEntries) {
-			if (cte.hasContent())
+			if (cte.getContent() != null)
 				currentContact.setProperty(property, cte.getType(), cte.getValue());
+			else
+				currentContact.removeProperty(property, cte.getType());
 		}
+
+		if (typeEntries.isEmpty())
+			currentContact.removeProperty(property);
 	}
 
 	@Override

@@ -206,4 +206,8 @@ public class TypeEntry {
 	public Label getTypeLabel() {
 		return typeLabel;
 	}
+
+	public String getContent() {
+		return input.getText();
+	}
 }
