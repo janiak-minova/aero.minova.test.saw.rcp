@@ -24,6 +24,7 @@
         <children xsi:type="basic:Part" xmi:id="_6wlLlMgZEeSyMNYR5xypkQ" elementId="aero.minova.test.saw.rcp.part.sample" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.DetailPart" label="Sample Part" iconURI="platform:/plugin/aero.minova.test.saw.rcp/icons/home.png"/>
         <children xsi:type="basic:Part" xmi:id="_md6qwDmREeuJypk-9NJIRQ" elementId="aero.minova.test.saw.rcp.part.browsertest" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.BrowserPart" label="BrowserTest" iconURI="platform:/plugin/aero.minova.test.saw.rcp/icons/browser.png"/>
         <children xsi:type="basic:Part" xmi:id="_T-yqYECfEeuRleIaugyDgg" elementId="aero.minova.test.saw.rcp.part.nattable" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.NatTablePart" label="NatTable"/>
+        <children xsi:type="basic:Part" xmi:id="_vtT1EIWZEeugDuvLEZQtWg" elementId="aero.minova.test.saw.rcp.part.playground" contributionURI="bundleclass://aero.minova.test.saw.rcp/aero.minova.test.saw.rcp.parts.PlaygroundPart" label="Playground"/>
       </children>
     </children>
     <mainMenu xmi:id="_6wlLicgZEeSyMNYR5xypkQ" elementId="org.eclipse.ui.main.menu">
