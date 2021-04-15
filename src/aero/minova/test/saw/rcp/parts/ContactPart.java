@@ -24,17 +24,22 @@ import org.eclipse.e4.ui.workbench.modeling.ESelectionService;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.nebula.widgets.nattable.NatTable;
+import org.eclipse.nebula.widgets.nattable.config.AbstractRegistryConfiguration;
 import org.eclipse.nebula.widgets.nattable.config.DefaultNatTableStyleConfiguration;
+import org.eclipse.nebula.widgets.nattable.config.IConfigRegistry;
+import org.eclipse.nebula.widgets.nattable.config.IEditableRule;
 import org.eclipse.nebula.widgets.nattable.data.IColumnPropertyAccessor;
 import org.eclipse.nebula.widgets.nattable.data.IRowDataProvider;
 import org.eclipse.nebula.widgets.nattable.data.IRowIdAccessor;
 import org.eclipse.nebula.widgets.nattable.data.ListDataProvider;
+import org.eclipse.nebula.widgets.nattable.edit.EditConfigAttributes;
 import org.eclipse.nebula.widgets.nattable.edit.config.DefaultEditBindings;
 import org.eclipse.nebula.widgets.nattable.edit.config.DefaultEditConfiguration;
 import org.eclipse.nebula.widgets.nattable.extension.e4.selection.E4SelectionListener;
 import org.eclipse.nebula.widgets.nattable.grid.GridRegion;
 import org.eclipse.nebula.widgets.nattable.layer.DataLayer;
 import org.eclipse.nebula.widgets.nattable.layer.cell.ColumnOverrideLabelAccumulator;
+import org.eclipse.nebula.widgets.nattable.layer.cell.ILayerCell;
 import org.eclipse.nebula.widgets.nattable.selection.RowSelectionModel;
 import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.viewport.ViewportLayer;
@@ -181,27 +186,39 @@ public class ContactPart implements GroupListViewer {
 		groupTable.addDragSupport(DND.DROP_COPY, transfer, dndSupport);
 		groupTable.addDropSupport(DND.DROP_COPY, transfer, dndSupport);
 
-		// Edit support
-//        groupTable.addConfiguration(new DefaultNatTableStyleConfiguration());
-//        groupTable.addConfiguration(new AbstractRegistryConfiguration() {
-//            @Override
-//            public void configureRegistry(IConfigRegistry configRegistry) {
-//                configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITABLE_RULE, IEditableRule.ALWAYS_EDITABLE);
-//            }
-//        });
-//        groupTable.configure();
 		final ColumnOverrideLabelAccumulator columnLabelAccumulator = new ColumnOverrideLabelAccumulator(bodyDataLayerGroup);
 		bodyDataLayerGroup.setConfigLabelAccumulator(columnLabelAccumulator);
 
 		groupTable.addConfiguration(new DefaultNatTableStyleConfiguration());
 		groupTable.addConfiguration(new EditorConfigurationGrouplist());
-		groupTable.configure();
 
+		// Editieren der Gruppennamen
+		groupTable.addConfiguration(new AbstractRegistryConfiguration() {
+			@Override
+			public void configureRegistry(IConfigRegistry configRegistry) {
+				configRegistry.registerConfigAttribute(EditConfigAttributes.CELL_EDITABLE_RULE, new IEditableRule() {
+
+					@Override
+					public boolean isEditable(int columnIndex, int rowIndex) {
+						if (columnIndex == 0)
+							return true;
+						return false;
+					}
+
+					@Override
+					public boolean isEditable(ILayerCell cell, IConfigRegistry configRegistry) {
+						if (cell.getRowIndex() == 0)
+							return false;
+						if (cell.getColumnIndex() == 0)
+							return true;
+						return false;
+					}
+				});
+			}
+		});
 		bodyDataLayerGroup.addConfiguration(new DefaultEditConfiguration());
 		bodyDataLayerGroup.addConfiguration(new DefaultEditBindings());
 
-//        groupTable.addConfiguration(new DefaultNatTableStyleConfiguration());
-//        groupTable.addConfiguration(new EditorConfiguration());
 		groupTable.configure();
 
 		GridDataFactory.fillDefaults().span(2, 1).grab(true, true).applyTo(groupTable);
