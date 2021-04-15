@@ -57,7 +57,6 @@ NatTable {
 NatTable:select {
 	row-height: auto;
 	painter-resolution: false;
-	tree-structure-painter: background padding tree;
 	render-grid-lines: false;
 }
 
